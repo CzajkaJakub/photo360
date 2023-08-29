@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <preConditions>
+        <runningAs username="photo_user_db_360"/>
+    </preConditions>
+
+    <changeSet id="2023-08-16T10:29:32" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_data"/>
+            </not>
+        </preConditions>
+
+        <comment>Create table to store user data.</comment>
+
+        <createTable tableName="user_data">
+
+            <column name="login" type="text">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+
+            <column name="email" type="text">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="password" type="text">
+                <constraints nullable="false" unique="false"/>
+            </column>
+
+            <column name="creation_date_time" type="datetime"/>
+
+            <column name="last_logged_date_time" type="datetime"/>
+
+            <column name="is_locked" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="failed_attempt" type="int" value="0"/>
+            <column name="lock_time" type="datetime"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2023-08-23T16:53:00" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+        </preConditions>
+
+        <comment>Create test user.</comment>
+        <insert tableName="user_data">
+            <column name="email" value="test@o2.pl"/>
+            <column name="login" value="test"/>
+            <column name="password" value="9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"/>
+            <column name="creation_date_time" value="2023-02-16T09:35:32"/>
+            <column name="is_locked" value="false"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2023-08-23T16:55:00" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+        </preConditions>
+
+        <comment>Create locked test user.</comment>
+        <insert tableName="user_data">
+            <column name="email" value="test_locked@o2.pl"/>
+            <column name="login" value="test_locked"/>
+            <column name="password" value="9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"/>
+            <column name="creation_date_time" value="2023-02-16T10:35:32"/>
+            <column name="is_locked" value="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2023-08-23T08:47:00" author="jczajka">
+
+        <comment>Create role table</comment>
+        <createTable tableName="user_roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2023-08-25T19:52:00" author="jczajka">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+            <tableExists tableName="user_roles"/>
+        </preConditions>
+
+        <addColumn tableName="user_data">
+            <column name="role_id" type="BIGINT"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="user_data" baseColumnNames="role_id"
+                                 constraintName="fk_user_data_role_id" referencedTableName="user_roles"
+                                 referencedColumnNames="id" onDelete="RESTRICT" onUpdate="CASCADE"/>
+
+        <comment>Create column which contains user's role</comment>
+    </changeSet>
+
+
+    <changeSet id="2023-08-26T14:31:00" author="jczajka">
+
+        <comment>Create basic roles</comment>
+        <insert tableName="user_roles">
+            <column name="name" value="admin"/>
+            <column name="description" value="Role for administrators"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="name" value="user"/>
+            <column name="description" value="Role for regular users"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="2023-08-29T12:02:00" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+            <tableExists tableName="user_roles"/>
+        </preConditions>
+
+        <comment>Change all user's roles to basic</comment>
+
+        <update tableName="user_data">
+            <column name="role_id">2</column>
+        </update>
+
+    </changeSet>
+
+    <changeSet id="2023-08-29T21:02:00" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+            <tableExists tableName="user_roles"/>
+        </preConditions>
+
+        <comment>Change all user's failed attempt to 0</comment>
+
+        <update tableName="user_data">
+            <column name="failed_attempt">0</column>
+        </update>
+
+    </changeSet>
+
+</databaseChangeLog>

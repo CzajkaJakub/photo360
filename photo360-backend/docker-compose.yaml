@@ -1,0 +1,26 @@
+version: "3.4"
+services:
+  photo360-db:
+    environment:
+      - POSTGRES_USER=${DATABASE_LOGIN}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    container_name: ${DATABASE_CONTAINER_NAME}
+    volumes:
+      - photo360_db:${VOLUME_LOCATION}
+    ports:
+      - ${DATABASE_EXTERNAL_PORT}:${DATABASE_INTERNAL_PORT}
+    restart:
+      always
+    image: ${DATABASE_IMAGE}
+    networks:
+      photo_360-network:
+        aliases:
+          - ${DATABASE_CONTAINER_NAME}
+    shm_size: 256m
+
+volumes:
+  photo360_db:
+
+networks:
+  photo_360-network:

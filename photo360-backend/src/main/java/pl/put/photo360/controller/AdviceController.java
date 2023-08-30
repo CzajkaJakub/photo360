@@ -118,8 +118,7 @@ public class AdviceController
     }
 
     /**
-     * Handler for registration form, need to pass some rules in
-     * {@link FieldValidator}.
+     * Handler for registration form, need to pass some rules in {@link FieldValidator}.
      *
      * @param aEx
      *                Exception

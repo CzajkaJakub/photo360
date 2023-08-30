@@ -47,38 +47,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2023-08-23T16:53:00" author="jczajka">
-
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="user_data"/>
-        </preConditions>
-
-        <comment>Create test user.</comment>
-        <insert tableName="user_data">
-            <column name="email" value="test@o2.pl"/>
-            <column name="login" value="test"/>
-            <column name="password" value="9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"/>
-            <column name="creation_date_time" value="2023-02-16T09:35:32"/>
-            <column name="is_locked" value="false"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="2023-08-23T16:55:00" author="jczajka">
-
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="user_data"/>
-        </preConditions>
-
-        <comment>Create locked test user.</comment>
-        <insert tableName="user_data">
-            <column name="email" value="test_locked@o2.pl"/>
-            <column name="login" value="test_locked"/>
-            <column name="password" value="9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"/>
-            <column name="creation_date_time" value="2023-02-16T10:35:32"/>
-            <column name="is_locked" value="true"/>
-        </insert>
-    </changeSet>
-
     <changeSet id="2023-08-23T08:47:00" author="jczajka">
 
         <comment>Create role table</comment>
@@ -157,6 +125,18 @@
             <column name="failed_attempt">0</column>
         </update>
 
+    </changeSet>
+
+    <changeSet id="2023-03-30T16:12:32" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+        </preConditions>
+
+        <comment>Add column which contains text (salt).</comment>
+        <addColumn tableName="user_data" schemaName="public">
+            <column name="salt" type="text"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

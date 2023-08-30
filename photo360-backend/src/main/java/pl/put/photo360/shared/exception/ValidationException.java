@@ -1,17 +1,16 @@
 package pl.put.photo360.shared.exception;
 
-import springfox.documentation.builders.ValidationResult;
-
 import java.util.List;
 import java.util.Objects;
 
+import springfox.documentation.builders.ValidationResult;
 
 /**
  * A simple Timeseries validation exception.
  */
 public class ValidationException extends RuntimeException
 {
-    private final List<ValidationResult> validationResult;
+    private final List< ValidationResult > validationResult;
 
     public ValidationException( String aMessage, List< ValidationResult > aValidationResults )
     {

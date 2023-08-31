@@ -6,24 +6,26 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
+@Table( name = "roles" )
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table( name = "user_roles", schema = "public" )
-@NoArgsConstructor
-public class UserRoleEntity
+public class RoleEntity
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private Long id;
+    private Integer id;
 
-    @Column( name = "name" )
+    @Column( nullable = false, unique = true )
     private String name;
 
-    @Column( name = "description" )
+    @Column
     private String description;
 }

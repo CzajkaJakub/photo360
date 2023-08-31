@@ -30,8 +30,8 @@ public class WebMvcConfig implements WebMvcConfigurer
             .addPathPatterns( "/photo360/**" );
         registry.addInterceptor( tokenValidatorInterceptor )
             .addPathPatterns( "/photo360/**" )
-            .excludePathPatterns( "/photo360/logIn" )
-            .excludePathPatterns( "/photo360/register" );
+            .excludePathPatterns( "/photo360/authorization/logIn" )
+            .excludePathPatterns( "/photo360/authorization/register" );
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pl.put.photo360.shared.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -8,9 +9,10 @@ import pl.put.photo360.config.Configuration;
 import pl.put.photo360.shared.dto.ServerResponseCode;
 import pl.put.photo360.shared.exception.WrongPublicApiKeyException;
 
+@Service
 public class PublicKeyValidator implements ConstraintValidator< PublicKeyConstraint, String >
 {
-    private static Configuration configuration;
+    private final Configuration configuration;
 
     @Autowired
     public PublicKeyValidator( Configuration aConfiguration )
@@ -18,9 +20,9 @@ public class PublicKeyValidator implements ConstraintValidator< PublicKeyConstra
         configuration = aConfiguration;
     }
 
-    public static void isValid( String aPublicKey )
+    public void isValid( String aPublicKey )
     {
-        if( !aPublicKey.equals( configuration.getPUBLIC_API_KEY() ) )
+        if( aPublicKey == null || !aPublicKey.equals( configuration.getPUBLIC_API_KEY() ) )
             throw new WrongPublicApiKeyException( ServerResponseCode.STATUS_WRONG_PUBLIC_API_KEY );
     }
 

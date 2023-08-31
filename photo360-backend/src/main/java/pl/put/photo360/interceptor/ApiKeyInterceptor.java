@@ -1,6 +1,7 @@
 package pl.put.photo360.interceptor;
 
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -8,14 +9,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pl.put.photo360.shared.api.PublicKeyValidator;
 
-@Component
+@Service
 public class ApiKeyInterceptor implements HandlerInterceptor
 {
+    private final PublicKeyValidator publicKeyValidator;
+
+    @Autowired
+    public ApiKeyInterceptor( PublicKeyValidator aPublicKeyValidator )
+    {
+        publicKeyValidator = aPublicKeyValidator;
+    }
+
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler )
         throws Exception
     {
-        PublicKeyValidator.isValid( request.getHeader( "publicApiKey" ) );
+        publicKeyValidator.isValid( request.getHeader( "publicApiKey" ) );
         return HandlerInterceptor.super.preHandle( request, response, handler );
     }
 

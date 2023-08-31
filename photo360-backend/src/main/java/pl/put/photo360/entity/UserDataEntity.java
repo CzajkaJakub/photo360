@@ -1,15 +1,18 @@
 package pl.put.photo360.entity;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -31,17 +34,17 @@ public class UserDataEntity
     @NotNull( message = "Login can't be empty!" )
     private String login;
 
-    @Column( name = "email", unique = false, nullable = false )
+    @Column( name = "email", unique = true, nullable = false )
     @NotEmpty( message = "Email can't be empty!" )
     @NotNull( message = "Email can't be empty!" )
     private String email;
 
-    @Column( name = "password", unique = false, nullable = false )
+    @Column( name = "password", nullable = false )
     @NotEmpty( message = "Password can't be empty!" )
     @NotNull( message = "Password can't be empty!" )
     private String password;
 
-    @Column( name = "creation_date_time" )
+    @Column( name = "creation_date_time", nullable = false )
     private Instant creationDate;
 
     @Column( name = "last_logged_date_time" )
@@ -56,21 +59,22 @@ public class UserDataEntity
     @Column( name = "lock_time" )
     private Instant lockTime;
 
-    @Column( name = "salt" )
+    @Column( name = "salt", nullable = false )
     private String salt;
 
-    @ManyToOne( fetch = FetchType.EAGER )
-    @JoinColumn( name = "role_id" )
-    private UserRoleEntity role;
+    @ManyToMany( cascade =
+    { CascadeType.ALL } )
+    @JoinTable( name = "user_roles", joinColumns = @JoinColumn( name = "user_login" ), inverseJoinColumns = @JoinColumn( name = "role_id" ) )
+    private Set< RoleEntity > roles = new HashSet<>();
 
-    public UserDataEntity( RegisterRequestDto aRegisterRequestDto, UserRoleEntity aUserRoleEntity )
+    public UserDataEntity( RegisterRequestDto aRegisterRequestDto, Set< RoleEntity > userRoles )
     {
         salt = BCrypt.gensalt( 10 );
         login = aRegisterRequestDto.getLogin();
         email = aRegisterRequestDto.getEmail();
         password = BCrypt.hashpw( aRegisterRequestDto.getPassword(), salt );
-        role = aUserRoleEntity;
         creationDate = Instant.now();
+        roles = userRoles;
         failedAttempt = 0;
         isLocked = false;
     }

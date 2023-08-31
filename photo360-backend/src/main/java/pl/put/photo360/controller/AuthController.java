@@ -4,9 +4,6 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PASSWORD_CHAN
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_CREATED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_LOGGED;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +19,6 @@ import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
-import pl.put.photo360.shared.fieldValidator.FieldValidator;
 
 @RequestMapping( "/photo360/authorization" )
 @RestController( "AuthController" )
@@ -47,9 +43,8 @@ public class AuthController
     @PostMapping( "/register" )
     @ApiOperation( "Endpoint which requires public api key to create new user" )
     public ResponseEntity< RequestResponseDto > createNewUser(
-        @RequestBody RegisterRequestDto aRegisterRequestDto ) throws NoSuchAlgorithmException, IOException
+        @RequestBody RegisterRequestDto aRegisterRequestDto )
     {
-        FieldValidator.validateRegisterForm( aRegisterRequestDto );
         userAuthService.saveNewUser( aRegisterRequestDto );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_USER_CREATED ),
             STATUS_USER_CREATED.getStatus() );
@@ -59,7 +54,6 @@ public class AuthController
     @ApiOperation( "Endpoint which requires public api key to authenticate user" )
     public ResponseEntity< RequestResponseDto > changePassword(
         @RequestBody PasswordChangeRequestDto aPasswordChangeRequestDto )
-        throws NoSuchAlgorithmException, IOException
     {
         userAuthService.changeUserPassword( aPasswordChangeRequestDto );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PASSWORD_CHANGED ),

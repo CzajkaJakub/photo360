@@ -43,6 +43,7 @@
 
             <column name="failed_attempt" type="int" value="0"/>
             <column name="lock_time" type="datetime"/>
+            <column name="salt" type="text"/>
 
         </createTable>
     </changeSet>
@@ -50,7 +51,7 @@
     <changeSet id="2023-08-23T08:47:00" author="jczajka">
 
         <comment>Create role table</comment>
-        <createTable tableName="user_roles">
+        <createTable tableName="roles">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -66,77 +67,54 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2023-08-25T19:52:00" author="jczajka">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="user_data"/>
-            <tableExists tableName="user_roles"/>
-        </preConditions>
-
-        <addColumn tableName="user_data">
-            <column name="role_id" type="BIGINT"/>
-        </addColumn>
-
-        <addForeignKeyConstraint baseTableName="user_data" baseColumnNames="role_id"
-                                 constraintName="fk_user_data_role_id" referencedTableName="user_roles"
-                                 referencedColumnNames="id" onDelete="RESTRICT" onUpdate="CASCADE"/>
-
-        <comment>Create column which contains user's role</comment>
-    </changeSet>
-
-
     <changeSet id="2023-08-26T14:31:00" author="jczajka">
 
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="roles"/>
+        </preConditions>
+
         <comment>Create basic roles</comment>
-        <insert tableName="user_roles">
-            <column name="name" value="admin"/>
+        <insert tableName="roles">
+            <column name="name" value="ADMIN"/>
             <column name="description" value="Role for administrators"/>
         </insert>
-        <insert tableName="user_roles">
-            <column name="name" value="user"/>
+        <insert tableName="roles">
+            <column name="name" value="USER"/>
             <column name="description" value="Role for regular users"/>
         </insert>
     </changeSet>
 
-    <changeSet id="2023-08-29T12:02:00" author="jczajka">
+    <changeSet id="2023-08-31T14:31:00" author="jczajka">
 
         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="roles"/>
             <tableExists tableName="user_data"/>
-            <tableExists tableName="user_roles"/>
+            <not>
+                <tableExists tableName="user_roles"/>
+            </not>
         </preConditions>
 
-        <comment>Change all user's roles to basic</comment>
+        <comment>Create user roles m2m table</comment>
 
-        <update tableName="user_data">
-            <column name="role_id">2</column>
-        </update>
+        <createTable tableName="user_roles">
 
-    </changeSet>
+            <column name="user_login" type="text">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
 
-    <changeSet id="2023-08-29T21:02:00" author="jczajka">
+            <column name="role_id" type="int">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
 
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="user_data"/>
-            <tableExists tableName="user_roles"/>
-        </preConditions>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="user_login"
+                                 constraintName="fk_user_data_login" referencedTableName="user_data"
+                                 referencedColumnNames="login" onDelete="CASCADE" onUpdate="CASCADE"/>
 
-        <comment>Change all user's failed attempt to 0</comment>
+        <addForeignKeyConstraint baseTableName="user_roles" baseColumnNames="role_id"
+                                 constraintName="fk_user_role_id" referencedTableName="roles"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
 
-        <update tableName="user_data">
-            <column name="failed_attempt">0</column>
-        </update>
-
-    </changeSet>
-
-    <changeSet id="2023-03-30T16:12:32" author="jczajka">
-
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="user_data"/>
-        </preConditions>
-
-        <comment>Add column which contains text (salt).</comment>
-        <addColumn tableName="user_data" schemaName="public">
-            <column name="salt" type="text"/>
-        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

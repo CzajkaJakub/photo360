@@ -1,5 +1,6 @@
 package pl.put.photo360.interceptor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -12,11 +13,20 @@ import pl.put.photo360.shared.utils.JwtValidator;
 @Component
 public class TokenValidatorInterceptor implements HandlerInterceptor
 {
+
+    private final JwtValidator jwtValidator;
+
+    @Autowired
+    public TokenValidatorInterceptor( JwtValidator aJwtValidator )
+    {
+        jwtValidator = aJwtValidator;
+    }
+
     @Override
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler )
         throws Exception
     {
-        JwtValidator.validateJwtToken( request.getHeader( HttpHeaders.AUTHORIZATION ) );
+        jwtValidator.validateJwtToken( request.getHeader( HttpHeaders.AUTHORIZATION ) );
         return HandlerInterceptor.super.preHandle( request, response, handler );
     }
 

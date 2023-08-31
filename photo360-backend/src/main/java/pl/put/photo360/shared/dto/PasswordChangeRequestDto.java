@@ -15,11 +15,4 @@ public class PasswordChangeRequestDto
     private String email;
     private String oldPassword;
     private String newPassword;
-
-    public PasswordChangeRequestDto( String email, String oldPassword, String newPassword )
-    {
-        this.email = email;
-        this.oldPassword = oldPassword;
-        this.newPassword = newPassword;
-    }
 }

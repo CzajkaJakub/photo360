@@ -15,11 +15,4 @@ public class RegisterRequestDto
     private String login;
     private String email;
     private String password;
-
-    public RegisterRequestDto( String login, String email, String password )
-    {
-        this.login = login;
-        this.email = email;
-        this.password = password;
-    }
 }

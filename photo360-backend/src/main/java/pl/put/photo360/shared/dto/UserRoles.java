@@ -6,26 +6,26 @@ import java.util.Map;
 /**
  * Represents all the possible user's role.
  */
-public enum UserRole
+public enum UserRoles
 {
     // @formatter:off
-    ADMIN_ROLE(1, "admin"),
-    USER_ROLE(2, "user");
+    ADMIN_ROLE(1L, "ADMIN"),
+    USER_ROLE(2L, "USER");
     // @formatter:on;
 
-    private static final Map< Integer, UserRole > ROLES_MAP = new HashMap<>();
+    private static final Map< Long, UserRoles > ROLES_MAP = new HashMap<>();
     static
     {
-        for( UserRole role : values() )
+        for( UserRoles role : values() )
         {
             ROLES_MAP.put( role.roleId, role );
         }
     }
 
-    private final int roleId;
+    private final Long roleId;
     private final String name;
 
-    UserRole( int aRoleId, String aName )
+    UserRoles( Long aRoleId, String aName )
     {
         roleId = aRoleId;
         name = aName;
@@ -38,7 +38,7 @@ public enum UserRole
      *                    role's id
      * @return role's name
      */
-    public static UserRole get( int aRoleId )
+    public static UserRoles get( Long aRoleId )
     {
         var role = ROLES_MAP.get( aRoleId );
         if( role == null )
@@ -51,7 +51,7 @@ public enum UserRole
         }
     }
 
-    public int getId()
+    public Long getId()
     {
         return this.roleId;
     }

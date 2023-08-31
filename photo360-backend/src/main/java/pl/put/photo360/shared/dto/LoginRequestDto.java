@@ -16,14 +16,4 @@ public class LoginRequestDto
 {
     private String login;
     private String password;
-    private boolean activeDirectory;
-
-    public LoginRequestDto( String aLogin, String aPassword, boolean aActiveDirectory )
-    {
-        Objects.requireNonNull( aLogin );
-        Objects.requireNonNull( aPassword );
-        login = aLogin;
-        password = aPassword;
-        activeDirectory = aActiveDirectory;
-    }
 }

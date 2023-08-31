@@ -16,4 +16,8 @@ public class Configuration
     private Integer MAX_LOGIN_ATTEMPT;
     private Integer ACCOUNT_LOCK_TIME;
     private Integer TOKEN_EXPIRATION_TIME;
+    private Integer MIN_REGISTER_PASSWORD_LENGTH;
+    private Integer MAX_REGISTER_FIELD_LENGTH;
+    private String EMAIL_REGEX;
+    private Integer KEY_LENGTH_BYTES;
 }

@@ -6,14 +6,13 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_LOGIN_ALREADY
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_EMAIL;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_LOGIN;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_PASSWORD;
-import static pl.put.photo360.shared.dto.UserRole.USER_ROLE;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -23,12 +22,13 @@ import jakarta.transaction.Transactional;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dao.UserDataDao;
 import pl.put.photo360.dao.UserRoleDao;
+import pl.put.photo360.entity.RoleEntity;
 import pl.put.photo360.entity.UserDataEntity;
-import pl.put.photo360.entity.UserRoleEntity;
 import pl.put.photo360.shared.dto.LoginRequestDto;
 import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
+import pl.put.photo360.shared.dto.UserRoles;
 import pl.put.photo360.shared.exception.AccountLockedException;
 import pl.put.photo360.shared.exception.EmailExistsInDbException;
 import pl.put.photo360.shared.exception.LoginExistsInDbException;
@@ -46,15 +46,17 @@ public class AuthService
     private final UserRoleDao userRoleDao;
     private final AuthTokenService authTokenService;
     private final Configuration configuration;
+    private final FieldValidator fieldValidator;
 
     @Autowired
     public AuthService( UserDataDao aUserDataDao, UserRoleDao aUserRoleDao,
-        AuthTokenService aAuthTokenService, Configuration aConfiguration )
+        AuthTokenService aAuthTokenService, Configuration aConfiguration, FieldValidator aFieldValidator )
     {
         userDataDao = aUserDataDao;
-        authTokenService = aAuthTokenService;
         userRoleDao = aUserRoleDao;
+        authTokenService = aAuthTokenService;
         configuration = aConfiguration;
+        fieldValidator = aFieldValidator;
     }
 
     /**
@@ -104,6 +106,8 @@ public class AuthService
      */
     public void saveNewUser( RegisterRequestDto aRegisterRequestDto )
     {
+        fieldValidator.validateRegisterForm( aRegisterRequestDto );
+
         if( findByLogin( aRegisterRequestDto.getLogin() ).isPresent() )
         {
             throw new LoginExistsInDbException( STATUS_LOGIN_ALREADY_EXISTS );
@@ -114,9 +118,9 @@ public class AuthService
         }
         else
         {
-            // By default, we set basic role to the new user.
-            UserRoleEntity userRole = userRoleDao.findByRoleName( USER_ROLE.getName() );
-            UserDataEntity newUser = new UserDataEntity( aRegisterRequestDto, userRole );
+            Set< RoleEntity > userRoles = new HashSet<>();
+            userRoles.add( userRoleDao.findByRoleName( UserRoles.USER_ROLE.getName() ) );
+            UserDataEntity newUser = new UserDataEntity( aRegisterRequestDto, userRoles );
             userDataDao.save( newUser );
         }
     }
@@ -126,7 +130,6 @@ public class AuthService
      */
     @Transactional
     public void changeUserPassword( PasswordChangeRequestDto aPasswordChangeRequestDto )
-        throws NoSuchAlgorithmException, IOException
     {
         Optional< UserDataEntity > userToCheck = findByEmail( aPasswordChangeRequestDto.getEmail() );
         if( userToCheck.isPresent() )
@@ -138,7 +141,7 @@ public class AuthService
             }
             else if( checkPassword( foundUser, aPasswordChangeRequestDto.getOldPassword() ) )
             {
-                FieldValidator.validatePassword( aPasswordChangeRequestDto.getNewPassword() );
+                fieldValidator.validatePassword( aPasswordChangeRequestDto.getNewPassword() );
                 String hashedNewPassword =
                     BCrypt.hashpw( aPasswordChangeRequestDto.getNewPassword(), foundUser.getSalt() );
                 foundUser.setPassword( hashedNewPassword );
@@ -166,7 +169,7 @@ public class AuthService
 
             if( checkPass && !foundUser.isLocked() )
             {
-                String authToken = authTokenService.generateJwt( null, foundUser );
+                String authToken = authTokenService.generateJwt( foundUser );
                 resetFailedAttempts( foundUser );
                 Instant lastLoggedUserDateTime = foundUser.getLastLoggedTime();
                 foundUser.reloadLastLogTime( Instant.now() );

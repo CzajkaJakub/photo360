@@ -1,0 +1,86 @@
+{
+  "general": {
+    "language": {
+      "flag": "flag-icon flag-icon-gb"
+    }
+  },
+  "toast": {
+  },
+  "header": {
+    "mainPage": "Main page",
+    "logOut": "Log out",
+    "logIn": "Log in",
+    "changePassword": "Change Password",
+    "languagePicker": "Choose language",
+    "loggedAs": "Logged as : ",
+    "documentation": "Documentation"
+  },
+  "logPanel": {
+    "usernameField": "Username",
+    "passwordField": "Password",
+    "logIn": "Log in",
+    "email": "E-mail",
+    "register": "Sign up",
+    "strengthMeter": "Password strength:",
+    "changePassword": "Change password",
+    "oldPassword": "Old password",
+    "newPassword": "New Password",
+    "passwordFieldRepeat": "Confirm password",
+    "submit": "Submit"
+  },
+  "dates": {
+    "days": {
+      "monday": "Mo",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    }
+  },
+  "loadingPanel": {
+    "label": "Loading data in progress"
+  },
+  "error": {
+    "unauthorized": "Unauthorized access, try logging in again!",
+    "userNotFound": "User with the specified login does not exist!",
+    "wrongPassword": "The password you entered is wrong!",
+    "unknownErrorOccurred": "An unknown error occurred!",
+    "passwordsDoNotMatch": "Passwords do not match!",
+    "invalidFormat": "Invalid format!"
+  },
+  "status": {
+    "ACCOUNT_LOCKED": "Account is blocked!",
+    "WRONG_PASSWORD": "Wrong password!",
+    "USER_NOT_FOUND_BY_LOGIN": "Username was not found!",
+    "USER_NOT_FOUND_BY_EMAIL": "E-mail was not found!",
+    "USER_CREATED": "Account was created!",
+    "GIVEN_EMAIL_EXISTS": "Given email already exists!",
+    "GIVEN_LOGIN_EXISTS": "Given login already exists!",
+    "AUTH_TOKEN_EXPIRED": "Auth token expired, please sign in again!",
+    "AUTH_TOKEN_NOT_VALID": "Auth token not valid!",
+    "WRONG_PUBLIC_API_KEY": "Wrong public api key, contact with IT service!",
+    "WRONG_FIELDS_SIZE": "Password field should have size between 12 and 128!",
+    "FIELD_CONTAINS_WHITESPACES": "There are white spaces in login or password field!",
+    "EMAIL_WRONG_FORMAT": "Wrong email format!",
+    "PASSWORD_CHANGED": "Password changed!",
+    "UNAUTHORIZED_ROLE": "You are not authorized to perform this action!",
+    "SERVER_UNREACHABLE": "Server is unreachable!",
+    "WRONG_CREDENTIALS": "Invalid credentials!"
+  }
+}

@@ -1,0 +1,47 @@
+.noaction {
+  pointer-events: none;
+}
+
+.dropdown-menu > li > a:hover {
+  background-color: #cecece;
+}
+
+.dropdown-menu > li > a {
+  padding: 3px 10px;
+}
+
+a > a {
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+span {
+  margin-left: 5px;
+}
+
+.nav-tabs > li > a {
+  margin: 0;
+}
+
+i {
+  cursor: pointer;
+}
+
+#infoBox {
+  text-align: right;
+  margin: 5px 10px 0 0;
+}
+
+#infoBox > div {
+  padding-bottom: 3px;
+}
+
+.navbar {
+  margin-bottom: 10px;
+}
+
+.container {
+  margin: 0;
+  width: 100%;
+}
+

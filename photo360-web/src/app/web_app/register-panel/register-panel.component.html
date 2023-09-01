@@ -1,0 +1,102 @@
+<div class="col-xs-12 col-md-6 col-md-offset-3">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title">
+        <div>
+          {{'loggingPanel.register' | translate}}
+        </div>
+        <div>
+          <a [routerLink]="['/auth']"
+             role="button">
+            {{'loggingPanel.logIn' | translate}}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-body">
+
+      <div *ngIf="error" class="alert alert-danger">
+        <p>{{error}}</p>
+      </div>
+
+      <div *ngIf="info" class="alert alert-info">
+        <p>{{info}}</p>
+      </div>
+
+      <div *ngIf="isLoading" style="text-align: center">
+        <app-logging-panel-spinner></app-logging-panel-spinner>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" *ngIf="!isLoading" [formGroup]="registrationForm" class="form-horizontal">
+
+        <!-- User name -->
+        <div class="form-group input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+          <input class="form-control" formControlName="login" id="login"
+                 placeholder="{{'loggingPanel.usernameField' | translate}}">
+        </div>
+
+        <!-- Email -->
+        <div class="form-group input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+          <input class="form-control" formControlName="email" id="email"
+                 placeholder="{{'loggingPanel.email' | translate}}"
+                 type="email">
+        </div>
+        <div *ngIf="registrationForm.hasError('emailNotValid')" class="email-format">
+          {{'error.invalidFormat' | translate}}
+        </div>
+        <!-- Password -->
+        <div class="form-group input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+          <input [(ngModel)]="password"
+                 [ngClass]="registrationForm.errors === null ? 'form-control': 'form-control invalid_password'"
+                 [type]="hidePassword ? 'password' : 'text'" class="form-control"
+                 formControlName="password"
+                 id="password" placeholder="{{'loggingPanel.passwordField' | translate}}"
+                 type="password">
+          <span (click)="hidePassword = !hidePassword" class="input-group-addon">
+            <i [ngClass]="hidePassword ? 'glyphicon-eye-open' : 'glyphicon-eye-close'" class="glyphicon"></i>
+          </span>
+        </div>
+
+        <div class="form-group input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+          <input [ngClass]="registrationForm.errors === null ? 'form-control': 'form-control invalid_password'"
+                 [type]="hidePassword ? 'password' : 'text'" class="form-control"
+                 formControlName="passwordRepeat"
+                 id="passwordRepeat" placeholder="{{'loggingPanel.passwordFieldRepeat' | translate}}"
+                 type="password">
+          <span (click)="hidePassword = !hidePassword" class="input-group-addon">
+            <i [ngClass]="hidePassword ? 'glyphicon-eye-open' : 'glyphicon-eye-close'" class="glyphicon"></i>
+          </span>
+        </div>
+        <div *ngIf="registrationForm.hasError('notMatched')" class="password-match-error">
+          {{'error.passwordsDoNotMatch' | translate}}
+        </div>
+
+        <div class="strength-meter">
+          <password-strength-meter [password]="password"></password-strength-meter>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group input-group">
+          <div class="col-md-4 controls">
+            <button [disabled]="registrationForm.invalid" class="btn btn-primary"
+                    type="submit">{{'loggingPanel.register' | translate}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+

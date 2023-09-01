@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pl.put.photo360.shared.api.PublicKeyValidator;
 
+import java.util.Objects;
+
 @Service
 public class ApiKeyInterceptor implements HandlerInterceptor
 {
@@ -24,6 +26,8 @@ public class ApiKeyInterceptor implements HandlerInterceptor
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler )
         throws Exception
     {
+        if( Objects.equals( request.getMethod(), "OPTIONS" ) )
+            return true; // Ignore preflight request of cors
         publicKeyValidator.isValid( request.getHeader( "publicApiKey" ) );
         return HandlerInterceptor.super.preHandle( request, response, handler );
     }

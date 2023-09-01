@@ -1,0 +1,86 @@
+{
+  "general": {
+    "language": {
+      "flag": "flag-icon flag-icon-fr"
+    }
+  },
+  "toast": {
+  },
+  "header": {
+    "mainPage": "Page principale",
+    "logOut": "Se déconnecter",
+    "logIn": "Se connecter",
+    "changePassword": "Changer le mot de passe",
+    "languagePicker": "Choisir la langue",
+    "loggedAs": "Connecté en tant que : ",
+    "documentation": "Documentation"
+  },
+  "logPanel": {
+    "usernameField": "Nom d'utilisateur",
+    "passwordField": "Mot de passe",
+    "logIn": "Se connecter",
+    "email": "E-mail",
+    "register": "S'inscrire",
+    "strengthMeter": "Force du mot de passe :",
+    "changePassword": "Changer le mot de passe",
+    "oldPassword": "Ancien mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "passwordFieldRepeat": "Confirmez le mot de passe",
+    "submit": "Soumettre"
+  },
+  "dates": {
+    "days": {
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mer",
+      "thursday": "Jeu",
+      "friday": "Ven",
+      "saturday": "Sam",
+      "sunday": "Dim"
+    },
+    "months": {
+      "january": "Janvier",
+      "february": "Février",
+      "march": "Mars",
+      "april": "Avril",
+      "may": "Mai",
+      "june": "Juin",
+      "july": "Juillet",
+      "august": "Août",
+      "september": "Septembre",
+      "october": "Octobre",
+      "november": "Novembre",
+      "december": "Décembre"
+    }
+  },
+  "loadingPanel": {
+    "label": "Chargement des données en cours"
+  },
+  "error": {
+    "unauthorized": "Accès non autorisé, veuillez vous reconnecter !",
+    "userNotFound": "L'utilisateur avec le nom d'utilisateur spécifié n'existe pas !",
+    "wrongPassword": "Le mot de passe que vous avez saisi est incorrect !",
+    "unknownErrorOccurred": "Une erreur inconnue s'est produite !",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas !",
+    "invalidFormat": "Format invalide !"
+  },
+  "status": {
+    "ACCOUNT_LOCKED": "Le compte est verrouillé !",
+    "WRONG_PASSWORD": "Mot de passe incorrect !",
+    "USER_NOT_FOUND_BY_LOGIN": "L'utilisateur n'a pas été trouvé par le nom d'utilisateur !",
+    "USER_NOT_FOUND_BY_EMAIL": "L'utilisateur n'a pas été trouvé par l'adresse e-mail !",
+    "USER_CREATED": "Le compte a été créé !",
+    "GIVEN_EMAIL_EXISTS": "L'adresse e-mail donnée existe déjà !",
+    "GIVEN_LOGIN_EXISTS": "Le nom d'utilisateur donné existe déjà !",
+    "AUTH_TOKEN_EXPIRED": "Le jeton d'authentification a expiré, veuillez vous reconnecter !",
+    "AUTH_TOKEN_NOT_VALID": "Le jeton d'authentification n'est pas valide !",
+    "WRONG_PUBLIC_API_KEY": "Clé API publique incorrecte, contactez le service informatique !",
+    "WRONG_FIELDS_SIZE": "Le champ de mot de passe doit avoir une taille comprise entre 12 et 128 caractères !",
+    "FIELD_CONTAINS_WHITESPACES": "Il y a des espaces blancs dans le nom d'utilisateur ou le mot de passe !",
+    "EMAIL_WRONG_FORMAT": "Format d'adresse e-mail incorrect !",
+    "PASSWORD_CHANGED": "Mot de passe modifié !",
+    "UNAUTHORIZED_ROLE": "Vous n'êtes pas autorisé à effectuer cette action !",
+    "SERVER_UNREACHABLE": "Le serveur est inaccessible !",
+    "WRONG_CREDENTIALS": "Identifiants incorrects !"
+  }
+}

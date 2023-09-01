@@ -1,0 +1,23 @@
+input.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+.input-group {
+  margin: 20px;
+}
+
+.panel-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.col {
+  display: flex;
+  justify-content: space-around;
+}
+
+/* Switching off MS Edge show/hide button in password form */
+::-ms-reveal {
+  display: none;
+}

@@ -1,0 +1,86 @@
+{
+  "general": {
+    "language": {
+      "flag": "flag-icon flag-icon-pl"
+    }
+  },
+  "toast": {
+  },
+  "header": {
+    "mainPage": "Strona główna",
+    "logOut": "Wyloguj",
+    "logIn": "Zaloguj się",
+    "changePassword": "Zmień hasło",
+    "languagePicker": "Wybierz język",
+    "loggedAs": "Zalogowany jako: ",
+    "documentation": "Dokumentacja"
+  },
+  "logPanel": {
+    "usernameField": "Nazwa użytkownika",
+    "passwordField": "Hasło",
+    "logIn": "Zaloguj się",
+    "email": "E-mail",
+    "register": "Zarejestruj się",
+    "strengthMeter": "Siła hasła:",
+    "changePassword": "Zmień hasło",
+    "oldPassword": "Stare hasło",
+    "newPassword": "Nowe hasło",
+    "passwordFieldRepeat": "Potwierdź hasło",
+    "submit": "Wyślij"
+  },
+  "dates": {
+    "days": {
+      "monday": "Pn",
+      "tuesday": "Wt",
+      "wednesday": "Śr",
+      "thursday": "Cz",
+      "friday": "Pt",
+      "saturday": "So",
+      "sunday": "N"
+    },
+    "months": {
+      "january": "Styczeń",
+      "february": "Luty",
+      "march": "Marzec",
+      "april": "Kwiecień",
+      "may": "Maj",
+      "june": "Czerwiec",
+      "july": "Lipiec",
+      "august": "Sierpień",
+      "september": "Wrzesień",
+      "october": "Październik",
+      "november": "Listopad",
+      "december": "Grudzień"
+    }
+  },
+  "loadingPanel": {
+    "label": "Trwa ładowanie danych"
+  },
+  "error": {
+    "unauthorized": "Nieautoryzowany dostęp, spróbuj ponownie zalogować się!",
+    "userNotFound": "Użytkownik o podanym loginie nie istnieje!",
+    "wrongPassword": "Wprowadzone hasło jest nieprawidłowe!",
+    "unknownErrorOccurred": "Wystąpił nieznany błąd!",
+    "passwordsDoNotMatch": "Hasła nie pasują do siebie!",
+    "invalidFormat": "Nieprawidłowy format!"
+  },
+  "status": {
+    "ACCOUNT_LOCKED": "Konto jest zablokowane!",
+    "WRONG_PASSWORD": "Nieprawidłowe hasło!",
+    "USER_NOT_FOUND_BY_LOGIN": "Nie znaleziono użytkownika o podanym loginie!",
+    "USER_NOT_FOUND_BY_EMAIL": "Nie znaleziono użytkownika o podanym adresie e-mail!",
+    "USER_CREATED": "Konto zostało utworzone!",
+    "GIVEN_EMAIL_EXISTS": "Podany adres e-mail już istnieje!",
+    "GIVEN_LOGIN_EXISTS": "Podany login już istnieje!",
+    "AUTH_TOKEN_EXPIRED": "Token autoryzacji wygasł, proszę zalogować się ponownie!",
+    "AUTH_TOKEN_NOT_VALID": "Token autoryzacji jest nieprawidłowy!",
+    "WRONG_PUBLIC_API_KEY": "Nieprawidłowy klucz publiczny API, skontaktuj się z działem IT!",
+    "WRONG_FIELDS_SIZE": "Pole hasła powinno mieć rozmiar od 12 do 128 znaków!",
+    "FIELD_CONTAINS_WHITESPACES": "W polu loginu lub hasła są spacje!",
+    "EMAIL_WRONG_FORMAT": "Nieprawidłowy format adresu e-mail!",
+    "PASSWORD_CHANGED": "Hasło zostało zmienione!",
+    "UNAUTHORIZED_ROLE": "Nie masz uprawnień do wykonania tej operacji!",
+    "SERVER_UNREACHABLE": "Serwer jest niedostępny!",
+    "WRONG_CREDENTIALS": "Nieprawidłowe dane uwierzytelniające!"
+  }
+}

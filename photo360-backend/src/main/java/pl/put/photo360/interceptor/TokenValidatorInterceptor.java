@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pl.put.photo360.shared.utils.JwtValidator;
 
+import java.util.Objects;
+
 @Component
 public class TokenValidatorInterceptor implements HandlerInterceptor
 {
@@ -26,6 +28,8 @@ public class TokenValidatorInterceptor implements HandlerInterceptor
     public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler )
         throws Exception
     {
+        if( Objects.equals( request.getMethod(), "OPTIONS" ) )
+            return true; // Ignore preflight request of cors
         jwtValidator.validateJwtToken( request.getHeader( HttpHeaders.AUTHORIZATION ) );
         return HandlerInterceptor.super.preHandle( request, response, handler );
     }

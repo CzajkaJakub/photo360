@@ -32,7 +32,7 @@ public class AuthController
         userAuthService = aUserAuthService;
     }
 
-    @PostMapping( "/logIn" )
+    @PostMapping( "/login" )
     @ApiOperation( "Endpoint to authenticate user, public api key is required" )
     public ResponseEntity< LoginResponseDto > logIn( @RequestBody LoginRequestDto aLoginRequestDto )
     {

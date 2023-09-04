@@ -19,6 +19,10 @@ jobs:
           java-version: '18'
           distribution: 'temurin'
           cache: maven
+
+      - name: Create container with db for tests
+        run: docker compose up -d
+
       - name: Build and test
         working-directory: ./photo360-backend
         run: mvn clean install

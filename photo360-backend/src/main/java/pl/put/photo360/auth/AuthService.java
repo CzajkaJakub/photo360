@@ -160,6 +160,7 @@ public class AuthService
 
     public LoginResponseDto logIntoSystemAttempt( LoginRequestDto aLoginRequestDto )
     {
+        fieldValidator.validateLoginForm( aLoginRequestDto );
         Optional< UserDataEntity > userToCheck = findByLogin( aLoginRequestDto.getLogin() );
         if( userToCheck.isPresent() )
         {

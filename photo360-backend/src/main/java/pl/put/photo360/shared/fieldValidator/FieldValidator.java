@@ -2,6 +2,7 @@ package pl.put.photo360.shared.fieldValidator;
 
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_WRONG_FORMAT;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_FIELD_CONTAINS_WHITESPACES;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_MISSING_REQUIRED_FIELD;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_FIELD_SIZE;
 
 import java.util.regex.Pattern;
@@ -11,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.put.photo360.config.Configuration;
+import pl.put.photo360.shared.dto.LoginRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.exception.FieldValidationException;
+import pl.put.photo360.shared.exception.MissingRequiredFieldsException;
 
 @Component
 public class FieldValidator
@@ -29,16 +32,30 @@ public class FieldValidator
     {
         validateLogin( aRegisterRequestDto.getLogin() );
         validatePassword( aRegisterRequestDto.getPassword() );
-        validateEmailFormat( aRegisterRequestDto.getEmail() );
+        validateEmail( aRegisterRequestDto.getEmail() );
+    }
+
+    public void validateLoginForm( LoginRequestDto aLoginRequestDto )
+    {
+        checkRequiredField( aLoginRequestDto.getLogin() );
+        checkRequiredField( aLoginRequestDto.getPassword() );
+    }
+
+    public void validateEmail( String aFieldToValidate )
+    {
+        checkRequiredField( aFieldToValidate );
+        validateEmailFormat( aFieldToValidate );
     }
 
     public void validateLogin( String aFieldToValidate )
     {
         checkWhiteMarks( aFieldToValidate );
+        checkRequiredField( aFieldToValidate );
     }
 
     public void validatePassword( String aFieldToValidate )
     {
+        checkRequiredField( aFieldToValidate );
         checkWhiteMarks( aFieldToValidate );
         checkFieldSize( aFieldToValidate );
     }
@@ -50,6 +67,14 @@ public class FieldValidator
             || aFieldToValidate.length() > configuration.getMAX_REGISTER_FIELD_LENGTH() )
         {
             throw new FieldValidationException( STATUS_WRONG_FIELD_SIZE );
+        }
+    }
+
+    private void checkRequiredField( String aFieldToValidate )
+    {
+        if( aFieldToValidate == null )
+        {
+            throw new MissingRequiredFieldsException( STATUS_MISSING_REQUIRED_FIELD );
         }
     }
 

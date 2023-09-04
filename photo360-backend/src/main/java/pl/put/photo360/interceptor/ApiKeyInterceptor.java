@@ -1,5 +1,7 @@
 package pl.put.photo360.interceptor;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -8,8 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pl.put.photo360.shared.api.PublicKeyValidator;
-
-import java.util.Objects;
 
 @Service
 public class ApiKeyInterceptor implements HandlerInterceptor

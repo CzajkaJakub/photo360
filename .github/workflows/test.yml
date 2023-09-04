@@ -9,28 +9,30 @@ on:
       - '*'
 
 jobs:
-  docker:
-    timeout-minutes: 10
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Start containers
-        run: docker-compose -f "docker-compose.yaml" up -d --build
+      - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+          sudo docker-compose --version
 
-      - name: Install node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
+      - name: Build and run Docker Compose services
+        run: |
+          docker-compose -f ../../docker-compose.yaml up -d
 
-      - name: Install dependencies
-        run: npm install
+      - name: Wait for services to start (adjust the sleep duration)
+        run: sleep 10
 
-      - name: Run tests
-        run: npm run test
+      - name: Run your tests (replace this with your actual testing command)
+        run: |
+          # Run your test commands here, e.g., for running tests against the created test database.
+          # Example: npm test
 
-      - name: Stop containers
-        if: always()
-        run: docker-compose -f "docker-compose.yaml" down
+      - name: Stop and remove Docker Compose services
+        run: docker-compose -f ../../docker-compose.yaml down

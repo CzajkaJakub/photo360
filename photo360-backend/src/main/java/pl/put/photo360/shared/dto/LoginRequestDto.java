@@ -1,7 +1,5 @@
 package pl.put.photo360.shared.dto;
 
-import java.util.Objects;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

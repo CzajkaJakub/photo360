@@ -9,10 +9,13 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +32,9 @@ import pl.put.photo360.shared.dto.RegisterRequestDto;
 public class UserDataEntity
 {
     @Id
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
+    private Integer id;
+
     @Column( name = "login", unique = true, nullable = false )
     @NotEmpty( message = "Login can't be empty!" )
     @NotNull( message = "Login can't be empty!" )
@@ -64,8 +70,11 @@ public class UserDataEntity
 
     @ManyToMany( cascade =
     { CascadeType.ALL } )
-    @JoinTable( name = "user_roles", joinColumns = @JoinColumn( name = "user_login" ), inverseJoinColumns = @JoinColumn( name = "role_id" ) )
+    @JoinTable( name = "user_roles", joinColumns = @JoinColumn( name = "user_id" ), inverseJoinColumns = @JoinColumn( name = "role_id" ) )
     private Set< RoleEntity > roles = new HashSet<>();
+
+    @OneToMany( mappedBy = "userId", cascade = CascadeType.ALL )
+    private Set< PhotoDataEntity > photos = new HashSet<>();
 
     public UserDataEntity( RegisterRequestDto aRegisterRequestDto, Set< RoleEntity > userRoles )
     {

@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import pl.put.photo360.shared.dto.RequestResponseDto;
+import pl.put.photo360.shared.exception.AccountLockedException;
 import pl.put.photo360.shared.exception.EmailExistsInDbException;
 import pl.put.photo360.shared.exception.ExpiredTokenException;
 import pl.put.photo360.shared.exception.FieldValidationException;
 import pl.put.photo360.shared.exception.LoginExistsInDbException;
+import pl.put.photo360.shared.exception.MissingRequiredFieldsException;
 import pl.put.photo360.shared.exception.TokenNotValidException;
 import pl.put.photo360.shared.exception.UnauthorizedRoleException;
 import pl.put.photo360.shared.exception.UserNotFoundException;
@@ -156,6 +158,35 @@ public class AdviceController
     @ExceptionHandler( UnauthorizedRoleException.class )
     public ResponseEntity< RequestResponseDto > handleUnauthorizedRoleException(
         UnauthorizedRoleException aEx )
+    {
+        return new ResponseEntity<>( new RequestResponseDto( aEx.getServerResponseCode() ),
+            aEx.getServerResponseCode()
+                .getStatus() );
+    }
+
+    /**
+     * Handler for MissingRequiredFieldsException.
+     *
+     * @param aEx
+     *                Exception
+     */
+    @ExceptionHandler( MissingRequiredFieldsException.class )
+    public ResponseEntity< RequestResponseDto > handleMissingRequiredFieldsException(
+        MissingRequiredFieldsException aEx )
+    {
+        return new ResponseEntity<>( new RequestResponseDto( aEx.getServerResponseCode() ),
+            aEx.getServerResponseCode()
+                .getStatus() );
+    }
+
+    /**
+     * Handler for account locked.
+     *
+     * @param aEx
+     *                Exception
+     */
+    @ExceptionHandler( AccountLockedException.class )
+    public ResponseEntity< RequestResponseDto > handleAccountLockedException( AccountLockedException aEx )
     {
         return new ResponseEntity<>( new RequestResponseDto( aEx.getServerResponseCode() ),
             aEx.getServerResponseCode()

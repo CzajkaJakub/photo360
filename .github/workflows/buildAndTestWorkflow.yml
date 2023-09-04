@@ -21,6 +21,7 @@ jobs:
           cache: maven
 
       - name: Create container with db for tests
+        working-directory: ./
         run: docker compose up -d
 
       - name: Build and test

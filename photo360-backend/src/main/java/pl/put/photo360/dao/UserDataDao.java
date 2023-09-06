@@ -11,7 +11,7 @@ import pl.put.photo360.entity.UserDataEntity;
  * User data
  */
 @Repository
-public interface UserDataDao extends JpaRepository< UserDataEntity, String >
+public interface UserDataDao extends JpaRepository< UserDataEntity, Long >
 {
     @Query( "select ud from UserDataEntity ud where ud.login = :aLogin" )
     UserDataEntity findByLogin( @Param( "aLogin" ) String aLogin );

@@ -1,5 +1,6 @@
 package pl.put.photo360.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +30,7 @@ import pl.put.photo360.shared.dto.RegisterRequestDto;
 @Entity
 @Table( name = "user_data", schema = "public" )
 @NoArgsConstructor
-public class UserDataEntity
+public class UserDataEntity implements Serializable
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
@@ -74,7 +75,7 @@ public class UserDataEntity
     private Set< RoleEntity > roles = new HashSet<>();
 
     @OneToMany( mappedBy = "userId", cascade = CascadeType.ALL )
-    private Set< PhotoDataEntity > photos = new HashSet<>();
+    private Set< PhotoDataEntity > photosData = new HashSet<>();
 
     public UserDataEntity( RegisterRequestDto aRegisterRequestDto, Set< RoleEntity > userRoles )
     {

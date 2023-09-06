@@ -18,19 +18,17 @@
             </not>
         </preConditions>
 
-        <comment>Create table to store user's photos.</comment>
+        <comment>Create table to store photo data.</comment>
 
         <createTable tableName="photo_data">
 
-            <column name="id" type="int" autoIncrement="true">
+            <column name="id" type="serial" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="int">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
+            <column name="user_id" type="int"/>
 
-            <column name="creation_date_time" type="timestamp with time zone">
+            <column name="upload_date_time" type="timestamp with time zone">
                 <constraints nullable="false"/>
             </column>
 
@@ -42,15 +40,50 @@
                 <constraints nullable="true"/>
             </column>
 
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="photo_data" baseColumnNames="user_id"
+                                 constraintName="fk_user_photo_id" referencedTableName="user_data"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+
+    </changeSet>
+
+    <changeSet id="2023-09-06T18:29:32" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+            <not>
+                <tableExists tableName="photo"/>
+            </not>
+        </preConditions>
+
+        <comment>Create table to store user's photos.</comment>
+
+        <createTable tableName="photo">
+
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="photo_data_id" type="int"/>
+
+            <column name="photo_file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="photo" type="BYTEA">
                 <constraints nullable="false"/>
             </column>
 
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="photo_data" baseColumnNames="user_id"
-                                 constraintName="fk_user_photo_id" referencedTableName="user_data"
-                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="photo"
+                                 baseColumnNames="photo_data_id"
+                                 constraintName="fk_photo_data_id"
+                                 referencedTableName="photo_data"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
     </changeSet>
 

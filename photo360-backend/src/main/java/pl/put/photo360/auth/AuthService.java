@@ -35,6 +35,7 @@ import pl.put.photo360.shared.exception.LoginExistsInDbException;
 import pl.put.photo360.shared.exception.UserNotFoundException;
 import pl.put.photo360.shared.exception.WrongPasswordException;
 import pl.put.photo360.shared.fieldValidator.FieldValidator;
+import pl.put.photo360.shared.utils.JwtValidator;
 
 /**
  * Authorization service, which is also connected to userData database.
@@ -45,16 +46,19 @@ public class AuthService
     private final UserDataDao userDataDao;
     private final UserRoleDao userRoleDao;
     private final AuthTokenService authTokenService;
+    private final JwtValidator jwtValidator;
     private final Configuration configuration;
     private final FieldValidator fieldValidator;
 
     @Autowired
     public AuthService( UserDataDao aUserDataDao, UserRoleDao aUserRoleDao,
-        AuthTokenService aAuthTokenService, Configuration aConfiguration, FieldValidator aFieldValidator )
+        AuthTokenService aAuthTokenService, JwtValidator aJwtValidator, Configuration aConfiguration,
+        FieldValidator aFieldValidator )
     {
         userDataDao = aUserDataDao;
         userRoleDao = aUserRoleDao;
         authTokenService = aAuthTokenService;
+        jwtValidator = aJwtValidator;
         configuration = aConfiguration;
         fieldValidator = aFieldValidator;
     }
@@ -68,6 +72,26 @@ public class AuthService
     public Optional< UserDataEntity > findByLogin( String aLogin )
     {
         var foundUser = userDataDao.findByLogin( aLogin );
+        if( foundUser == null )
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of( foundUser );
+        }
+    }
+
+    /**
+     * Find user by given jwt token.
+     *
+     * @param aToken
+     *                   User's request jwt token.
+     */
+    public Optional< UserDataEntity > findByToken( String aToken )
+    {
+        var extractedLoginFromToken = jwtValidator.extractLoginFromToken( aToken );
+        var foundUser = userDataDao.findByLogin( extractedLoginFromToken );
         if( foundUser == null )
         {
             return Optional.empty();

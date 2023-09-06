@@ -93,4 +93,22 @@ public class JwtValidator
             .collect( Collectors.toList() );
     }
 
+    public String extractLoginFromToken( String token )
+    {
+        try
+        {
+            DecodedJWT decodedJWT = JWT.require( JWT_ALGORITHM )
+                .build()
+                .verify( token );
+            return decodedJWT.getSubject();
+        }
+        catch( TokenExpiredException e )
+        {
+            throw new ExpiredTokenException( STATUS_AUTH_TOKEN_EXPIRED );
+        }
+        catch( JWTVerificationException e )
+        {
+            throw new TokenNotValidException( STATUS_AUTH_TOKEN_NOT_VALID );
+        }
+    }
 }

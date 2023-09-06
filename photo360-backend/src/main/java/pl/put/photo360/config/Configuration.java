@@ -20,4 +20,5 @@ public class Configuration
     private Integer MAX_REGISTER_FIELD_LENGTH;
     private String EMAIL_REGEX;
     private Integer KEY_LENGTH_BYTES;
+    private String SUPPORTED_FORMAT;
 }

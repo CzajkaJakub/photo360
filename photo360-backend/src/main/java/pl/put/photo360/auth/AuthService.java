@@ -131,6 +131,8 @@ public class AuthService
     @Transactional
     public void changeUserPassword( PasswordChangeRequestDto aPasswordChangeRequestDto )
     {
+        fieldValidator.validatePassword( aPasswordChangeRequestDto.getNewPassword() );
+        fieldValidator.validatePassword( aPasswordChangeRequestDto.getOldPassword() );
         Optional< UserDataEntity > userToCheck = findByEmail( aPasswordChangeRequestDto.getEmail() );
         if( userToCheck.isPresent() )
         {
@@ -141,7 +143,6 @@ public class AuthService
             }
             else if( checkPassword( foundUser, aPasswordChangeRequestDto.getOldPassword() ) )
             {
-                fieldValidator.validatePassword( aPasswordChangeRequestDto.getNewPassword() );
                 String hashedNewPassword =
                     BCrypt.hashpw( aPasswordChangeRequestDto.getNewPassword(), foundUser.getSalt() );
                 foundUser.setPassword( hashedNewPassword );

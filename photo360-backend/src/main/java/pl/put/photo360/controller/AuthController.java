@@ -50,7 +50,7 @@ public class AuthController
             STATUS_USER_CREATED.getStatus() );
     }
 
-    @PutMapping( "/change-password" )
+    @PutMapping( "/changePassword" )
     @ApiOperation( "Endpoint which requires public api key to authenticate user" )
     public ResponseEntity< RequestResponseDto > changePassword(
         @RequestBody PasswordChangeRequestDto aPasswordChangeRequestDto )

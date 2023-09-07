@@ -34,8 +34,10 @@ public class SystemController
 
     @PostMapping( "/uploadPhotos" )
     @ApiOperation( "Endpoint to upload user's photos." )
-    public ResponseEntity< RequestResponseDto > uploadPhoto( @RequestParam( "zipFile" ) MultipartFile aFile,
-        @RequestParam( "isPublic" ) Boolean isPublic, @RequestParam( "description" ) String description,
+    public ResponseEntity< RequestResponseDto > uploadPhoto(
+        @RequestParam( value = "zipFile" ) MultipartFile aFile,
+        @RequestParam( value = "isPublic" ) Boolean isPublic,
+        @RequestParam( value = "description" ) String description,
         @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken )
     {
         photoService.savePhotos( isPublic, description, authorizationToken, aFile );

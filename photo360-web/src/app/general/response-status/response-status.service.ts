@@ -32,6 +32,7 @@ export class ResponseStatusHandler {
    * @private
    */
   public handleRequestError(errorResult: HttpErrorResponse) {
+    console.log(errorResult)
     let errorMessage = this.translate.instant('error.unknownErrorOccurred');
     if (!errorResult.status) {
       errorMessage = this.translate.instant(Constants.serverStatusTranslatePrefix.concat(ResponseStatus.STATUS_SERVER_UNREACHABLE));

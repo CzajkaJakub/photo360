@@ -1,0 +1,38 @@
+<div class="container-fluid">
+
+  <mat-label class="h4" style="text-align: center">{{'general.uploadImages' | translate}}</mat-label>
+
+  <mat-form-field>
+    <mat-label>{{'general.description' | translate}}</mat-label>
+    <input [(ngModel)]="data.description"
+           [formControl]="inputConfig"
+           aria-label="Number"
+           matInput
+           placeholder="Pick one"
+           required
+           type="text">
+  </mat-form-field>
+
+  <mat-label class="h4" style="text-align: center">{{'header.CzyMaBycPubliczne' | translate}}</mat-label>
+
+  <section class="checkbox-section">
+
+    <button (click)="fileUpload.click()" class="btn btn-primary"
+            title="{{'general.uploadFile' | translate}}" type="button"><i class="fa fa-upload"></i>
+    </button>
+
+    <input #fileUpload (change)="uploadFilesWithImages($event)" accept=".zip" class="file-input" type="file">
+
+    <mat-checkbox class="margin" [(ngModel)]="data.isPublic">{{'header.isPublic' | translate}}</mat-checkbox>
+
+  </section>
+
+  <div mat-dialog-actions style="justify-content: center">
+    <button [mat-dialog-close]=data [disabled]="data.description == null || data.zipFile == null" class="navbarButton"
+            color="primary"
+            mat-flat-button>{{'general.upload' | translate}}</button>
+
+    <button [mat-dialog-close]=null class="navbarButton" color="primary"
+            mat-flat-button>{{'general.closeConfigDialog' | translate}}</button>
+  </div>
+</div>

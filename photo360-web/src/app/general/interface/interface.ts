@@ -10,3 +10,9 @@ export interface AuthResponseData {
   _tokenExpirationDate: string,
   _lastLoggedDatetime: Date
 }
+
+export interface UploadImagesConfig {
+  zipFile: File,
+  isPublic: Boolean,
+  description: String
+}

@@ -2,8 +2,8 @@ package pl.put.photo360.entity;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.put.photo360.shared.utils.PhotoEntityComparator;
 
 @Getter
 @Setter
@@ -43,9 +44,12 @@ public class PhotoDataEntity implements Serializable
     @Column( name = "description" )
     private String description;
 
+    @Column( name = "converted_gif", nullable = false )
+    private byte[] convertedGif;
+
     @OneToMany( cascade = CascadeType.ALL )
     @JoinColumn( name = "photo_data_id" )
-    private Set< PhotoEntity > photos = new HashSet<>();
+    private List< PhotoEntity > photos = new ArrayList<>();
 
     public PhotoDataEntity( UserDataEntity user, Boolean isPublic, String aDescription )
     {
@@ -53,5 +57,10 @@ public class PhotoDataEntity implements Serializable
         this.isPublic = isPublic;
         this.description = aDescription;
         this.uploadDateTime = Instant.now();
+    }
+
+    public void sortPhotosByIndex()
+    {
+        photos.sort( new PhotoEntityComparator() );
     }
 }

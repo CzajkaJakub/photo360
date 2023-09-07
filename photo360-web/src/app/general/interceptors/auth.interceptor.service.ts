@@ -22,7 +22,6 @@ export class AuthInterceptorService implements HttpInterceptor {
 
         const modifiedRequest = req.clone({
           setHeaders: {
-            "Content-Type": "application/json",
             'publicApiKey': Constants.publicApiKey,
             'Authorization': user?.token ?? ""
           }

@@ -4,7 +4,7 @@
 
 export class User {
 
-  constructor(public email: string, private _token: string, private _tokenExpirationDate: Date, private _lastLoggedDatetime: number) {
+  constructor(public email: string, private _token: string, private _tokenExpirationDate: Date, private _lastLoggedDatetime: Date | null) {
   }
 
   /**
@@ -21,7 +21,7 @@ export class User {
     return this._tokenExpirationDate;
   }
 
-  get lastLoggedDatetime(): number {
-    return this._lastLoggedDatetime;
+  get lastLoggedDatetime(): Date | number {
+    return this._lastLoggedDatetime != null ? this._lastLoggedDatetime : 0;
   }
 }

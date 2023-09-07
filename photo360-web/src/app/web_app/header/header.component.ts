@@ -1,10 +1,23 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../../general/auth/auth.service";
 import {ToastComponent} from "../../general/toast/toast.component";
-import {TranslateService} from "@ngx-translate/core";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {Subscription} from "rxjs";
 import {Constants} from '../../general/properties/properties';
 import {User} from "../../general/auth/user-mode";
+import {ImageUploaderService} from "../../general/data/image.uploader.service";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {UploadImagesConfig} from "../../general/interface/interface";
+import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from "@angular/material/select";
+import {AsyncPipe, NgForOf, SlicePipe} from "@angular/common";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatIconModule} from "@angular/material/icon";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-header',
@@ -18,9 +31,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private userSubscription!: Subscription;
   private translationSubscription!: Subscription;
 
+  private uploadedImagesConfig: UploadImagesConfig = {
+    zipFile: null!,
+    isPublic: false,
+    description: null!,
+  };
+
   constructor(public authService: AuthService,
               private toast: ToastComponent,
-              public translateService: TranslateService) {
+              public translateService: TranslateService,
+              private imageUploaderService: ImageUploaderService,
+              private dialog: MatDialog) {
 
   }
 
@@ -84,4 +105,79 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
     this.translationSubscription.unsubscribe();
   }
+
+  openSavePortfolioDialog() {
+    const dialogRef = this.dialog.open(UploadImagesDialogConfig, {
+      disableClose: true,
+      data: this.uploadedImagesConfig,
+      autoFocus: false,
+      width: "450px"
+    });
+
+    dialogRef.afterClosed().subscribe(dialogConfig => {
+      if (dialogConfig !== null) {
+        if (this.uploadedImagesConfig.zipFile != null && this.uploadedImagesConfig.description != null) {
+          this.imageUploaderService.uploadFilesWithImages(this.uploadedImagesConfig);
+        }
+      }
+    });
+  }
 }
+
+
+@Component({
+  selector: 'upload-images-config-dialog',
+  templateUrl: 'upload-images-config-dialog-content.html',
+  styles:
+    [`
+      .checkbox-section {
+        display: flex;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+      }
+
+      .margin {
+        margin: 20px; /* Specify the actual margin value */
+      }
+
+      .file-input {
+        display: none;
+      }
+    `],
+  imports: [
+    MatDialogModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatOptionModule,
+    MatSelectModule,
+    NgForOf,
+    TranslateModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    MatAutocompleteModule,
+    SlicePipe,
+    MatIconModule,
+    MatCheckboxModule
+  ],
+  standalone: true
+})
+export class UploadImagesDialogConfig {
+
+  inputConfig = new FormControl('');
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+  }
+
+  uploadFilesWithImages(e: Event) {
+    let uploadedFile = (e.target as HTMLInputElement).files?.item(0)
+    if (uploadedFile != null) this.data.zipFile = uploadedFile;
+    (e.target as HTMLInputElement).value = ''
+  }
+}
+
+

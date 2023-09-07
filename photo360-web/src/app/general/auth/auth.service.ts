@@ -5,7 +5,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {HttpClient} from "@angular/common/http";
 import {User} from "./user-mode";
 import {BehaviorSubject, catchError, tap} from "rxjs";
-import {ConnectionConstants} from "../properties/properties";
+import {ConnectionConstants, Constants} from "../properties/properties";
 import {ResponseStatusHandler} from "../response-status/response-status.service";
 import {environment} from "src/environments/environment";
 import {AuthResponseData, RequestResponse} from "../interface/interface";
@@ -45,9 +45,10 @@ export class AuthService {
     return this.httpClient.post<AuthResponseData>(environment.REST_APP_HOST.concat(ConnectionConstants.authorizationUrl), {
       login: login,
       password: password,
-    }).pipe(catchError((resultData) => this.responseStatusHandler.handleRequestError(resultData)), tap(resData => {
-      console.log(resData)
-      this.handleAuthentication(resData.email, resData._token, +resData._tokenExpirationDate, +resData._lastLoggedDatetime)
+    },
+      { headers: Constants.headersApplicationJson}
+    ).pipe(catchError((resultData) => this.responseStatusHandler.handleRequestError(resultData)), tap(resData => {
+      this.handleAuthentication(resData.email, resData._token, new Date(resData._tokenExpirationDate).getTime(), new Date(resData._lastLoggedDatetime))
     }));
   }
 
@@ -57,7 +58,9 @@ export class AuthService {
       login: login,
       password: password,
       email: email
-    }).pipe(catchError((resultData) => this.responseStatusHandler.handleRequestError(resultData)),
+    },
+      { headers: Constants.headersApplicationJson}
+    ).pipe(catchError((resultData) => this.responseStatusHandler.handleRequestError(resultData)),
       tap(resData => {
         this.responseStatusHandler.handleStatusMessage(resData)
       }));
@@ -83,7 +86,7 @@ export class AuthService {
     if (!userData) {
       return
     }
-    const loadedUser = new User(userData.email, userData._token, new Date(userData._tokenExpirationDate), +userData._lastLoggedDatetime)
+    const loadedUser = new User(userData.email, userData._token, new Date(userData._tokenExpirationDate), new Date(userData._lastLoggedDatetime))
     if (loadedUser.token) {
       const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime()
       this.autoLogout(expirationDuration)
@@ -121,8 +124,9 @@ export class AuthService {
       email: email,
       oldPassword: oldPassword,
       newPassword: newPassword,
-
-    });
+    },
+      { headers: Constants.headersApplicationJson}
+    );
   }
 
   /**
@@ -132,10 +136,9 @@ export class AuthService {
    * @param token     Personal user's token.
    * @param expiresIn Expiration time
    * @param _lastLoggedDatetime Last user's logged date
-   * @param activeDirectory User logged by active directory
    * @private
    */
-  private handleAuthentication(email: string, token: string, expiresIn: number, _lastLoggedDatetime: number) {
+  private handleAuthentication(email: string, token: string, expiresIn: number, _lastLoggedDatetime: Date) {
     const expirationDate = new Date(new Date().getTime() + expiresIn);
     const user = new User(email, token, expirationDate, _lastLoggedDatetime)
     this.user.next(user);

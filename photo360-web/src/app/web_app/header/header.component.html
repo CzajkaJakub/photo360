@@ -8,7 +8,7 @@
                id="loggedAsLabel">{{'header.loggedAs' | translate}}{{currentlyLoggedUser.email}}</div>
           <div *ngIf="isAuthenticated && currentlyLoggedUser.lastLoggedDatetime != 0"
                class="align-items-right">{{'header.lastLoggedLabel' | translate}}
-            : {{currentlyLoggedUser.lastLoggedDatetime | instantDatePipe | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
+            : {{currentlyLoggedUser.lastLoggedDatetime | date: 'yyyy-MM-dd HH:mm:ss'}}</div>
         </div>
       </a>
     </div>
@@ -17,6 +17,11 @@
       <div class="nav nav-tabs">
         <li [routerLinkActiveOptions]="{exact: true}" role="presentation" routerLinkActive="active"><a
           [routerLink]="['/home']">{{'header.mainPage' | translate}}</a></li>
+
+        <li *ngIf="isAuthenticated">
+          <a (click)="openSavePortfolioDialog()"
+             role="button">{{'header.uploadPhotos' | translate}}</a>
+        </li>
 
         <div class="nav nav-tabs navbar-right">
 

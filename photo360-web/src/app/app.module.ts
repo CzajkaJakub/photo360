@@ -29,6 +29,9 @@ import {NotLoggedInGuard} from "./general/auth/not.logged-guard.service";
 import {ResponseStatusHandler} from "./general/response-status/response-status.service";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS} from "@angular/material-moment-adapter";
+import {ImageUploaderService} from "./general/data/image.uploader.service";
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {MatNativeDateModule} from "@angular/material/core";
 
 
 @NgModule({
@@ -57,9 +60,10 @@ import {MAT_MOMENT_DATE_ADAPTER_OPTIONS} from "@angular/material-moment-adapter"
     I18nModule,
     MatDatepickerModule,
     I18nModule,
+    MatDialogModule,
     PasswordStrengthMeterModule.forRoot(),
   ],
-  providers: [MatSnackBar, ToastComponent, AuthService, AuthGuard, NotLoggedInGuard, ResponseStatusHandler,
+  providers: [MatSnackBar, ToastComponent, AuthService, AuthGuard, NotLoggedInGuard, ResponseStatusHandler, ImageUploaderService, MatDialog,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,

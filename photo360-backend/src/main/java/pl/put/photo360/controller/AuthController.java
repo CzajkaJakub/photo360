@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import pl.put.photo360.auth.AuthService;
+import pl.put.photo360.shared.converter.GifCreator;
 import pl.put.photo360.shared.dto.LoginRequestDto;
 import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
+
+import java.io.IOException;
 
 @RequestMapping( "/photo360/authorization" )
 @RestController( "AuthController" )

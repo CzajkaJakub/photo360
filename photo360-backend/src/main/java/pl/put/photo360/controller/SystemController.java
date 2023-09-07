@@ -4,7 +4,11 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PHOTO_UPLOADE
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,5 +41,17 @@ public class SystemController
         photoService.savePhotos( isPublic, description, authorizationToken, aFile );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PHOTO_UPLOADED ),
             STATUS_PHOTO_UPLOADED.getStatus() );
+    }
+
+    @GetMapping( "/downloadGif/{gifId}" )
+    public ResponseEntity< byte[] > downloadGif( @PathVariable Long gifId )
+    {
+        byte[] gifData = photoService.downloadGifById( gifId );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType( MediaType.IMAGE_GIF );
+        headers.setContentLength( gifData.length );
+        headers.setContentDispositionFormData( "attachment", "download.gif" );
+        return new ResponseEntity<>( gifData, headers, HttpStatus.OK );
     }
 }

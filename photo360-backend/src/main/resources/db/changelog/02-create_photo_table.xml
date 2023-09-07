@@ -40,6 +40,10 @@
                 <constraints nullable="true"/>
             </column>
 
+            <column name="converted_gif" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+
         </createTable>
 
         <addForeignKeyConstraint baseTableName="photo_data" baseColumnNames="user_id"

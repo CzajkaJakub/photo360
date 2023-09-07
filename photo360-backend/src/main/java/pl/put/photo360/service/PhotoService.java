@@ -1,5 +1,6 @@
 package pl.put.photo360.service;
 
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_FROM_TOKEN;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_FILE_FORMAT;
@@ -19,6 +20,7 @@ import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dao.PhotoDataDao;
 import pl.put.photo360.entity.PhotoDataEntity;
 import pl.put.photo360.entity.PhotoEntity;
+import pl.put.photo360.shared.converter.GifCreator;
 import pl.put.photo360.shared.exception.ServiceException;
 import pl.put.photo360.shared.exception.UserNotFoundException;
 
@@ -28,13 +30,16 @@ public class PhotoService
     private final PhotoDataDao photoDataDao;
     private final AuthService authService;
     private final Configuration configuration;
+    private final GifCreator gifCreator;
 
     @Autowired
-    public PhotoService( PhotoDataDao aPhotoDataDao, AuthService aAuthService, Configuration aConfiguration )
+    public PhotoService( PhotoDataDao aPhotoDataDao, AuthService aAuthService, Configuration aConfiguration,
+        GifCreator aGifCreator )
     {
         photoDataDao = aPhotoDataDao;
         authService = aAuthService;
         configuration = aConfiguration;
+        gifCreator = aGifCreator;
     }
 
     public void savePhotos( Boolean isPublic, String description, String aAuthorizationToken,
@@ -64,6 +69,9 @@ public class PhotoService
                             .add( photoEntity );
                     }
                 }
+                photoDataEntity.sortPhotosByIndex();
+                var gifByte = gifCreator.convertImagesIntoGif( photoDataEntity.getPhotos() );
+                photoDataEntity.setConvertedGif( gifByte );
                 photoDataDao.save( photoDataEntity );
             }
             catch( IOException aE )
@@ -74,6 +82,19 @@ public class PhotoService
         else
         {
             throw new UserNotFoundException( STATUS_USER_NOT_FOUND_FROM_TOKEN );
+        }
+    }
+
+    public byte[] downloadGifById( Long aGifId )
+    {
+        var gif = photoDataDao.findGifById( aGifId );
+        if( gif != null )
+        {
+            return gif;
+        }
+        else
+        {
+            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
         }
     }
 }

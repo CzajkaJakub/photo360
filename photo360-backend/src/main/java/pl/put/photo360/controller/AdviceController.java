@@ -11,6 +11,7 @@ import pl.put.photo360.shared.exception.ExpiredTokenException;
 import pl.put.photo360.shared.exception.FieldValidationException;
 import pl.put.photo360.shared.exception.LoginExistsInDbException;
 import pl.put.photo360.shared.exception.MissingRequiredFieldsException;
+import pl.put.photo360.shared.exception.ServiceException;
 import pl.put.photo360.shared.exception.TokenNotValidException;
 import pl.put.photo360.shared.exception.UnauthorizedRoleException;
 import pl.put.photo360.shared.exception.UserNotFoundException;
@@ -187,6 +188,20 @@ public class AdviceController
      */
     @ExceptionHandler( AccountLockedException.class )
     public ResponseEntity< RequestResponseDto > handleAccountLockedException( AccountLockedException aEx )
+    {
+        return new ResponseEntity<>( new RequestResponseDto( aEx.getServerResponseCode() ),
+            aEx.getServerResponseCode()
+                .getStatus() );
+    }
+
+    /**
+     * Handler for service exceptions.
+     *
+     * @param aEx
+     *                Exception
+     */
+    @ExceptionHandler( ServiceException.class )
+    public ResponseEntity< RequestResponseDto > handleServiceException( ServiceException aEx )
     {
         return new ResponseEntity<>( new RequestResponseDto( aEx.getServerResponseCode() ),
             aEx.getServerResponseCode()

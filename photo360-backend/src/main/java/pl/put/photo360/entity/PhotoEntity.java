@@ -8,26 +8,30 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table( name = "roles" )
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class RoleEntity implements Serializable
+@Entity
+@NoArgsConstructor
+@Table( name = "photo" )
+public class PhotoEntity implements Serializable
 {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     private Integer id;
 
-    @Column( nullable = false, unique = true )
-    private String name;
+    @Column( name = "photo_file_name" )
+    private String photoFileName;
 
-    @Column
-    private String description;
+    @Column( name = "photo", nullable = false )
+    private byte[] photo;
+
+    public PhotoEntity( String aFileName, byte[] aPhotoData )
+    {
+        this.photoFileName = aFileName;
+        this.photo = aPhotoData;
+    }
 }

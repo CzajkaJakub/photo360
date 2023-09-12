@@ -5,7 +5,7 @@ import {environment} from "../../../environments/environment";
 import {ConnectionConstants, Constants} from "../properties/properties";
 import {catchError} from "rxjs";
 import {ResponseStatusHandler} from "../response-status/response-status.service";
-import {UploadImagesConfig} from "../interface/interface";
+import {GitDataDto, UploadImagesConfig} from "../interface/interface";
 
 @Injectable()
 export class ImageUploaderService {
@@ -32,10 +32,25 @@ export class ImageUploaderService {
   }
 
   fetchGif(number: number) {
-    return this.httpClient.get<any>(environment.REST_APP_HOST.concat(ConnectionConstants.downloadGifUrl.concat(number.toString())),
+    return this.httpClient.get<GitDataDto>(environment.REST_APP_HOST.concat(ConnectionConstants.downloadGifUrl.concat(number.toString())),
       {
         headers: Constants.headersApplicationJson,
-        responseType: 'blob' as 'json'
+      }
+    ).pipe(catchError((resultData) => this.responseStatusHandler.handleRequestError(resultData)));
+  }
+
+  fetchPublicGifs() {
+    return this.httpClient.get<Array<GitDataDto>>(environment.REST_APP_HOST.concat(ConnectionConstants.downloadPublicGifs),
+      {
+        headers: Constants.headersApplicationJson,
+      }
+    ).pipe(catchError((resultData) => this.responseStatusHandler.handleRequestError(resultData)));
+  }
+
+  fetchPrivateGifs() {
+    return this.httpClient.get<Array<GitDataDto>>(environment.REST_APP_HOST.concat(ConnectionConstants.downloadPrivateGifs),
+      {
+        headers: Constants.headersApplicationJson,
       }
     ).pipe(catchError((resultData) => this.responseStatusHandler.handleRequestError(resultData)));
   }

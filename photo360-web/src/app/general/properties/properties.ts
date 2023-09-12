@@ -8,6 +8,8 @@ export const ConnectionConstants = {
   changePasswordUrl: "photo360/authorization/change-password",
   uploadPhotosUrl: "photo360/uploadPhotos",
   downloadGifUrl: "photo360/downloadGif/",
+  downloadPublicGifs: "photo360/downloadPublicGifs",
+  downloadPrivateGifs: "photo360/downloadPrivateGifs",
 }
 
 export const Constants = {

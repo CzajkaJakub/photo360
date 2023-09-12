@@ -16,3 +16,12 @@ export interface UploadImagesConfig {
   isPublic: Boolean,
   description: String
 }
+
+export interface GitDataDto {
+  gif: String,
+  gifId: number,
+  userLogin: String,
+  isPublic: Boolean,
+  description: String,
+  uploadDateTime: number,
+}

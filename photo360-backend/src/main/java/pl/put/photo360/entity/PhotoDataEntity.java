@@ -8,6 +8,7 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,7 +48,7 @@ public class PhotoDataEntity implements Serializable
     @Column( name = "converted_gif", nullable = false )
     private byte[] convertedGif;
 
-    @OneToMany( cascade = CascadeType.ALL )
+    @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     @JoinColumn( name = "photo_data_id" )
     private List< PhotoEntity > photos = new ArrayList<>();
 

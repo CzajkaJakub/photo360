@@ -5,23 +5,22 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_CREATED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_LOGGED;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import pl.put.photo360.auth.AuthService;
-import pl.put.photo360.shared.converter.GifCreator;
 import pl.put.photo360.shared.dto.LoginRequestDto;
 import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
-
-import java.io.IOException;
 
 @RequestMapping( "/photo360/authorization" )
 @RestController( "AuthController" )
@@ -56,9 +55,10 @@ public class AuthController
     @PutMapping( "/changePassword" )
     @ApiOperation( "Endpoint which requires public api key to authenticate user" )
     public ResponseEntity< RequestResponseDto > changePassword(
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken,
         @RequestBody PasswordChangeRequestDto aPasswordChangeRequestDto )
     {
-        userAuthService.changeUserPassword( aPasswordChangeRequestDto );
+        userAuthService.changeUserPassword( authorizationToken, aPasswordChangeRequestDto );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PASSWORD_CHANGED ),
             STATUS_PASSWORD_CHANGED.getStatus() );
     }

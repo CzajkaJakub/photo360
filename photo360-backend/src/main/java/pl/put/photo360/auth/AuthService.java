@@ -153,11 +153,13 @@ public class AuthService
      * Function changes users password if given old password was correct.
      */
     @Transactional
-    public void changeUserPassword( PasswordChangeRequestDto aPasswordChangeRequestDto )
+    public void changeUserPassword( String aAuthorizationToken,
+        PasswordChangeRequestDto aPasswordChangeRequestDto )
     {
         fieldValidator.validatePassword( aPasswordChangeRequestDto.getNewPassword() );
         fieldValidator.validatePassword( aPasswordChangeRequestDto.getOldPassword() );
-        Optional< UserDataEntity > userToCheck = findByEmail( aPasswordChangeRequestDto.getEmail() );
+        Optional< UserDataEntity > userToCheck =
+            findByLogin( jwtValidator.extractLoginFromToken( aAuthorizationToken ) );
         if( userToCheck.isPresent() )
         {
             UserDataEntity foundUser = userToCheck.get();

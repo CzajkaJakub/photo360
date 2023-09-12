@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {ToastComponent} from "../../general/toast/toast.component";
 import {ImageUploaderService} from "../../general/data/image.uploader.service";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-home-page',
@@ -10,17 +9,33 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 })
 export class HomePageComponent {
 
-  gifUrl!: SafeUrl;
-  pickedGif!: number
+  pickedGif!: any
+  gifs: any[] = []
 
   constructor(private toast: ToastComponent,
-              private imageUploaderService: ImageUploaderService,
-              private sanitizer: DomSanitizer) {
+              private imageUploaderService: ImageUploaderService) {
   }
 
   handleSelectionChange() {
-    this.imageUploaderService.fetchGif(this.pickedGif).subscribe(gifData => {
-      this.gifUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(gifData));
-    })
+    if (this.pickedGif == "private") {
+      this.imageUploaderService.fetchPrivateGifs().subscribe(gifData => {
+        this.gifs.splice(0, this.gifs.length);
+        gifData.forEach(gifEl => {
+          this.gifs.push('data:image/gif;base64,' + gifEl.gif)
+        })
+      })
+    } else if (this.pickedGif == "public") {
+      this.imageUploaderService.fetchPublicGifs().subscribe(gifData => {
+        this.gifs.splice(0, this.gifs.length);
+        gifData.forEach(gifEl => {
+          this.gifs.push('data:image/gif;base64,' + gifEl.gif)
+        })
+      })
+    } else {
+      this.imageUploaderService.fetchGif(this.pickedGif).subscribe(gifData => {
+        this.gifs.splice(0, this.gifs.length);
+        this.gifs.push('data:image/gif;base64,' + gifData.gif)
+      })
+    }
   }
 }

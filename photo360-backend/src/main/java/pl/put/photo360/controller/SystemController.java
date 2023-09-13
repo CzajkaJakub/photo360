@@ -21,6 +21,8 @@ import io.swagger.annotations.ApiOperation;
 import pl.put.photo360.service.PhotoService;
 import pl.put.photo360.shared.dto.PhotoDataDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
+import pl.put.photo360.shared.dto.UserRoles;
+import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 
 @RequestMapping( "/photo360" )
 @RestController( "SystemController" )
@@ -35,6 +37,7 @@ public class SystemController
     }
 
     @PostMapping( "/uploadPhotos" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
     @ApiOperation( "Endpoint to upload user's photos." )
     public ResponseEntity< RequestResponseDto > uploadPhoto(
         @RequestParam( value = "zipFile" ) MultipartFile aFile,
@@ -48,6 +51,8 @@ public class SystemController
     }
 
     @GetMapping( "/downloadGif/{gifId}" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    @ApiOperation( "Endpoint to get specific public gif or private owned by logged user by id." )
     public ResponseEntity< PhotoDataDto > downloadGif(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken,
         @PathVariable Long gifId )
@@ -57,6 +62,8 @@ public class SystemController
     }
 
     @GetMapping( "/downloadPublicGifs" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    @ApiOperation( "Endpoint to get all public gifs." )
     public ResponseEntity< Collection< PhotoDataDto > > downloadPublicGif()
     {
         var publicGifs = photoService.downloadPublicGifs();
@@ -64,10 +71,21 @@ public class SystemController
     }
 
     @GetMapping( "/downloadPrivateGifs" )
-    public ResponseEntity< Collection< PhotoDataDto > > downloadPublicGif(
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    @ApiOperation( "Endpoint to get all private gifs, which are owned by logged user." )
+    public ResponseEntity< Collection< PhotoDataDto > > downloadPrivateGif(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken )
     {
         var privateGifs = photoService.downloadPrivateGifs( authorizationToken );
         return new ResponseEntity<>( privateGifs, HttpStatus.OK );
+    }
+
+    @GetMapping( "/downloadAllGifs" )
+    @RequiredRole( role = UserRoles.ADMIN_ROLE )
+    @ApiOperation( "Endpoint to get all gifs in database, allowed only for admin user." )
+    public ResponseEntity< Collection< PhotoDataDto > > downloadAllGif()
+    {
+        var gifs = photoService.downloadAllGifs();
+        return new ResponseEntity<>( gifs, HttpStatus.OK );
     }
 }

@@ -21,6 +21,8 @@ import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
+import pl.put.photo360.shared.dto.UserRoles;
+import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 
 @RequestMapping( "/photo360/authorization" )
 @RestController( "AuthController" )
@@ -53,9 +55,10 @@ public class AuthController
     }
 
     @PutMapping( "/changePassword" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
     @ApiOperation( "Endpoint which requires public api key to authenticate user" )
     public ResponseEntity< RequestResponseDto > changePassword(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken,
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @RequestBody PasswordChangeRequestDto aPasswordChangeRequestDto )
     {
         userAuthService.changeUserPassword( authorizationToken, aPasswordChangeRequestDto );

@@ -128,6 +128,12 @@ public class PhotoService
         return getExternalFromInternal( gifs );
     }
 
+    public List< PhotoDataDto > downloadAllGifs()
+    {
+        var gifs = photoDataDao.findAll();
+        return getExternalFromInternal( gifs );
+    }
+
     private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
     {
         return new PhotoDataDto( aPhotoDataEntity );

@@ -1,5 +1,6 @@
 package pl.put.photo360.service;
 
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_DELETE_NOT_ALLOWED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_IS_NOT_PUBLIC;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
@@ -107,6 +108,29 @@ public class PhotoService
             else
             {
                 throw new ServiceException( STATUS_GIF_IS_NOT_PUBLIC );
+            }
+        }
+        else
+        {
+            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+        }
+    }
+
+    public void removeUserGif( String aAuthorizationToken, Long aGifId )
+    {
+        var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
+        var gif = photoDataDao.findGifById( aGifId );
+        if( gif != null )
+        {
+            if( gif.getUserId()
+                .getLogin()
+                .equals( userId ) || jwtValidator.isAdminRoleToken( aAuthorizationToken ) )
+            {
+                photoDataDao.delete( gif );
+            }
+            else
+            {
+                throw new ServiceException( STATUS_DELETE_NOT_ALLOWED );
             }
         }
         else

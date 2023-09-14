@@ -84,6 +84,19 @@ public class JwtValidator
         }
     }
 
+    public Boolean isAdminRoleToken( String token )
+    {
+        if( Objects.isNull( token ) || Objects.equals( token, StringUtils.EMPTY ) )
+        {
+            return false;
+        }
+
+        DecodedJWT decodedJWT = JWT.require( JWT_ALGORITHM )
+            .build()
+            .verify( token );
+        return getRoleFromToken( decodedJWT ).contains( UserRoles.ADMIN_ROLE );
+    }
+
     private List< UserRoles > getRoleFromToken( DecodedJWT decodedJWT )
     {
         var userRolesIds = decodedJWT.getClaim( "roles" )

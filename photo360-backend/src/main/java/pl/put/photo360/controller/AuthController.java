@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.shared.dto.LoginRequestDto;
 import pl.put.photo360.shared.dto.LoginResponseDto;
@@ -26,6 +27,7 @@ import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 
 @RequestMapping( "/photo360/authorization" )
 @RestController( "AuthController" )
+@Tag( name = "Authorization controller" )
 public class AuthController
 {
     private final AuthService userAuthService;
@@ -37,7 +39,7 @@ public class AuthController
     }
 
     @PostMapping( "/login" )
-    @ApiOperation( "Endpoint to authenticate user, public api key is required" )
+    @Operation( summary = "Endpoint to authenticate user, public api key is required" )
     public ResponseEntity< LoginResponseDto > logIn( @RequestBody LoginRequestDto aLoginRequestDto )
     {
         var loginServerResponse = userAuthService.logIntoSystemAttempt( aLoginRequestDto );
@@ -45,7 +47,7 @@ public class AuthController
     }
 
     @PostMapping( "/register" )
-    @ApiOperation( "Endpoint which requires public api key to create new user" )
+    @Operation( summary = "Endpoint which requires public api key to create new user" )
     public ResponseEntity< RequestResponseDto > createNewUser(
         @RequestBody RegisterRequestDto aRegisterRequestDto )
     {
@@ -56,7 +58,7 @@ public class AuthController
 
     @PutMapping( "/changePassword" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @ApiOperation( "Endpoint which requires public api key to authenticate user" )
+    @Operation( summary = "Endpoint which requires public api key to authenticate user" )
     public ResponseEntity< RequestResponseDto > changePassword(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @RequestBody PasswordChangeRequestDto aPasswordChangeRequestDto )

@@ -47,22 +47,11 @@ public class SystemController
         @RequestParam( value = "zipFile" ) MultipartFile aFile,
         @RequestParam( value = "isPublic" ) Boolean isPublic,
         @RequestParam( value = "description" ) String description,
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken )
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {
         photoService.savePhotos( isPublic, description, authorizationToken, aFile );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PHOTO_UPLOADED ),
             STATUS_PHOTO_UPLOADED.getStatus() );
-    }
-
-    @GetMapping( "/downloadGif/{gifId}" )
-    @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id." )
-    public ResponseEntity< PhotoDataDto > downloadGif(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken,
-        @PathVariable Long gifId )
-    {
-        var gifData = photoService.downloadGifById( authorizationToken, gifId );
-        return new ResponseEntity<>( gifData, HttpStatus.OK );
     }
 
     @GetMapping( "/downloadPublicGifs" )
@@ -78,7 +67,7 @@ public class SystemController
     @RequiredRole( role = UserRoles.USER_ROLE )
     @Operation( summary = "Endpoint to get all private gifs, which are owned by logged user." )
     public ResponseEntity< Collection< PhotoDataDto > > downloadPrivateGif(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken )
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {
         var privateGifs = photoService.downloadPrivateGifs( authorizationToken );
         return new ResponseEntity<>( privateGifs, HttpStatus.OK );
@@ -93,6 +82,7 @@ public class SystemController
         return new ResponseEntity<>( gifs, HttpStatus.OK );
     }
 
+    // TODO : tests
     @DeleteMapping( "/removeUserGif/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
     @Operation( summary = "Endpoint to remove gif, which is owned by logged user, also allows to remove any gif, if user has admin role" )
@@ -103,5 +93,17 @@ public class SystemController
         photoService.removeUserGif( authorizationToken, gifId );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_GIF_REMOVED ),
             STATUS_GIF_REMOVED.getStatus() );
+    }
+
+    // TODO : tests
+    @GetMapping( "/downloadGif/{gifId}" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id." )
+    public ResponseEntity< PhotoDataDto > downloadGif(
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken,
+        @PathVariable Long gifId )
+    {
+        var gifData = photoService.downloadGifById( authorizationToken, gifId );
+        return new ResponseEntity<>( gifData, HttpStatus.OK );
     }
 }

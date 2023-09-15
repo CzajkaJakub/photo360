@@ -4,7 +4,10 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_AUTH_TOKEN_EX
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_AUTH_TOKEN_NOT_VALID;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNAUTHORIZED_ROLE;
 
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -19,6 +22,9 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import lombok.Getter;
+import pl.put.photo360.config.Configuration;
+import pl.put.photo360.entity.RoleEntity;
+import pl.put.photo360.entity.UserDataEntity;
 import pl.put.photo360.shared.dto.UserRoles;
 import pl.put.photo360.shared.exception.ExpiredTokenException;
 import pl.put.photo360.shared.exception.TokenNotValidException;
@@ -28,12 +34,14 @@ import pl.put.photo360.shared.exception.UnauthorizedRoleException;
 @Getter
 public class JwtValidator
 {
-    private final SecureKeyGenerator secureKeyGenerator;
     private final Algorithm JWT_ALGORITHM;
+    private final Configuration configuration;
+    private final SecureKeyGenerator secureKeyGenerator;
 
     @Autowired
-    public JwtValidator( SecureKeyGenerator aSecureKeyGenerator )
+    public JwtValidator( SecureKeyGenerator aSecureKeyGenerator, Configuration aConfiguration )
     {
+        configuration = aConfiguration;
         secureKeyGenerator = aSecureKeyGenerator;
         JWT_ALGORITHM = Algorithm.HMAC256( secureKeyGenerator.generateSecureKey() );
     }
@@ -123,5 +131,27 @@ public class JwtValidator
         {
             throw new TokenNotValidException( STATUS_AUTH_TOKEN_NOT_VALID );
         }
+    }
+
+    public String generateJwt( UserDataEntity loggedUser )
+    {
+        var tokenBuildTime = Instant.now();
+        Map< String, Object > extraClaims = new HashMap<>()
+        {
+            {
+                put( "typ", "JWT" );
+            }
+        };
+
+        return JWT.create()
+            .withSubject( loggedUser.getLogin() )
+            .withIssuedAt( tokenBuildTime )
+            .withExpiresAt( tokenBuildTime.plusSeconds( configuration.getTOKEN_EXPIRATION_TIME() ) )
+            .withHeader( extraClaims )
+            .withClaim( "roles", loggedUser.getRoles()
+                .stream()
+                .map( RoleEntity::getId )
+                .toList() )
+            .sign( JWT_ALGORITHM );
     }
 }

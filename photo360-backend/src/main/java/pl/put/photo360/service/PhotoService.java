@@ -9,7 +9,6 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_FILE_FO
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -56,12 +55,7 @@ public class PhotoService
         var user = authService.findByToken( aAuthorizationToken );
         if( user.isPresent() )
         {
-            if( !Objects.requireNonNull( aFile.getOriginalFilename() )
-                .endsWith( configuration.getSUPPORTED_FORMAT() ) )
-            {
-                throw new ServiceException( STATUS_UNSUPPORTED_FILE );
-            }
-
+            checkFileFormat( aFile.getOriginalFilename(), List.of( configuration.getSUPPORTED_FORMAT() ) );
             try (ZipInputStream zipInputStream = new ZipInputStream( aFile.getInputStream() ))
             {
                 PhotoDataEntity photoDataEntity = new PhotoDataEntity( user.get(), isPublic, description );
@@ -71,6 +65,7 @@ public class PhotoService
                     if( !entry.isDirectory() )
                     {
                         String fileName = entry.getName();
+                        checkFileFormat( fileName, configuration.getSUPPORTED_PHOTO_FORMATS() );
                         byte[] data = IOUtils.toByteArray( zipInputStream );
                         PhotoEntity photoEntity = new PhotoEntity( fileName, data );
                         photoDataEntity.getPhotos()
@@ -91,6 +86,33 @@ public class PhotoService
         {
             throw new UserNotFoundException( STATUS_USER_NOT_FOUND_FROM_TOKEN );
         }
+    }
+
+    public void checkFileFormat( String fileName, List< String > supportedFormats )
+    {
+        if( fileName != null )
+        {
+            String fileExtension = getFileExtension( fileName );
+
+            boolean isSupportedFormat = supportedFormats.stream()
+                .anyMatch( fileExtension::equalsIgnoreCase );
+
+            if( !isSupportedFormat )
+            {
+                throw new ServiceException( STATUS_UNSUPPORTED_FILE );
+            }
+        }
+    }
+
+    private String getFileExtension( String fileName )
+    {
+        int lastDotIndex = fileName.lastIndexOf( "." );
+        if( lastDotIndex != -1 )
+        {
+            return fileName.substring( lastDotIndex + 1 )
+                .toLowerCase();
+        }
+        return "";
     }
 
     public PhotoDataDto downloadGifById( String aAuthorizationToken, Long aGifId )

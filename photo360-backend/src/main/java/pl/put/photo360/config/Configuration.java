@@ -1,5 +1,7 @@
 package pl.put.photo360.config;
 
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -21,4 +23,5 @@ public class Configuration
     private String EMAIL_REGEX;
     private Integer KEY_LENGTH_BYTES;
     private String SUPPORTED_FORMAT;
+    private List< String > SUPPORTED_PHOTO_FORMATS;
 }

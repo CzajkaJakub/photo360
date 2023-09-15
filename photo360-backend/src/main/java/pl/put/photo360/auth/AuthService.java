@@ -45,19 +45,16 @@ public class AuthService
 {
     private final UserDataDao userDataDao;
     private final UserRoleDao userRoleDao;
-    private final AuthTokenService authTokenService;
     private final JwtValidator jwtValidator;
     private final Configuration configuration;
     private final FieldValidator fieldValidator;
 
     @Autowired
-    public AuthService( UserDataDao aUserDataDao, UserRoleDao aUserRoleDao,
-        AuthTokenService aAuthTokenService, JwtValidator aJwtValidator, Configuration aConfiguration,
-        FieldValidator aFieldValidator )
+    public AuthService( UserDataDao aUserDataDao, UserRoleDao aUserRoleDao, JwtValidator aJwtValidator,
+        Configuration aConfiguration, FieldValidator aFieldValidator )
     {
         userDataDao = aUserDataDao;
         userRoleDao = aUserRoleDao;
-        authTokenService = aAuthTokenService;
         jwtValidator = aJwtValidator;
         configuration = aConfiguration;
         fieldValidator = aFieldValidator;
@@ -197,7 +194,7 @@ public class AuthService
 
             if( checkPass && !foundUser.isLocked() )
             {
-                String authToken = authTokenService.generateJwt( foundUser );
+                String authToken = jwtValidator.generateJwt( foundUser );
                 resetFailedAttempts( foundUser );
                 Instant lastLoggedUserDateTime = foundUser.getLastLoggedTime();
                 foundUser.reloadLastLogTime( Instant.now() );

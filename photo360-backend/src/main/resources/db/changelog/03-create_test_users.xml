@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <preConditions>
+        <runningAs username="photo_user_db_360"/>
+    </preConditions>
+
+    <changeSet id="2023-09-15T10:29:32" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_data"/>
+            <tableExists tableName="user_roles"/>
+            <tableExists tableName="roles"/>
+        </preConditions>
+
+        <comment>Create test admin user.</comment>
+
+        <sql>
+            insert into user_data (login, email, password, creation_date_time, last_logged_date_time, is_locked,
+                                   failed_attempt,
+                                   lock_time, salt)
+            values ('LOGIN_ADMIN_ACCOUNT', 'ADMIN_ACCOUNT@gmail.com',
+                    '$2a$10$7UREo6T5m3.XKrBDtYROCOB/mlfIK.JVCjtz0HiSS3Ed622CTts3a', TIMESTAMP '2023-09-15 12:00:00 UTC',
+                    null, false, 0, null,
+                    '$2a$10$7UREo6T5m3.XKrBDtYROCO');
+
+            insert into user_roles (user_id, role_id)
+            values ((select id from user_data where login = 'LOGIN_ADMIN_ACCOUNT'), 1),
+                   ((select id from user_data where login = 'LOGIN_ADMIN_ACCOUNT'), 2);
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -8,9 +8,10 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,9 +29,12 @@ import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
 import pl.put.photo360.shared.dto.ServerResponseCode;
 
+@TestInstance( TestInstance.Lifecycle.PER_CLASS )
 @SpringBootTest( webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT )
 class AuthControllerTest
 {
+    private final String gmailSuffix = "@gmail.com";
+    private final HttpHeaders requiredHttpHeaders_missingPublicApiKey = new HttpHeaders();
     @Value( value = "${local.server.port}" )
     private int port;
     @Autowired
@@ -41,10 +45,8 @@ class AuthControllerTest
     private String registerEndpointPath;
     private String loginEndpointPath;
     private String changePasswordEndpointPath;
-    private final String gmailSuffix = "@gmail.com";
-    private final HttpHeaders requiredHttpHeaders_missingPublicApiKey = new HttpHeaders();
 
-    @BeforeEach
+    @BeforeAll
     void setUp()
     {
         requiredHttpHeaders = new HttpHeaders();

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertNull;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -21,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.shared.dto.LoginRequestDto;
 import pl.put.photo360.shared.dto.LoginResponseDto;
@@ -28,20 +30,28 @@ import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
 import pl.put.photo360.shared.dto.ServerResponseCode;
+import pl.put.photo360.shared.dto.UserRoles;
 
 @TestInstance( TestInstance.Lifecycle.PER_CLASS )
 @SpringBootTest( webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT )
 class AuthControllerTest
 {
     private final String gmailSuffix = "@gmail.com";
-    private final HttpHeaders requiredHttpHeaders_missingPublicApiKey = new HttpHeaders();
+    private final String testLoginUserWithoutRole = "LOGIN_EMPTY_ROLE_ACCOUNT";
+    private final String testEmailUserWithoutRole = "EMPTY_ROLE_ACCOUNT@gmail.com";
+    private final String testPasswordUserWithoutRole = "PASSWORD_EMPTY_ROLE_ACCOUNT";
+    private final String testLoginAdmin = "LOGIN_ADMIN_ACCOUNT";
+    private final String testEmailAdmin = "ADMIN_ACCOUNT@gmail.com";
+    private final String testPasswordAdmin = "PASSWORD_ADMIN_ACCOUNT";
     @Value( value = "${local.server.port}" )
     private int port;
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
     private Configuration configuration;
-    private HttpHeaders requiredHttpHeaders;
+    @Autowired
+    private AuthService authService;
+    private HttpHeaders httpHeaders;
     private String registerEndpointPath;
     private String loginEndpointPath;
     private String changePasswordEndpointPath;
@@ -49,12 +59,31 @@ class AuthControllerTest
     @BeforeAll
     void setUp()
     {
-        requiredHttpHeaders = new HttpHeaders();
-        requiredHttpHeaders.set( "publicApiKey", configuration.getPUBLIC_API_KEY() );
+        httpHeaders = new HttpHeaders();
+        httpHeaders.set( "publicApiKey", configuration.getPUBLIC_API_KEY() );
 
         registerEndpointPath = "http://localhost:" + port + "/photo360/authorization/register";
         loginEndpointPath = "http://localhost:" + port + "/photo360/authorization/login";
         changePasswordEndpointPath = "http://localhost:" + port + "/photo360/authorization/changePassword";
+
+        try
+        {
+            authService.saveNewUser( new RegisterRequestDto( testLoginUserWithoutRole,
+                testEmailUserWithoutRole, testPasswordUserWithoutRole ), List.of() );
+        }
+        catch( Exception ignore )
+        {
+        }
+
+        try
+        {
+            authService.saveNewUser(
+                new RegisterRequestDto( testLoginAdmin, testEmailAdmin, testPasswordAdmin ),
+                List.of( UserRoles.USER_ROLE, UserRoles.ADMIN_ROLE ) );
+        }
+        catch( Exception ignore )
+        {
+        }
     }
 
     @Nested
@@ -71,14 +100,16 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
+            var httpHeadersMissingPublicApiKey = new HttpHeaders();
+            httpHeadersMissingPublicApiKey.putAll( httpHeaders );
+            httpHeadersMissingPublicApiKey.set( "publicApiKey", null );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testPasswordUser, testEmailUser );
             var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_WRONG_PUBLIC_API_KEY );
 
             // WHEN
-            ResponseEntity< RequestResponseDto > response =
-                restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders_missingPublicApiKey ),
-                    RequestResponseDto.class );
+            ResponseEntity< RequestResponseDto > response = restTemplate.exchange( registerEndpointPath,
+                HttpMethod.POST, new HttpEntity<>( registerRequestDto, httpHeadersMissingPublicApiKey ),
+                RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -100,7 +131,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -122,7 +153,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -143,7 +174,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -166,7 +197,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -189,7 +220,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -212,7 +243,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -235,7 +266,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -257,7 +288,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -280,7 +311,7 @@ class AuthControllerTest
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -309,11 +340,11 @@ class AuthControllerTest
             // WHEN
 
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto2, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto2, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -341,11 +372,11 @@ class AuthControllerTest
             // WHEN
 
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             // WHEN
             ResponseEntity< RequestResponseDto > response =
                 restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( registerRequestDto2, requiredHttpHeaders ), RequestResponseDto.class );
+                    new HttpEntity<>( registerRequestDto2, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -366,15 +397,18 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
+            var httpHeadersMissingPublicApiKey = new HttpHeaders();
+            httpHeadersMissingPublicApiKey.putAll( httpHeaders );
+            httpHeadersMissingPublicApiKey.set( "publicApiKey", null );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_WRONG_PUBLIC_API_KEY );
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
 
             var response = restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders_missingPublicApiKey ),
+                new HttpEntity<>( registerRequestDto, httpHeadersMissingPublicApiKey ),
                 RequestResponseDto.class );
 
             // Then
@@ -397,9 +431,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
 
             // Then
             assertEquals( testEmailUser, Objects.requireNonNull( response.getBody() )
@@ -428,11 +462,11 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
 
             // Then
             assertEquals( testEmailUser, Objects.requireNonNull( response.getBody() )
@@ -465,9 +499,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -492,9 +526,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -520,14 +554,13 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             IntStream.range( 0, configuration.getMAX_LOGIN_ATTEMPT() )
                 .forEach( attempt -> restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                    new HttpEntity<>( wrongLoginRequestDto, requiredHttpHeaders ),
-                    RequestResponseDto.class ) );
+                    new HttpEntity<>( wrongLoginRequestDto, httpHeaders ), RequestResponseDto.class ) );
 
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -551,9 +584,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -577,9 +610,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );
@@ -609,9 +642,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var result = restTemplate.exchange( changePasswordEndpointPath, HttpMethod.PUT,
-                new HttpEntity<>( changePasswordRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( changePasswordRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, result.getBody() );
@@ -630,7 +663,7 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = requiredHttpHeaders;
+            var headerWithToken = httpHeaders;
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto =
@@ -639,9 +672,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
             var authToken = Objects.requireNonNull( loginResponse.getBody() )
                 .get_token();
             headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );
@@ -666,7 +699,7 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = requiredHttpHeaders;
+            var headerWithToken = httpHeaders;
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto =
@@ -675,16 +708,16 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
             var authToken = Objects.requireNonNull( loginResponse.getBody() )
                 .get_token();
             headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );
             restTemplate.exchange( changePasswordEndpointPath, HttpMethod.PUT,
                 new HttpEntity<>( changePasswordRequestDto, headerWithToken ), RequestResponseDto.class );
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( changedLoginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( changedLoginRequestDto, httpHeaders ), LoginResponseDto.class );
 
             // Then
             assertNotNull( authToken );
@@ -711,7 +744,11 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = requiredHttpHeaders_missingPublicApiKey;
+
+            var httpHeadersMissingPublicApiKey = new HttpHeaders();
+            httpHeadersMissingPublicApiKey.putAll( httpHeaders );
+            httpHeadersMissingPublicApiKey.set( "publicApiKey", null );
+
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto =
@@ -720,14 +757,15 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
             var authToken = Objects.requireNonNull( loginResponse.getBody() )
                 .get_token();
-            headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );
+            httpHeadersMissingPublicApiKey.set( HttpHeaders.AUTHORIZATION, authToken );
             var response = restTemplate.exchange( changePasswordEndpointPath, HttpMethod.PUT,
-                new HttpEntity<>( changePasswordRequestDto, headerWithToken ), RequestResponseDto.class );
+                new HttpEntity<>( changePasswordRequestDto, httpHeadersMissingPublicApiKey ),
+                RequestResponseDto.class );
 
             // Then
             assertNotNull( authToken );
@@ -749,7 +787,7 @@ class AuthControllerTest
                     .concat( gmailSuffix );
             String wrongTestPasswordUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() );
-            var headerWithToken = requiredHttpHeaders;
+            var headerWithToken = httpHeaders;
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto =
@@ -758,9 +796,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
             var authToken = Objects.requireNonNull( loginResponse.getBody() )
                 .get_token();
             headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );
@@ -785,7 +823,7 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = requiredHttpHeaders;
+            var headerWithToken = httpHeaders;
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto = new PasswordChangeRequestDto( null, changedTestPasswordUser );
@@ -794,9 +832,9 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
             var authToken = Objects.requireNonNull( loginResponse.getBody() )
                 .get_token();
             headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );
@@ -819,7 +857,7 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = requiredHttpHeaders;
+            var headerWithToken = httpHeaders;
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto = new PasswordChangeRequestDto( testPasswordUser, null );
@@ -828,9 +866,35 @@ class AuthControllerTest
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, requiredHttpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
             var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, requiredHttpHeaders ), LoginResponseDto.class );
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
+            var authToken = Objects.requireNonNull( loginResponse.getBody() )
+                .get_token();
+            headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );
+            var result = restTemplate.exchange( changePasswordEndpointPath, HttpMethod.PUT,
+                new HttpEntity<>( changePasswordRequestDto, headerWithToken ), RequestResponseDto.class );
+
+            // Then
+            assertNotNull( authToken );
+            assertEquals( expectedResultCode, result.getBody() );
+        }
+
+        @Test
+        void shouldReturnStatus_whenUnauthorizedRole()
+        {
+            // GIVEN
+            var headerWithToken = httpHeaders;
+            var loginRequestDto =
+                new LoginRequestDto( testLoginUserWithoutRole, testPasswordUserWithoutRole );
+
+            var changePasswordRequestDto =
+                new PasswordChangeRequestDto( testLoginUserWithoutRole, testPasswordUserWithoutRole );
+            var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_UNAUTHORIZED_ROLE );
+
+            // WHEN
+            var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
+                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
             var authToken = Objects.requireNonNull( loginResponse.getBody() )
                 .get_token();
             headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );

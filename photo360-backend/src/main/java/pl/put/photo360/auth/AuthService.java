@@ -10,6 +10,7 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_PASSWOR
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -125,7 +126,7 @@ public class AuthService
      * @param aRegisterRequestDto
      *                                User's request.
      */
-    public void saveNewUser( RegisterRequestDto aRegisterRequestDto )
+    public void saveNewUser( RegisterRequestDto aRegisterRequestDto, List< UserRoles > aUserRolesList )
     {
         fieldValidator.validateRegisterForm( aRegisterRequestDto );
 
@@ -139,11 +140,17 @@ public class AuthService
         }
         else
         {
-            Set< RoleEntity > userRoles = new HashSet<>();
-            userRoles.add( userRoleDao.findByRoleName( UserRoles.USER_ROLE.getName() ) );
-            UserDataEntity newUser = new UserDataEntity( aRegisterRequestDto, userRoles );
+            UserDataEntity newUser = new UserDataEntity( aRegisterRequestDto );
+            assignRolesToAccount( newUser, aUserRolesList );
             userDataDao.save( newUser );
         }
+    }
+
+    public void assignRolesToAccount( UserDataEntity aUserDataEntity, List< UserRoles > aUserRolesList )
+    {
+        Set< RoleEntity > userRoles = new HashSet<>();
+        aUserRolesList.forEach( role -> { userRoles.add( userRoleDao.findByRoleName( role.getName() ) ); } );
+        aUserDataEntity.setRoles( userRoles );
     }
 
     /**

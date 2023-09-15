@@ -70,21 +70,20 @@ public class UserDataEntity implements Serializable
     private String salt;
 
     @ManyToMany( cascade =
-    { CascadeType.ALL } )
+    { CascadeType.MERGE } )
     @JoinTable( name = "user_roles", joinColumns = @JoinColumn( name = "user_id" ), inverseJoinColumns = @JoinColumn( name = "role_id" ) )
     private Set< RoleEntity > roles = new HashSet<>();
 
     @OneToMany( mappedBy = "userId", cascade = CascadeType.ALL )
     private Set< PhotoDataEntity > photosData = new HashSet<>();
 
-    public UserDataEntity( RegisterRequestDto aRegisterRequestDto, Set< RoleEntity > userRoles )
+    public UserDataEntity( RegisterRequestDto aRegisterRequestDto )
     {
         salt = BCrypt.gensalt( 10 );
         login = aRegisterRequestDto.getLogin();
         email = aRegisterRequestDto.getEmail();
         password = BCrypt.hashpw( aRegisterRequestDto.getPassword(), salt );
         creationDate = Instant.now();
-        roles = userRoles;
         failedAttempt = 0;
         isLocked = false;
     }

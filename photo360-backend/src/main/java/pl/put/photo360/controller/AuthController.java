@@ -4,6 +4,8 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PASSWORD_CHAN
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_CREATED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_LOGGED;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +53,7 @@ public class AuthController
     public ResponseEntity< RequestResponseDto > createNewUser(
         @RequestBody RegisterRequestDto aRegisterRequestDto )
     {
-        userAuthService.saveNewUser( aRegisterRequestDto );
+        userAuthService.saveNewUser( aRegisterRequestDto, List.of( UserRoles.USER_ROLE ) );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_USER_CREATED ),
             STATUS_USER_CREATED.getStatus() );
     }

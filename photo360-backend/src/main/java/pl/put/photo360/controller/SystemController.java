@@ -82,12 +82,11 @@ public class SystemController
         return new ResponseEntity<>( gifs, HttpStatus.OK );
     }
 
-    // TODO : tests
-    @DeleteMapping( "/removeUserGif/{gifId}" )
+    @DeleteMapping( "/removeGif/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
     @Operation( summary = "Endpoint to remove gif, which is owned by logged user, also allows to remove any gif, if user has admin role" )
     public ResponseEntity< RequestResponseDto > removeUserGif(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken,
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
     {
         photoService.removeUserGif( authorizationToken, gifId );
@@ -95,12 +94,11 @@ public class SystemController
             STATUS_GIF_REMOVED.getStatus() );
     }
 
-    // TODO : tests
     @GetMapping( "/downloadGif/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
     @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id." )
     public ResponseEntity< PhotoDataDto > downloadGif(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken,
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
     {
         var gifData = photoService.downloadGifById( authorizationToken, gifId );

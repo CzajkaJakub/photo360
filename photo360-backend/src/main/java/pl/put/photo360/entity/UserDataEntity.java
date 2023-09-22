@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -74,8 +75,11 @@ public class UserDataEntity implements Serializable
     @JoinTable( name = "user_roles", joinColumns = @JoinColumn( name = "user_id" ), inverseJoinColumns = @JoinColumn( name = "role_id" ) )
     private Set< RoleEntity > roles = new HashSet<>();
 
-    @OneToMany( mappedBy = "userId", cascade = CascadeType.ALL )
+    @OneToMany( mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private Set< PhotoDataEntity > photosData = new HashSet<>();
+
+    @OneToMany( mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private Set< FavouriteGifDataEntity > favouritesGif = new HashSet<>();
 
     public UserDataEntity( RegisterRequestDto aRegisterRequestDto )
     {

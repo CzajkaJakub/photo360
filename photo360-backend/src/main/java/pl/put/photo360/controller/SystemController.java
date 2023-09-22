@@ -1,5 +1,7 @@
 package pl.put.photo360.controller;
 
+import static pl.put.photo360.shared.dto.ServerResponseCode.GIF_ADDED_TO_FAVOURITE;
+import static pl.put.photo360.shared.dto.ServerResponseCode.GIF_REMOVED_FROM_FAVOURITE;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_REMOVED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PHOTO_UPLOADED;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -103,5 +106,39 @@ public class SystemController
     {
         var gifData = photoService.downloadGifById( authorizationToken, gifId );
         return new ResponseEntity<>( gifData, HttpStatus.OK );
+    }
+
+    @PutMapping( "/addToFavourite/{gifId}" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    @Operation( summary = "Endpoint used to save public/personal gif to favourite." )
+    public ResponseEntity< RequestResponseDto > addToFavourite(
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
+        @PathVariable Long gifId )
+    {
+        photoService.addToFavourite( authorizationToken, gifId );
+        return new ResponseEntity<>( new RequestResponseDto( GIF_ADDED_TO_FAVOURITE ),
+            GIF_ADDED_TO_FAVOURITE.getStatus() );
+    }
+
+    @DeleteMapping( "/removeFromFavourite/{gifId}" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    @Operation( summary = "Endpoint used to remove public/personal gif from favourites." )
+    public ResponseEntity< RequestResponseDto > removeFromFavourite(
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
+        @PathVariable Long gifId )
+    {
+        photoService.removeFromFavourite( authorizationToken, gifId );
+        return new ResponseEntity<>( new RequestResponseDto( GIF_REMOVED_FROM_FAVOURITE ),
+            GIF_REMOVED_FROM_FAVOURITE.getStatus() );
+    }
+
+    @GetMapping( "/getFavourites" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    @Operation( summary = "Endpoint which returns all user's favourites gifs." )
+    public ResponseEntity< Collection< PhotoDataDto > > getFavourites(
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
+    {
+        var gifs = photoService.getFavourites( authorizationToken );
+        return new ResponseEntity<>( gifs, HttpStatus.OK );
     }
 }

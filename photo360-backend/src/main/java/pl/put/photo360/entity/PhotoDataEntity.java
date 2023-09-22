@@ -3,7 +3,9 @@ package pl.put.photo360.entity;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -51,6 +53,9 @@ public class PhotoDataEntity implements Serializable
     @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     @JoinColumn( name = "photo_data_id" )
     private List< PhotoEntity > photos = new ArrayList<>();
+
+    @OneToMany( mappedBy = "photoDataId", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private Set< FavouriteGifDataEntity > favouriteBy = new HashSet<>();
 
     public PhotoDataEntity( UserDataEntity user, Boolean isPublic, String aDescription )
     {

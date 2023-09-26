@@ -68,10 +68,13 @@ public class SystemControllerTest
     private HttpHeaders httpHeaders;
     private String removeGifEndpointPath;
     private String downloadGifEndpointPath;
+    private String addGifToFavouriteEndpointPath;
+    private String removeGifFromFavouriteEndpointPath;
     private String uploadPhotosEndpointPath;
     private String downloadAllGifsEndpointPath;
     private String downloadPublicGifsEndpointPath;
     private String downloadPrivateGifsEndpointPath;
+    private String downloadFavouriteGifsEndpointPath;
     private String testTokenUser;
     private String testTokenAdmin;
     private String testTokenUserWithoutRole;
@@ -89,6 +92,9 @@ public class SystemControllerTest
         downloadAllGifsEndpointPath = "http://localhost:" + port + "/photo360/downloadAllGifs";
         removeGifEndpointPath = "http://localhost:" + port + "/photo360/removeGif/";
         downloadGifEndpointPath = "http://localhost:" + port + "/photo360/downloadGif/";
+        addGifToFavouriteEndpointPath = "http://localhost:" + port + "/photo360/addToFavourite/";
+        removeGifFromFavouriteEndpointPath = "http://localhost:" + port + "/photo360/removeFromFavourite/";
+        downloadFavouriteGifsEndpointPath = "http://localhost:" + port + "/photo360/getFavourites";
 
         var loginUserRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
         var loginAdminLoginRequestDto = new LoginRequestDto( testLoginAdmin, testPasswordAdmin );
@@ -578,7 +584,7 @@ public class SystemControllerTest
                     HttpMethod.GET, new HttpEntity<>( null, userHeaders ), PhotoDataDto.class );
 
                 // Then
-                assertEquals( gifToDownload.getGifId(), response.getBody()
+                assertEquals( gifToDownload.getGifId(), Objects.requireNonNull( response.getBody() )
                     .getGifId() );
                 assertEquals( gifToDownload.getUserLogin(), response.getBody()
                     .getUserLogin() );
@@ -638,7 +644,7 @@ public class SystemControllerTest
                     HttpMethod.GET, new HttpEntity<>( null, adminHeaders ), PhotoDataDto.class );
 
                 // Then
-                assertEquals( gifToDownload.getGifId(), response.getBody()
+                assertEquals( gifToDownload.getGifId(), Objects.requireNonNull( response.getBody() )
                     .getGifId() );
                 assertEquals( gifToDownload.getUserLogin(), response.getBody()
                     .getUserLogin() );
@@ -676,6 +682,508 @@ public class SystemControllerTest
 
         @Nested
         @Order( 5 )
+        @TestInstance( TestInstance.Lifecycle.PER_CLASS )
+        class AddToFavouriteTests
+        {
+            private List< PhotoDataDto > gifs = new ArrayList<>();
+
+            @BeforeEach
+            public void extractGifsFromDb()
+            {
+                var adminHeaders = new HttpHeaders();
+                adminHeaders.putAll( httpHeaders );
+                adminHeaders.set( HttpHeaders.AUTHORIZATION, testTokenAdmin );
+
+                gifs = restTemplate.exchange( downloadAllGifsEndpointPath, HttpMethod.GET,
+                    new HttpEntity<>( null, adminHeaders ),
+                    new ParameterizedTypeReference< List< PhotoDataDto > >()
+                    {} )
+                    .getBody();
+            }
+
+            @Test
+            void shouldReturnWrongPublicApiKey_whenPublicApiKeyIsMissing()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( "publicApiKey", null );
+                PhotoDataDto gifToDownload = gifs.get( 0 );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_WRONG_PUBLIC_API_KEY );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldReturnWrongToken_whenTokenIsMissing()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                PhotoDataDto gifToDownload = gifs.get( 0 );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_AUTH_TOKEN_NOT_VALID );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldReturnWrongIdException_whenGifNotFoundById()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUser );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response =
+                    restTemplate.exchange( addGifToFavouriteEndpointPath.concat( "9999" ), HttpMethod.PUT,
+                        new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldSuccessfulAddPrivatePersonalToFavourite_and_shouldThrowException_whenTryAddSameGifSecondTime()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUser );
+                PhotoDataDto gifToDownload = gifs.stream()
+                    .filter( gif -> testLoginUser.equals( gif.getUserLogin() ) )
+                    .findFirst()
+                    .orElse( null );
+                var expectedResultCodeFirst =
+                    new RequestResponseDto( ServerResponseCode.GIF_ADDED_TO_FAVOURITE );
+                var expectedResultCodeSecond =
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE );
+
+                // WHEN
+                assert gifToDownload != null;
+                ResponseEntity< RequestResponseDto > firstResponse = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                ResponseEntity< RequestResponseDto > secondResponse = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+                restTemplate.exchange( removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                    .toString() ), HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ),
+                    RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCodeFirst, firstResponse.getBody() );
+                assertEquals( expectedResultCodeSecond, secondResponse.getBody() );
+            }
+
+            @Test
+            void shouldThrowException_whenTryAddNotPublicAndNotPersonalGif()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUser );
+                PhotoDataDto gifToDownload = gifs.stream()
+                    .filter( gif -> !testLoginUser.equals( gif.getUserLogin() ) && !gif.isPublic() )
+                    .findFirst()
+                    .orElse( null );
+                var expectedResultCodeFirst =
+                    new RequestResponseDto( ServerResponseCode.STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED );
+
+                // WHEN
+                assert gifToDownload != null;
+                ResponseEntity< RequestResponseDto > firstResponse = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCodeFirst, firstResponse.getBody() );
+            }
+
+            @Test
+            void shouldSuccessfulAddPublicToFavourite()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenAdmin );
+                PhotoDataDto gifToDownload = gifs.stream()
+                    .filter( gif -> !testLoginAdmin.equals( gif.getUserLogin() ) && gif.isPublic() )
+                    .findFirst()
+                    .orElse( null );
+                var expectedResultCodeFirst =
+                    new RequestResponseDto( ServerResponseCode.GIF_ADDED_TO_FAVOURITE );
+
+                // WHEN
+                assert gifToDownload != null;
+                ResponseEntity< RequestResponseDto > firstResponse = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+                restTemplate.exchange( removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                    .toString() ), HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ),
+                    RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCodeFirst, firstResponse.getBody() );
+            }
+
+            @Test
+            void shouldReturnUnauthorizedRole_whenEmptyRole()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUserWithoutRole );
+                PhotoDataDto gifToRemove = gifs.stream()
+                    .filter( gif -> testLoginUser.equals( gif.getUserLogin() ) )
+                    .findFirst()
+                    .orElse( null );
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_UNAUTHORIZED_ROLE );
+
+                // WHEN
+                assert gifToRemove != null;
+                ResponseEntity< RequestResponseDto > response = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToRemove.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+        }
+
+        @Nested
+        @Order( 6 )
+        @TestInstance( TestInstance.Lifecycle.PER_CLASS )
+        class RemoveFromFavouriteTests
+        {
+            private List< PhotoDataDto > gifs = new ArrayList<>();
+
+            @BeforeEach
+            public void extractGifsFromDb()
+            {
+                var adminHeaders = new HttpHeaders();
+                adminHeaders.putAll( httpHeaders );
+                adminHeaders.set( HttpHeaders.AUTHORIZATION, testTokenAdmin );
+
+                gifs = restTemplate.exchange( downloadAllGifsEndpointPath, HttpMethod.GET,
+                    new HttpEntity<>( null, adminHeaders ),
+                    new ParameterizedTypeReference< List< PhotoDataDto > >()
+                    {} )
+                    .getBody();
+            }
+
+            @Test
+            void shouldReturnWrongPublicApiKey_whenPublicApiKeyIsMissing()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( "publicApiKey", null );
+                PhotoDataDto gifToDownload = gifs.get( 0 );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_WRONG_PUBLIC_API_KEY );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response = restTemplate.exchange(
+                    removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldReturnWrongToken_whenTokenIsMissing()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                PhotoDataDto gifToDownload = gifs.get( 0 );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_AUTH_TOKEN_NOT_VALID );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response = restTemplate.exchange(
+                    removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldReturnException_whenGifNotFoundFromUserRepository()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUser );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response =
+                    restTemplate.exchange( removeGifFromFavouriteEndpointPath.concat( "9999" ),
+                        HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldReturnException_whenGifNotAddedToFavourite()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUser );
+                PhotoDataDto gifToDownload = gifs.stream()
+                    .filter( gif -> testLoginAdmin.equals( gif.getUserLogin() ) )
+                    .findFirst()
+                    .orElse( null );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+
+                // WHEN
+                assert gifToDownload != null;
+                ResponseEntity< RequestResponseDto > response = restTemplate.exchange(
+                    removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldRemoveFromFavouriteSuccessful_and_shouldThrowExceptionWhenTryRemoveSecondTime()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUser );
+                PhotoDataDto gifToDownload = gifs.stream()
+                    .filter( gif -> testLoginUser.equals( gif.getUserLogin() ) )
+                    .findFirst()
+                    .orElse( null );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+                var expectedResultRemoved =
+                    new RequestResponseDto( ServerResponseCode.GIF_REMOVED_FROM_FAVOURITE );
+
+                // WHEN
+                assert gifToDownload != null;
+                restTemplate.exchange( addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                    .toString() ), HttpMethod.PUT, new HttpEntity<>( null, userHeaders ),
+                    RequestResponseDto.class );
+                ResponseEntity< RequestResponseDto > responseRemoveFirst = restTemplate.exchange(
+                    removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+                ResponseEntity< RequestResponseDto > responseSecond = restTemplate.exchange(
+                    removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultRemoved, responseRemoveFirst.getBody() );
+                assertEquals( expectedResultCode, responseSecond.getBody() );
+            }
+
+            @Test
+            void shouldReturnUnauthorizedRole_whenEmptyRole()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUserWithoutRole );
+                PhotoDataDto gifToRemove = gifs.stream()
+                    .filter( gif -> testLoginUser.equals( gif.getUserLogin() ) )
+                    .findFirst()
+                    .orElse( null );
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_UNAUTHORIZED_ROLE );
+
+                // WHEN
+                assert gifToRemove != null;
+                ResponseEntity< RequestResponseDto > response = restTemplate.exchange(
+                    removeGifFromFavouriteEndpointPath.concat( gifToRemove.getGifId()
+                        .toString() ),
+                    HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+        }
+
+        @Nested
+        @Order( 7 )
+        @TestInstance( TestInstance.Lifecycle.PER_CLASS )
+        class DownloadFavouriteTests
+        {
+            private List< PhotoDataDto > gifs = new ArrayList<>();
+
+            @BeforeEach
+            public void extractGifsFromDb()
+            {
+                var adminHeaders = new HttpHeaders();
+                adminHeaders.putAll( httpHeaders );
+                adminHeaders.set( HttpHeaders.AUTHORIZATION, testTokenAdmin );
+
+                gifs = restTemplate.exchange( downloadAllGifsEndpointPath, HttpMethod.GET,
+                    new HttpEntity<>( null, adminHeaders ),
+                    new ParameterizedTypeReference< List< PhotoDataDto > >()
+                    {} )
+                    .getBody();
+            }
+
+            @Test
+            void shouldReturnWrongPublicApiKey_whenPublicApiKeyIsMissing()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( "publicApiKey", null );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_WRONG_PUBLIC_API_KEY );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response =
+                    restTemplate.exchange( downloadFavouriteGifsEndpointPath, HttpMethod.GET,
+                        new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldReturnWrongToken_whenTokenIsMissing()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_AUTH_TOKEN_NOT_VALID );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response =
+                    restTemplate.exchange( downloadFavouriteGifsEndpointPath, HttpMethod.GET,
+                        new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+
+            @Test
+            void shouldReturnFavouriteGifsSuccessful()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUser );
+                PhotoDataDto gifToDownload = gifs.stream()
+                    .filter( gif -> testLoginUser.equals( gif.getUserLogin() ) )
+                    .findFirst()
+                    .orElse( null );
+
+                var expectedResultCodeAdd =
+                    new RequestResponseDto( ServerResponseCode.GIF_ADDED_TO_FAVOURITE );
+
+                // WHEN
+                assert gifToDownload != null;
+                ResponseEntity< RequestResponseDto > responseAdd = restTemplate.exchange(
+                    addGifToFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                        .toString() ),
+                    HttpMethod.PUT, new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                ResponseEntity< List< PhotoDataDto > > responseFavouriteGifs =
+                    restTemplate.exchange( downloadFavouriteGifsEndpointPath, HttpMethod.GET,
+                        new HttpEntity<>( null, userHeaders ), new ParameterizedTypeReference<>()
+                        {} );
+                restTemplate.exchange( removeGifFromFavouriteEndpointPath.concat( gifToDownload.getGifId()
+                    .toString() ), HttpMethod.DELETE, new HttpEntity<>( null, userHeaders ),
+                    RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCodeAdd, responseAdd.getBody() );
+                assertEquals( gifToDownload.getGifId(),
+                    Objects.requireNonNull( responseFavouriteGifs.getBody() )
+                        .get( 0 )
+                        .getGifId() );
+                assertEquals( gifToDownload.getUserLogin(),
+                    Objects.requireNonNull( responseFavouriteGifs.getBody() )
+                        .get( 0 )
+                        .getUserLogin() );
+                assertEquals( gifToDownload.getDescription(),
+                    Objects.requireNonNull( responseFavouriteGifs.getBody() )
+                        .get( 0 )
+                        .getDescription() );
+                assertEquals( gifToDownload.getUploadDateTime(),
+                    Objects.requireNonNull( responseFavouriteGifs.getBody() )
+                        .get( 0 )
+                        .getUploadDateTime() );
+            }
+
+            @Test
+            void shouldReturnUnauthorizedRole_whenEmptyRole()
+            {
+                // GIVEN
+                var userHeaders = new HttpHeaders();
+                userHeaders.putAll( httpHeaders );
+                userHeaders.set( HttpHeaders.AUTHORIZATION, testTokenUserWithoutRole );
+
+                var expectedResultCode =
+                    new RequestResponseDto( ServerResponseCode.STATUS_UNAUTHORIZED_ROLE );
+
+                // WHEN
+                ResponseEntity< RequestResponseDto > response =
+                    restTemplate.exchange( downloadFavouriteGifsEndpointPath, HttpMethod.GET,
+                        new HttpEntity<>( null, userHeaders ), RequestResponseDto.class );
+
+                // Then
+                assertEquals( expectedResultCode, response.getBody() );
+            }
+        }
+
+        @Nested
+        @Order( 8 )
         @TestInstance( TestInstance.Lifecycle.PER_CLASS )
         class RemoveUserGifTest
         {

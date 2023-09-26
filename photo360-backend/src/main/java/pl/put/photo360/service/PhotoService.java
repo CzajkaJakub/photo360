@@ -188,7 +188,7 @@ public class PhotoService
                     .getLogin()
                     .equals( user.get()
                         .getLogin() )
-                    || gif.isPublic() || jwtValidator.isAdminRoleToken( aAuthorizationToken ) )
+                    || gif.isPublic() )
                 {
                     var favouriteGifData = new FavouriteGifDataEntity( user.get(), gif );
                     favouriteGifDataDao.save( favouriteGifData );

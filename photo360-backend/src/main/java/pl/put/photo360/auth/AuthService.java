@@ -167,11 +167,8 @@ public class AuthService
         if( userToCheck.isPresent() )
         {
             UserDataEntity foundUser = userToCheck.get();
-            if( foundUser.isLocked() )
-            {
-                throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
-            }
-            else if( checkPassword( foundUser, aPasswordChangeRequestDto.getOldPassword() ) )
+            checkLockAndUnlockIfLockTimeExpired( foundUser );
+            if( checkPassword( foundUser, aPasswordChangeRequestDto.getOldPassword() ) )
             {
                 String hashedNewPassword =
                     BCrypt.hashpw( aPasswordChangeRequestDto.getNewPassword(), foundUser.getSalt() );
@@ -196,10 +193,10 @@ public class AuthService
         if( userToCheck.isPresent() )
         {
             UserDataEntity foundUser = userToCheck.get();
-            unlockIfLockTimeExpired( foundUser );
+            checkLockAndUnlockIfLockTimeExpired( foundUser );
             boolean checkPass = checkPassword( foundUser, aLoginRequestDto.getPassword() );
 
-            if( checkPass && !foundUser.isLocked() )
+            if( checkPass )
             {
                 String authToken = jwtValidator.generateJwt( foundUser );
                 resetFailedAttempts( foundUser );
@@ -211,7 +208,7 @@ public class AuthService
                     Instant.ofEpochSecond( configuration.getTOKEN_EXPIRATION_TIME() ),
                     lastLoggedUserDateTime );
             }
-            else if( !checkPass && foundUser.getFailedAttempt() < configuration.getMAX_LOGIN_ATTEMPT() )
+            else if( foundUser.getFailedAttempt() < configuration.getMAX_LOGIN_ATTEMPT() )
             {
                 increaseFailedAttempts( foundUser );
                 throw new WrongPasswordException( STATUS_WRONG_PASSWORD );
@@ -219,13 +216,22 @@ public class AuthService
             else
             {
                 if( Objects.equals( foundUser.getFailedAttempt(), configuration.getMAX_LOGIN_ATTEMPT() ) )
-                    lock( foundUser );
+                    lockAccount( foundUser );
                 throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
             }
         }
         else
         {
             throw new UserNotFoundException( STATUS_USER_NOT_FOUND_BY_LOGIN );
+        }
+    }
+
+    public void checkLockAndUnlockIfLockTimeExpired( UserDataEntity aUserDataEntity )
+    {
+        unlockIfLockTimeExpired( aUserDataEntity );
+        if( aUserDataEntity.isLocked() )
+        {
+            throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
         }
     }
 
@@ -259,7 +265,7 @@ public class AuthService
      * @param user
      */
     @Transactional
-    public void lock( UserDataEntity user )
+    public void lockAccount( UserDataEntity user )
     {
         user.setLocked( true );
         user.setLockTime( Instant.now() );

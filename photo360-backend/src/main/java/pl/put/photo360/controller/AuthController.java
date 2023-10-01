@@ -1,6 +1,7 @@
 package pl.put.photo360.controller;
 
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PASSWORD_CHANGED;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_CREATED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_LOGGED;
 
@@ -24,6 +25,7 @@ import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
+import pl.put.photo360.shared.dto.ResetPasswordRequestDto;
 import pl.put.photo360.shared.dto.UserRoles;
 import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 
@@ -68,5 +70,23 @@ public class AuthController
         userAuthService.changeUserPassword( authorizationToken, aPasswordChangeRequestDto );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PASSWORD_CHANGED ),
             STATUS_PASSWORD_CHANGED.getStatus() );
+    }
+
+    @PostMapping( "/resetPasswordRequest" )
+    public ResponseEntity< RequestResponseDto > requestPasswordReset(
+        @RequestBody ResetPasswordRequestDto request )
+    {
+        userAuthService.requestPasswordReset( request );
+        return new ResponseEntity<>( new RequestResponseDto( STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND ),
+            STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND.getStatus() );
+    }
+
+    @PostMapping( "/resetPasswordConfirmation" )
+    public ResponseEntity< RequestResponseDto > confirmPasswordReset(
+        @RequestBody ResetPasswordRequestDto request )
+    {
+        userAuthService.resetPassword( request );
+        return new ResponseEntity<>( new RequestResponseDto( STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND ),
+            STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND.getStatus() );
     }
 }

@@ -1,6 +1,7 @@
 package pl.put.photo360.shared.dto;
 
 import java.time.Instant;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,4 +21,5 @@ public class LoginResponseDto
     private String _token;
     private Instant _tokenExpirationDate;
     private Instant _lastLoggedDatetime;
+    private Set< String > userRolesList;
 }

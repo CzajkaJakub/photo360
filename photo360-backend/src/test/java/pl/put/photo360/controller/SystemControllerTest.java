@@ -776,7 +776,7 @@ public class SystemControllerTest
                     .findFirst()
                     .orElse( null );
                 var expectedResultCodeFirst =
-                    new RequestResponseDto( ServerResponseCode.GIF_ADDED_TO_FAVOURITE );
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_ADDED_TO_FAVOURITE );
                 var expectedResultCodeSecond =
                     new RequestResponseDto( ServerResponseCode.STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE );
 
@@ -837,7 +837,7 @@ public class SystemControllerTest
                     .findFirst()
                     .orElse( null );
                 var expectedResultCodeFirst =
-                    new RequestResponseDto( ServerResponseCode.GIF_ADDED_TO_FAVOURITE );
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_ADDED_TO_FAVOURITE );
 
                 // WHEN
                 assert gifToDownload != null;
@@ -1004,7 +1004,7 @@ public class SystemControllerTest
                 var expectedResultCode =
                     new RequestResponseDto( ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
                 var expectedResultRemoved =
-                    new RequestResponseDto( ServerResponseCode.GIF_REMOVED_FROM_FAVOURITE );
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_REMOVED_FROM_FAVOURITE );
 
                 // WHEN
                 assert gifToDownload != null;
@@ -1124,7 +1124,7 @@ public class SystemControllerTest
                     .orElse( null );
 
                 var expectedResultCodeAdd =
-                    new RequestResponseDto( ServerResponseCode.GIF_ADDED_TO_FAVOURITE );
+                    new RequestResponseDto( ServerResponseCode.STATUS_GIF_ADDED_TO_FAVOURITE );
 
                 // WHEN
                 assert gifToDownload != null;

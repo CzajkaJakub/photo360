@@ -49,6 +49,9 @@
             <column name="lock_time" type="timestamp with time zone"/>
             <column name="salt" type="text"/>
 
+            <column name="reset_password_token_expiration_date" type="timestamp with time zone"/>
+            <column name="reset_password_token" type="text"/>
+
         </createTable>
     </changeSet>
 

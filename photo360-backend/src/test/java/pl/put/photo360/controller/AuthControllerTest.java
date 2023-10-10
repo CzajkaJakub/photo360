@@ -592,7 +592,7 @@ class AuthControllerTest
         }
 
         @Test
-        void shouldReturnMissingFieldsCode_whenPassedNullAsPassword()
+        void shouldReturnWrongPassword_whenPassedNullAsPassword()
         {
             // GIVEN
             String testLoginUser =
@@ -604,8 +604,7 @@ class AuthControllerTest
                     .concat( gmailSuffix );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, null );
-            var expectedResultCode =
-                new RequestResponseDto( ServerResponseCode.STATUS_MISSING_REQUIRED_FIELD );
+            var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_WRONG_PASSWORD );
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
@@ -650,7 +649,7 @@ class AuthControllerTest
         }
 
         @Test
-        void shouldChangeUserPasswordSuccessful()
+        void shouldReturnNotVerifiedAccount_whenEmailNotVerified()
         {
             // GIVEN
             String testLoginUser =
@@ -662,12 +661,13 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = httpHeaders;
+            var headerWithToken = new HttpHeaders();
+            headerWithToken.putAll( httpHeaders );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto =
                 new PasswordChangeRequestDto( testPasswordUser, changedTestPasswordUser );
-            var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_PASSWORD_CHANGED );
+            var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_EMAIL_NOT_CONFIRMED );
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
@@ -683,51 +683,6 @@ class AuthControllerTest
             // Then
             assertNotNull( authToken );
             assertEquals( expectedResultCode, result.getBody() );
-        }
-
-        @Test
-        void shouldChangeUserPasswordSuccessful_shouldLogIntoSystemWithNewPassword()
-        {
-            // GIVEN
-            String testLoginUser =
-                RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() );
-            String testPasswordUser =
-                RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() );
-            String changedTestPasswordUser =
-                RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() );
-            String testEmailUser =
-                RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
-                    .concat( gmailSuffix );
-            var headerWithToken = httpHeaders;
-            var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
-            var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
-            var changePasswordRequestDto =
-                new PasswordChangeRequestDto( testPasswordUser, changedTestPasswordUser );
-            var changedLoginRequestDto = new LoginRequestDto( testLoginUser, changedTestPasswordUser );
-
-            // WHEN
-            restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( registerRequestDto, httpHeaders ), RequestResponseDto.class );
-            var loginResponse = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, httpHeaders ), LoginResponseDto.class );
-            var authToken = Objects.requireNonNull( loginResponse.getBody() )
-                .get_token();
-            headerWithToken.set( HttpHeaders.AUTHORIZATION, authToken );
-            restTemplate.exchange( changePasswordEndpointPath, HttpMethod.PUT,
-                new HttpEntity<>( changePasswordRequestDto, headerWithToken ), RequestResponseDto.class );
-            var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( changedLoginRequestDto, httpHeaders ), LoginResponseDto.class );
-
-            // Then
-            assertNotNull( authToken );
-            assertEquals( testEmailUser, Objects.requireNonNull( response.getBody() )
-                .getEmail() );
-            assertNotNull( Objects.requireNonNull( response.getBody() )
-                .get_lastLoggedDatetime() );
-            assertNotNull( Objects.requireNonNull( response.getBody() )
-                .get_token() );
-            assertNotNull( Objects.requireNonNull( response.getBody() )
-                .get_tokenExpirationDate() );
         }
 
         @Test
@@ -772,7 +727,7 @@ class AuthControllerTest
         }
 
         @Test
-        void shouldReturnStatus_whenWrongPasswordPassed()
+        void shouldReturnEmailNotVerified_whenAccountEmailNotVerified()
         {
             // GIVEN
             String testLoginUser =
@@ -786,12 +741,13 @@ class AuthControllerTest
                     .concat( gmailSuffix );
             String wrongTestPasswordUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() );
-            var headerWithToken = httpHeaders;
+            var headerWithToken = new HttpHeaders();
+            headerWithToken.putAll( httpHeaders );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto =
                 new PasswordChangeRequestDto( wrongTestPasswordUser, changedTestPasswordUser );
-            var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_WRONG_PASSWORD );
+            var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_EMAIL_NOT_CONFIRMED );
 
             // WHEN
             restTemplate.exchange( registerEndpointPath, HttpMethod.POST,
@@ -822,7 +778,8 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = httpHeaders;
+            var headerWithToken = new HttpHeaders();
+            headerWithToken.putAll( httpHeaders );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto = new PasswordChangeRequestDto( null, changedTestPasswordUser );
@@ -856,7 +813,8 @@ class AuthControllerTest
             String testEmailUser =
                 RandomStringUtils.randomAlphabetic( configuration.getMAX_REGISTER_FIELD_LENGTH() )
                     .concat( gmailSuffix );
-            var headerWithToken = httpHeaders;
+            var headerWithToken = new HttpHeaders();
+            headerWithToken.putAll( httpHeaders );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
             var changePasswordRequestDto = new PasswordChangeRequestDto( testPasswordUser, null );
@@ -883,7 +841,8 @@ class AuthControllerTest
         void shouldReturnStatus_whenUnauthorizedRole()
         {
             // GIVEN
-            var headerWithToken = httpHeaders;
+            var headerWithToken = new HttpHeaders();
+            headerWithToken.putAll( httpHeaders );
             var loginRequestDto =
                 new LoginRequestDto( testLoginUserWithoutRole, testPasswordUserWithoutRole );
 

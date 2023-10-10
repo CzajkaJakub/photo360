@@ -21,6 +21,7 @@ public class Configuration
     private Integer ACCOUNT_LOCK_TIME;
     private Integer TOKEN_EXPIRATION_TIME;
     private Integer RESET_PASSWORD_TOKEN_EXPIRATION;
+    private Integer EMAIL_VERIFICATION_TOKEN_EXPIRATION;
     private Integer MIN_REGISTER_PASSWORD_LENGTH;
     private Integer MAX_REGISTER_FIELD_LENGTH;
     private String EMAIL_REGEX;
@@ -28,5 +29,7 @@ public class Configuration
     private String SUPPORTED_FORMAT;
     private String RESET_PASSWORD_EMAIL_SUBJECT;
     private String RESET_PASSWORD_EMAIL_TEXT;
+    private String EMAIL_VERIFICATION_TEXT;
+    private String EMAIL_VERIFICATION_SUBJECT;
     private List< String > SUPPORTED_PHOTO_FORMATS;
 }

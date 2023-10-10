@@ -19,6 +19,7 @@ public class LoginResponseDto
 {
     private String email;
     private String _token;
+    private Boolean emailVerified;
     private Instant _tokenExpirationDate;
     private Instant _lastLoggedDatetime;
     private Set< String > userRolesList;

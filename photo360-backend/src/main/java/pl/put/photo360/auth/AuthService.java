@@ -2,21 +2,24 @@ package pl.put.photo360.auth;
 
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_ACCOUNT_LOCKED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_ALREADY_EXISTS;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_ALREADY_VERIFIED;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_NOT_CONFIRMED;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_VERIFICATION_TOKEN_EXPIRED;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_VERIFICATION_TOKEN_NOT_VALID;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_LOGIN_ALREADY_EXISTS;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PASSWORD_CAN_NOT_BE_THE_SAME;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_RESET_TOKEN_EXPIRED;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_STATUS_USER_EMAIL_NOT_VERIFIED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_EMAIL;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_LOGIN;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_FROM_RESET_TOKEN;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_FROM_TOKEN;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_PASSWORD;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -72,83 +75,6 @@ public class AuthService
     }
 
     /**
-     * Find user by given login.
-     *
-     * @param aLogin
-     *                   User's request login.
-     */
-    public Optional< UserDataEntity > findByLogin( String aLogin )
-    {
-        var foundUser = userDataDao.findByLogin( aLogin );
-        if( foundUser == null )
-        {
-            return Optional.empty();
-        }
-        else
-        {
-            return Optional.of( foundUser );
-        }
-    }
-
-    /**
-     * Find user by given reset password token.
-     *
-     * @param aResetPasswordToken
-     *                                User's request token.
-     */
-    public Optional< UserDataEntity > findByResetPasswordToken( String aResetPasswordToken )
-    {
-        var foundUser = userDataDao.findByResetPasswordToken( aResetPasswordToken );
-        if( foundUser == null )
-        {
-            return Optional.empty();
-        }
-        else
-        {
-            return Optional.of( foundUser );
-        }
-    }
-
-    /**
-     * Find user by given jwt token.
-     *
-     * @param aToken
-     *                   User's request jwt token.
-     */
-    public Optional< UserDataEntity > findByToken( String aToken )
-    {
-        var extractedLoginFromToken = jwtValidator.extractLoginFromToken( aToken );
-        var foundUser = userDataDao.findByLogin( extractedLoginFromToken );
-        if( foundUser == null )
-        {
-            return Optional.empty();
-        }
-        else
-        {
-            return Optional.of( foundUser );
-        }
-    }
-
-    /**
-     * Find user by given email.
-     *
-     * @param aEmail
-     *                   User's request email.
-     */
-    public Optional< UserDataEntity > findByEmail( String aEmail )
-    {
-        var foundUser = userDataDao.findByEmail( aEmail );
-        if( foundUser == null )
-        {
-            return Optional.empty();
-        }
-        else
-        {
-            return Optional.of( foundUser );
-        }
-    }
-
-    /**
      * Function creates a new user account based on given request, there is a validation which requires email
      * and login which are not currently assigned to any account.
      *
@@ -159,27 +85,26 @@ public class AuthService
     {
         fieldValidator.validateRegisterForm( aRegisterRequestDto );
 
-        if( findByLogin( aRegisterRequestDto.getLogin() ).isPresent() )
+        if( userDataDao.findByLogin( aRegisterRequestDto.getLogin() )
+            .isPresent() )
         {
             throw new LoginExistsInDbException( STATUS_LOGIN_ALREADY_EXISTS );
         }
-        else if( findByEmail( aRegisterRequestDto.getEmail() ).isPresent() )
+        else if( userDataDao.findByEmail( aRegisterRequestDto.getEmail() )
+            .isPresent() )
         {
             throw new EmailExistsInDbException( STATUS_EMAIL_ALREADY_EXISTS );
         }
         else
         {
-            UserDataEntity newUser = new UserDataEntity( aRegisterRequestDto );
-            assignRolesToAccount( newUser, aUserRolesList );
+            UserDataEntity newUser = new UserDataEntity( aRegisterRequestDto, aUserRolesList.stream()
+                .map( role -> userRoleDao.findByRoleName( role.getName() ) )
+                .collect( Collectors.toSet() ), generateUuidToken() );
+            newUser.setEmailVerificationTokenExpirationDate( Instant.now()
+                .plus( configuration.getEMAIL_VERIFICATION_TOKEN_EXPIRATION(), ChronoUnit.MILLIS ) );
             userDataDao.save( newUser );
+            emailService.sendEmailVerification( newUser );
         }
-    }
-
-    public void assignRolesToAccount( UserDataEntity aUserDataEntity, List< UserRoles > aUserRolesList )
-    {
-        Set< RoleEntity > userRoles = new HashSet<>();
-        aUserRolesList.forEach( role -> userRoles.add( userRoleDao.findByRoleName( role.getName() ) ) );
-        aUserDataEntity.setRoles( userRoles );
     }
 
     /**
@@ -189,20 +114,19 @@ public class AuthService
     public void changeUserPassword( String aAuthorizationToken,
         PasswordChangeRequestDto aPasswordChangeRequestDto )
     {
-        fieldValidator.validatePassword( aPasswordChangeRequestDto.getNewPassword() );
-        fieldValidator.validatePassword( aPasswordChangeRequestDto.getOldPassword() );
-        Optional< UserDataEntity > userToCheck =
-            findByLogin( jwtValidator.extractLoginFromToken( aAuthorizationToken ) );
-        if( userToCheck.isPresent() )
+        fieldValidator.checkRequiredField( aPasswordChangeRequestDto.getNewPassword() );
+        fieldValidator.checkRequiredField( aPasswordChangeRequestDto.getOldPassword() );
+        var user = findUserByAuthorizationToken( aAuthorizationToken );
+        checkLockAndUnlockIfLockTimeExpired( user );
+        if( user.isEmailVerified() )
         {
-            UserDataEntity foundUser = userToCheck.get();
-            checkLockAndUnlockIfLockTimeExpired( foundUser );
-            if( checkPassword( foundUser, aPasswordChangeRequestDto.getOldPassword() ) )
+            if( checkPassword( user, aPasswordChangeRequestDto.getOldPassword() ) )
             {
+                fieldValidator.validatePassword( aPasswordChangeRequestDto.getNewPassword() );
                 String hashedNewPassword =
-                    BCrypt.hashpw( aPasswordChangeRequestDto.getNewPassword(), foundUser.getSalt() );
-                foundUser.setPassword( hashedNewPassword );
-                userDataDao.save( foundUser );
+                    BCrypt.hashpw( aPasswordChangeRequestDto.getNewPassword(), user.getSalt() );
+                user.setPassword( hashedNewPassword );
+                userDataDao.save( user );
             }
             else
             {
@@ -211,87 +135,73 @@ public class AuthService
         }
         else
         {
-            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_BY_EMAIL );
+            throw new ServiceException( STATUS_EMAIL_NOT_CONFIRMED );
         }
     }
 
     public LoginResponseDto logIntoSystemAttempt( LoginRequestDto aLoginRequestDto )
     {
-        fieldValidator.validateLoginForm( aLoginRequestDto );
-        Optional< UserDataEntity > userToCheck = findByLogin( aLoginRequestDto.getLogin() );
-        if( userToCheck.isPresent() )
+        var user = findUserByLogin( aLoginRequestDto.getLogin() );
+        checkLockAndUnlockIfLockTimeExpired( user );
+        boolean checkPass = checkPassword( user, aLoginRequestDto.getPassword() );
+
+        if( checkPass )
         {
-            UserDataEntity foundUser = userToCheck.get();
-            checkLockAndUnlockIfLockTimeExpired( foundUser );
-            boolean checkPass = checkPassword( foundUser, aLoginRequestDto.getPassword() );
+            String authToken = jwtValidator.generateJwt( user );
+            userDataDao.resetFailedAttempts( user );
+            Instant lastLoggedUserDateTime = user.getLastLoggedTime();
+            user.reloadLastLogTime( Instant.now() );
+            userDataDao.save( user );
 
-            if( checkPass )
-            {
-                String authToken = jwtValidator.generateJwt( foundUser );
-                resetFailedAttempts( foundUser );
-                Instant lastLoggedUserDateTime = foundUser.getLastLoggedTime();
-                foundUser.reloadLastLogTime( Instant.now() );
-                userDataDao.save( foundUser );
-
-                return new LoginResponseDto( foundUser.getEmail(), authToken,
-                    Instant.ofEpochSecond( configuration.getTOKEN_EXPIRATION_TIME() ), lastLoggedUserDateTime,
-                    foundUser.getRoles()
-                        .stream()
-                        .map( RoleEntity::getName )
-                        .collect( Collectors.toSet() ) );
-            }
-            else if( foundUser.getFailedAttempt() < configuration.getMAX_LOGIN_ATTEMPT() )
-            {
-                increaseFailedAttempts( foundUser );
-                throw new WrongPasswordException( STATUS_WRONG_PASSWORD );
-            }
-            else
-            {
-                if( Objects.equals( foundUser.getFailedAttempt(), configuration.getMAX_LOGIN_ATTEMPT() ) )
-                    lockAccount( foundUser );
-                throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
-            }
+            return new LoginResponseDto( user.getEmail(), authToken, user.isEmailVerified(),
+                Instant.ofEpochSecond( configuration.getTOKEN_EXPIRATION_TIME() ), lastLoggedUserDateTime,
+                user.getRoles()
+                    .stream()
+                    .map( RoleEntity::getName )
+                    .collect( Collectors.toSet() ) );
+        }
+        else if( user.getFailedAttempt() < configuration.getMAX_LOGIN_ATTEMPT() )
+        {
+            userDataDao.increaseFailedAttempts( user );
+            throw new WrongPasswordException( STATUS_WRONG_PASSWORD );
         }
         else
         {
-            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_BY_LOGIN );
+            if( Objects.equals( user.getFailedAttempt(), configuration.getMAX_LOGIN_ATTEMPT() ) )
+                userDataDao.lockAccount( user );
+            throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
         }
     }
 
     @Transactional
     public void requestPasswordReset( ResetPasswordRequestDto request )
     {
-        var foundUser = findByEmail( request.getEmail() );
-        if( foundUser.isPresent() )
+        var userEntity = findUserByEmail( request.getEmail() );
+        checkLockAndUnlockIfLockTimeExpired( userEntity );
+        if( userEntity.isLocked() )
         {
-            var userEntity = foundUser.get();
-            checkLockAndUnlockIfLockTimeExpired( userEntity );
-            if( userEntity.isLocked() )
-            {
-                throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
-            }
-            else
-            {
-                String generatedUuidResetPasswordToken = generateResetPasswordToken();
-                userEntity.setResetPasswordToken( generatedUuidResetPasswordToken );
-                userEntity.setResetPasswordTokenExpirationDate( Instant.now()
-                    .plus( configuration.getRESET_PASSWORD_TOKEN_EXPIRATION(), ChronoUnit.MILLIS ) );
-                emailService.sendResetPasswordEmail( request.getEmail(), userEntity );
-                userDataDao.save( userEntity );
-            }
+            throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
+        }
+        else if( !userEntity.isEmailVerified() )
+        {
+            throw new ServiceException( STATUS_EMAIL_NOT_CONFIRMED );
         }
         else
         {
-            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_BY_EMAIL );
+            String generatedUuidResetPasswordToken = generateUuidToken();
+            userEntity.setResetPasswordToken( generatedUuidResetPasswordToken );
+            userEntity.setResetPasswordTokenExpirationDate( Instant.now()
+                .plus( configuration.getRESET_PASSWORD_TOKEN_EXPIRATION(), ChronoUnit.MILLIS ) );
+            emailService.sendResetPasswordEmail( userEntity );
+            userDataDao.save( userEntity );
         }
     }
 
     public void resetPassword( ResetPasswordRequestDto request )
     {
-        var foundUser = findByResetPasswordToken( request.getResetPasswordToken() );
-        if( foundUser.isPresent() )
+        var userEntity = findUserByEmail( request.getEmail() );
+        if( userEntity.isEmailVerified() )
         {
-            var userEntity = foundUser.get();
             if( userEntity.getResetPasswordTokenExpirationDate()
                 .isBefore( Instant.now() ) )
                 throw new ServiceException( STATUS_RESET_TOKEN_EXPIRED );
@@ -306,7 +216,55 @@ public class AuthService
         }
         else
         {
-            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_FROM_RESET_TOKEN );
+            throw new ServiceException( STATUS_STATUS_USER_EMAIL_NOT_VERIFIED );
+        }
+    }
+
+    public void confirmEmail( String aAuthorizationToken, String aEmailVerificationCode )
+    {
+        UserDataEntity foundUser = findUserByAuthorizationToken( aAuthorizationToken );
+        if( !foundUser.isEmailVerified() )
+        {
+            if( foundUser.getEmailVerificationToken()
+                .equals( aEmailVerificationCode ) )
+            {
+                if( foundUser.getEmailVerificationTokenExpirationDate()
+                    .isAfter( Instant.now() ) )
+                {
+                    foundUser.setEmailVerificationTokenExpirationDate( null );
+                    foundUser.setEmailVerified( true );
+                    userDataDao.save( foundUser );
+                }
+                else
+                {
+                    throw new ServiceException( STATUS_EMAIL_VERIFICATION_TOKEN_EXPIRED );
+                }
+            }
+            else
+            {
+                throw new ServiceException( STATUS_EMAIL_VERIFICATION_TOKEN_NOT_VALID );
+            }
+        }
+        else
+        {
+            throw new ServiceException( STATUS_EMAIL_ALREADY_VERIFIED );
+        }
+    }
+
+    public void sendConfirmEmailRequest( String aAuthorizationToken )
+    {
+        UserDataEntity foundUser = findUserByAuthorizationToken( aAuthorizationToken );
+        if( !foundUser.isEmailVerified() )
+        {
+            foundUser.setEmailVerificationTokenExpirationDate( Instant.now()
+                .plus( configuration.getEMAIL_VERIFICATION_TOKEN_EXPIRATION(), ChronoUnit.MILLIS ) );
+            foundUser.setEmailVerificationToken( generateUuidToken() );
+            emailService.sendEmailVerification( foundUser );
+            userDataDao.save( foundUser );
+        }
+        else
+        {
+            throw new ServiceException( STATUS_EMAIL_ALREADY_VERIFIED );
         }
     }
 
@@ -318,46 +276,6 @@ public class AuthService
         {
             throw new AccountLockedException( STATUS_ACCOUNT_LOCKED );
         }
-    }
-
-    /**
-     * Function increases number of failed log in attempts in database
-     *
-     * @param user
-     *                 user entity
-     */
-    public void increaseFailedAttempts( UserDataEntity user )
-    {
-        user.increaseFailAttempts();
-        userDataDao.save( user );
-    }
-
-    /**
-     * Function resets the number of failed log in attempts in database
-     *
-     * @param user
-     *                 user entity
-     */
-    @Transactional
-    public void resetFailedAttempts( UserDataEntity user )
-    {
-        user.setFailedAttempt( 0 );
-        userDataDao.save( user );
-    }
-
-    /**
-     * Function locks user
-     *
-     * @param user
-     *                 user entity
-     */
-    @Transactional
-    public void lockAccount( UserDataEntity user )
-    {
-        user.setLocked( true );
-        user.setLockTime( Instant.now() );
-
-        userDataDao.save( user );
     }
 
     /**
@@ -385,6 +303,49 @@ public class AuthService
         }
     }
 
+    public UserDataEntity findUserByAuthorizationToken( String aAuthorizationToken )
+    {
+        fieldValidator.checkRequiredField( aAuthorizationToken );
+        Optional< UserDataEntity > user =
+            userDataDao.findByLogin( jwtValidator.extractLoginFromToken( aAuthorizationToken ) );
+        if( user.isPresent() )
+        {
+            return user.get();
+        }
+        else
+        {
+            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_FROM_TOKEN );
+        }
+    }
+
+    public UserDataEntity findUserByEmail( String aEmail )
+    {
+        fieldValidator.checkRequiredField( aEmail );
+        Optional< UserDataEntity > user = userDataDao.findByEmail( aEmail );
+        if( user.isPresent() )
+        {
+            return user.get();
+        }
+        else
+        {
+            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_BY_EMAIL );
+        }
+    }
+
+    public UserDataEntity findUserByLogin( String aLogin )
+    {
+        fieldValidator.checkRequiredField( aLogin );
+        Optional< UserDataEntity > user = userDataDao.findByLogin( aLogin );
+        if( user.isPresent() )
+        {
+            return user.get();
+        }
+        else
+        {
+            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_BY_LOGIN );
+        }
+    }
+
     /**
      * Function checks if given password matches this in database
      *
@@ -395,10 +356,10 @@ public class AuthService
      */
     public boolean checkPassword( UserDataEntity user, String password )
     {
-        return BCrypt.checkpw( password, user.getPassword() );
+        return password != null && BCrypt.checkpw( password, user.getPassword() );
     }
 
-    private String generateResetPasswordToken()
+    private String generateUuidToken()
     {
         return UUID.randomUUID()
             .toString();

@@ -28,23 +28,38 @@ public class EmailService
         this.configuration = configuration;
     }
 
-    public void sendResetPasswordEmail( String recipient, UserDataEntity userEntity )
+    public void sendEmailVerification( UserDataEntity userEntity )
+    {
+        var emailContent = String.format( configuration.getEMAIL_VERIFICATION_TEXT(), userEntity.getLogin(),
+            userEntity.getEmailVerificationToken() );
+        var emailSubject = configuration.getEMAIL_VERIFICATION_SUBJECT();
+        sendEmail( userEntity.getEmail(), emailSubject, emailContent );
+    }
+
+    public void sendResetPasswordEmail( UserDataEntity userEntity )
+    {
+        var emailContent = String.format( configuration.getRESET_PASSWORD_EMAIL_TEXT(), userEntity.getLogin(),
+            userEntity.getResetPasswordToken() );
+        var emailSubject = configuration.getRESET_PASSWORD_EMAIL_SUBJECT();
+        sendEmail( userEntity.getEmail(), emailSubject, emailContent );
+    }
+
+    public void sendEmail( String recipient, String emailSubject, String emailContent )
     {
         try
         {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper messageHelper = new MimeMessageHelper( mimeMessage, "UTF-8" );
-            messageHelper.setText( String.format( configuration.getRESET_PASSWORD_EMAIL_TEXT(),
-                userEntity.getLogin(), userEntity.getResetPasswordToken() ), true );
+            messageHelper.setText( emailContent, true );
             messageHelper.setTo( recipient );
-            messageHelper.setSubject( configuration.getRESET_PASSWORD_EMAIL_SUBJECT() );
+            messageHelper.setSubject( emailSubject );
             emailSender.send( mimeMessage );
-
         }
         catch( Exception aEx )
         {
             logger.error( aEx.getMessage() );
-            throw new ServiceException( ServerResponseCode.STATUS_PASSWORD_EMAIL_FAILED );
+            logger.error( ServerResponseCode.STATUS_EMAIL_SEND_FAILED.getResponseMessage() );
+            // throw new ServiceException( ServerResponseCode.STATUS_EMAIL_SEND_FAILED );
         }
     }
 }

@@ -58,40 +58,35 @@ public class PhotoService
     public void savePhotos( Boolean isPublic, String description, String aAuthorizationToken,
         MultipartFile aFile )
     {
-        var user = authService.findByToken( aAuthorizationToken );
-        if( user.isPresent() )
+        var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
+
+        checkFileFormat( aFile.getOriginalFilename(), List.of( configuration.getSUPPORTED_FORMAT() ) );
+        try (ZipInputStream zipInputStream = new ZipInputStream( aFile.getInputStream() ))
         {
-            checkFileFormat( aFile.getOriginalFilename(), List.of( configuration.getSUPPORTED_FORMAT() ) );
-            try (ZipInputStream zipInputStream = new ZipInputStream( aFile.getInputStream() ))
+            PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, isPublic, description );
+            ZipEntry entry;
+            while( (entry = zipInputStream.getNextEntry()) != null )
             {
-                PhotoDataEntity photoDataEntity = new PhotoDataEntity( user.get(), isPublic, description );
-                ZipEntry entry;
-                while( (entry = zipInputStream.getNextEntry()) != null )
+                if( !entry.isDirectory() )
                 {
-                    if( !entry.isDirectory() )
-                    {
-                        String fileName = entry.getName();
-                        checkFileFormat( fileName, configuration.getSUPPORTED_PHOTO_FORMATS() );
-                        byte[] data = IOUtils.toByteArray( zipInputStream );
-                        PhotoEntity photoEntity = new PhotoEntity( fileName, data );
-                        photoDataEntity.getPhotos()
-                            .add( photoEntity );
-                    }
+                    String fileName = entry.getName();
+                    checkFileFormat( fileName, configuration.getSUPPORTED_PHOTO_FORMATS() );
+                    byte[] data = IOUtils.toByteArray( zipInputStream );
+                    PhotoEntity photoEntity = new PhotoEntity( fileName, data );
+                    photoDataEntity.getPhotos()
+                        .add( photoEntity );
                 }
-                photoDataEntity.sortPhotosByIndex();
-                var gifByte = gifCreator.convertImagesIntoGif( photoDataEntity.getPhotos() );
-                photoDataEntity.setConvertedGif( gifByte );
-                photoDataDao.save( photoDataEntity );
             }
-            catch( IOException aE )
-            {
-                throw new ServiceException( STATUS_WRONG_FILE_FORMAT );
-            }
+            photoDataEntity.sortPhotosByIndex();
+            var gifByte = gifCreator.convertImagesIntoGif( photoDataEntity.getPhotos() );
+            photoDataEntity.setConvertedGif( gifByte );
+            photoDataDao.save( photoDataEntity );
         }
-        else
+        catch( IOException aE )
         {
-            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_FROM_TOKEN );
+            throw new ServiceException( STATUS_WRONG_FILE_FORMAT );
         }
+
     }
 
     public void checkFileFormat( String fileName, List< String > supportedFormats )
@@ -169,65 +164,48 @@ public class PhotoService
 
     public void addToFavourite( String aAuthorizationToken, Long aGifId )
     {
-        var user = authService.findByToken( aAuthorizationToken );
-        if( user.isPresent() )
+        var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
+        var gif = photoDataDao.findGifById( aGifId );
+        if( gif != null )
         {
-            var gif = photoDataDao.findGifById( aGifId );
-            if( gif != null )
+            if( user.getFavouritesGif()
+                .stream()
+                .anyMatch( favouriteGifRecord -> favouriteGifRecord.getPhotoDataId()
+                    .getId()
+                    .equals( aGifId ) ) )
             {
-                if( user.get()
-                    .getFavouritesGif()
-                    .stream()
-                    .anyMatch( favouriteGifRecord -> favouriteGifRecord.getPhotoDataId()
-                        .getId()
-                        .equals( aGifId ) ) )
-                {
-                    throw new ServiceException( STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE );
-                }
-                if( gif.getUserId()
-                    .getLogin()
-                    .equals( user.get()
-                        .getLogin() )
-                    || gif.isPublic() )
-                {
-                    var favouriteGifData = new FavouriteGifDataEntity( user.get(), gif );
-                    favouriteGifDataDao.save( favouriteGifData );
-                }
-                else
-                {
-                    throw new ServiceException( STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED );
-                }
+                throw new ServiceException( STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE );
+            }
+            if( gif.getUserId()
+                .getLogin()
+                .equals( user.getLogin() ) || gif.isPublic() )
+            {
+                var favouriteGifData = new FavouriteGifDataEntity( user, gif );
+                favouriteGifDataDao.save( favouriteGifData );
             }
             else
             {
-                throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+                throw new ServiceException( STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED );
             }
         }
         else
         {
-            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_FROM_TOKEN );
+            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
         }
     }
 
     public void removeFromFavourite( String aAuthorizationToken, Long aGifId )
     {
-        var user = authService.findByToken( aAuthorizationToken );
-        if( user.isPresent() )
+        var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
+
+        var favouriteGifToRemove = favouriteGifDataDao.findUserGif( user.getId(), aGifId );
+        if( favouriteGifToRemove.isPresent() )
         {
-            var favouriteGifToRemove = favouriteGifDataDao.findUserGif( user.get()
-                .getId(), aGifId );
-            if( favouriteGifToRemove.isPresent() )
-            {
-                favouriteGifDataDao.delete( favouriteGifToRemove.get() );
-            }
-            else
-            {
-                throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
-            }
+            favouriteGifDataDao.delete( favouriteGifToRemove.get() );
         }
         else
         {
-            throw new UserNotFoundException( STATUS_USER_NOT_FOUND_FROM_TOKEN );
+            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
         }
     }
 

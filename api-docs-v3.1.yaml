@@ -268,6 +268,47 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PhotoDataDto'
+  /photo360/authorization/emailConfirmationRequest:
+    get:
+      tags:
+      - Authorization controller
+      operationId: sendConfirmEmailRequest
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RequestResponseDto'
+  /photo360/authorization/confirmEmail/{emailVerificationCode}:
+    get:
+      tags:
+      - Authorization controller
+      operationId: confirmEmail
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: emailVerificationCode
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RequestResponseDto'
   /photo360/removeGif/{gifId}:
     delete:
       tags:
@@ -370,6 +411,8 @@ components:
           type: string
         get_token:
           type: string
+        emailVerified:
+          type: boolean
         get_tokenExpirationDate:
           type: string
           format: date-time

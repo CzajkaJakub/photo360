@@ -18,4 +18,7 @@ public interface UserDataDao extends JpaRepository< UserDataEntity, Long >
 
     @Query( "select ud from UserDataEntity ud where ud.email = :aEmail" )
     UserDataEntity findByEmail( @Param( "aEmail" ) String aEmail );
+
+    @Query( "select ud from UserDataEntity ud where ud.resetPasswordToken = :aResetPasswordToken" )
+    UserDataEntity findByResetPasswordToken( @Param( "aResetPasswordToken" ) String aResetPasswordToken );
 }

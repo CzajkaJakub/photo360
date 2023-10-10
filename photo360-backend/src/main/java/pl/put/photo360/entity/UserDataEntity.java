@@ -70,6 +70,12 @@ public class UserDataEntity implements Serializable
     @Column( name = "salt", nullable = false )
     private String salt;
 
+    @Column( name = "reset_password_token_expiration_date" )
+    private Instant resetPasswordTokenExpirationDate;
+
+    @Column( name = "reset_password_token" )
+    private String resetPasswordToken;
+
     @ManyToMany( cascade =
     { CascadeType.MERGE } )
     @JoinTable( name = "user_roles", joinColumns = @JoinColumn( name = "user_id" ), inverseJoinColumns = @JoinColumn( name = "role_id" ) )

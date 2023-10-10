@@ -1,8 +1,8 @@
 package pl.put.photo360.controller;
 
-import static pl.put.photo360.shared.dto.ServerResponseCode.GIF_ADDED_TO_FAVOURITE;
-import static pl.put.photo360.shared.dto.ServerResponseCode.GIF_REMOVED_FROM_FAVOURITE;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_ADDED_TO_FAVOURITE;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_REMOVED;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_REMOVED_FROM_FAVOURITE;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PHOTO_UPLOADED;
 
 import java.util.Collection;
@@ -116,8 +116,8 @@ public class SystemController
         @PathVariable Long gifId )
     {
         photoService.addToFavourite( authorizationToken, gifId );
-        return new ResponseEntity<>( new RequestResponseDto( GIF_ADDED_TO_FAVOURITE ),
-            GIF_ADDED_TO_FAVOURITE.getStatus() );
+        return new ResponseEntity<>( new RequestResponseDto( STATUS_GIF_ADDED_TO_FAVOURITE ),
+            STATUS_GIF_ADDED_TO_FAVOURITE.getStatus() );
     }
 
     @DeleteMapping( "/removeFromFavourite/{gifId}" )
@@ -128,8 +128,8 @@ public class SystemController
         @PathVariable Long gifId )
     {
         photoService.removeFromFavourite( authorizationToken, gifId );
-        return new ResponseEntity<>( new RequestResponseDto( GIF_REMOVED_FROM_FAVOURITE ),
-            GIF_REMOVED_FROM_FAVOURITE.getStatus() );
+        return new ResponseEntity<>( new RequestResponseDto( STATUS_GIF_REMOVED_FROM_FAVOURITE ),
+            STATUS_GIF_REMOVED_FROM_FAVOURITE.getStatus() );
     }
 
     @GetMapping( "/getFavourites" )

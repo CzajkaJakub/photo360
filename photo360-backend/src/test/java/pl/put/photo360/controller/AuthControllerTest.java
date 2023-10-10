@@ -549,7 +549,6 @@ class AuthControllerTest
                     .concat( gmailSuffix );
             var registerRequestDto = new RegisterRequestDto( testLoginUser, testEmailUser, testPasswordUser );
             var wrongLoginRequestDto = new LoginRequestDto( testLoginUser, testPasswordWrongUser );
-            var loginRequestDto = new LoginRequestDto( testLoginUser, testPasswordWrongUser );
             var expectedResultCode = new RequestResponseDto( ServerResponseCode.STATUS_ACCOUNT_LOCKED );
 
             // WHEN
@@ -560,7 +559,7 @@ class AuthControllerTest
                     new HttpEntity<>( wrongLoginRequestDto, httpHeaders ), RequestResponseDto.class ) );
 
             var response = restTemplate.exchange( loginEndpointPath, HttpMethod.POST,
-                new HttpEntity<>( loginRequestDto, httpHeaders ), RequestResponseDto.class );
+                new HttpEntity<>( wrongLoginRequestDto, httpHeaders ), RequestResponseDto.class );
 
             // Then
             assertEquals( expectedResultCode, response.getBody() );

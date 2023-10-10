@@ -61,14 +61,14 @@ public class AuthService
 
     @Autowired
     public AuthService( UserDataDao aUserDataDao, UserRoleDao aUserRoleDao, JwtValidator aJwtValidator,
-        Configuration aConfiguration, FieldValidator aFieldValidator, EmailService emailService )
+        Configuration aConfiguration, FieldValidator aFieldValidator, EmailService aEmailService )
     {
         userDataDao = aUserDataDao;
         userRoleDao = aUserRoleDao;
         jwtValidator = aJwtValidator;
         configuration = aConfiguration;
         fieldValidator = aFieldValidator;
-        this.emailService = emailService;
+        emailService = aEmailService;
     }
 
     /**
@@ -215,7 +215,6 @@ public class AuthService
         }
     }
 
-    @Transactional
     public LoginResponseDto logIntoSystemAttempt( LoginRequestDto aLoginRequestDto )
     {
         fieldValidator.validateLoginForm( aLoginRequestDto );
@@ -327,7 +326,6 @@ public class AuthService
      * @param user
      *                 user entity
      */
-    @Transactional
     public void increaseFailedAttempts( UserDataEntity user )
     {
         user.increaseFailAttempts();

@@ -52,6 +52,10 @@
             <column name="reset_password_token_expiration_date" type="timestamp with time zone"/>
             <column name="reset_password_token" type="text"/>
 
+            <column name="email_verified" type="boolean" defaultValue="false"/>
+            <column name="email_verification_token" type="text"/>
+            <column name="email_verification_token_expiration_date" type="timestamp with time zone"/>
+
         </createTable>
     </changeSet>
 

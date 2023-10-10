@@ -76,6 +76,15 @@ public class UserDataEntity implements Serializable
     @Column( name = "reset_password_token" )
     private String resetPasswordToken;
 
+    @Column( name = "email_verification_token" )
+    private String emailVerificationToken;
+
+    @Column( name = "email_verified" )
+    private boolean emailVerified;
+
+    @Column( name = "email_verification_token_expiration_date" )
+    private Instant emailVerificationTokenExpirationDate;
+
     @ManyToMany( cascade =
     { CascadeType.MERGE } )
     @JoinTable( name = "user_roles", joinColumns = @JoinColumn( name = "user_id" ), inverseJoinColumns = @JoinColumn( name = "role_id" ) )
@@ -87,15 +96,19 @@ public class UserDataEntity implements Serializable
     @OneToMany( mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private Set< FavouriteGifDataEntity > favouritesGif = new HashSet<>();
 
-    public UserDataEntity( RegisterRequestDto aRegisterRequestDto )
+    public UserDataEntity( RegisterRequestDto aRegisterRequestDto, Set< RoleEntity > aUserRoles,
+        String aEmailVerificationToken )
     {
         salt = BCrypt.gensalt( 10 );
         login = aRegisterRequestDto.getLogin();
         email = aRegisterRequestDto.getEmail();
         password = BCrypt.hashpw( aRegisterRequestDto.getPassword(), salt );
+        emailVerificationToken = aEmailVerificationToken;
         creationDate = Instant.now();
+        roles = aUserRoles;
         failedAttempt = 0;
         isLocked = false;
+        emailVerified = false;
     }
 
     public void increaseFailAttempts()

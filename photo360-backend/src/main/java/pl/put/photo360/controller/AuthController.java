@@ -1,5 +1,7 @@
 package pl.put.photo360.controller;
 
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_SEND_SUCCESSFUL;
+import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_VERIFIED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PASSWORD_CHANGED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_CREATED;
@@ -10,6 +12,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,6 +74,27 @@ public class AuthController
         userAuthService.changeUserPassword( authorizationToken, aPasswordChangeRequestDto );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PASSWORD_CHANGED ),
             STATUS_PASSWORD_CHANGED.getStatus() );
+    }
+
+    @GetMapping( "/confirmEmail/{emailVerificationCode}" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    public ResponseEntity< RequestResponseDto > confirmEmail(
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
+        @PathVariable String emailVerificationCode )
+    {
+        userAuthService.confirmEmail( authorizationToken, emailVerificationCode );
+        return new ResponseEntity<>( new RequestResponseDto( STATUS_EMAIL_VERIFIED ),
+            STATUS_EMAIL_VERIFIED.getStatus() );
+    }
+
+    @GetMapping( "/emailConfirmationRequest" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+    public ResponseEntity< RequestResponseDto > sendConfirmEmailRequest(
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
+    {
+        userAuthService.sendConfirmEmailRequest( authorizationToken );
+        return new ResponseEntity<>( new RequestResponseDto( STATUS_EMAIL_SEND_SUCCESSFUL ),
+            STATUS_EMAIL_SEND_SUCCESSFUL.getStatus() );
     }
 
     @PostMapping( "/resetPasswordRequest" )

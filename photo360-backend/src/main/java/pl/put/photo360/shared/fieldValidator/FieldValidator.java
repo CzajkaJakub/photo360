@@ -70,7 +70,7 @@ public class FieldValidator
         }
     }
 
-    private void checkRequiredField( String aFieldToValidate )
+    public void checkRequiredField( String aFieldToValidate )
     {
         if( aFieldToValidate == null )
         {

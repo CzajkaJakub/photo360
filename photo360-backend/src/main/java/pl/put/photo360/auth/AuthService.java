@@ -9,7 +9,6 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_VERIFIC
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_LOGIN_ALREADY_EXISTS;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PASSWORD_CAN_NOT_BE_THE_SAME;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_RESET_TOKEN_EXPIRED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_STATUS_USER_EMAIL_NOT_VERIFIED;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_EMAIL;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_LOGIN;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_FROM_TOKEN;
@@ -216,7 +215,7 @@ public class AuthService
         }
         else
         {
-            throw new ServiceException( STATUS_STATUS_USER_EMAIL_NOT_VERIFIED );
+            throw new ServiceException( STATUS_EMAIL_NOT_CONFIRMED );
         }
     }
 

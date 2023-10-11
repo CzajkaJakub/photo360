@@ -86,7 +86,6 @@ public class PhotoService
         {
             throw new ServiceException( STATUS_WRONG_FILE_FORMAT );
         }
-
     }
 
     public void checkFileFormat( String fileName, List< String > supportedFormats )

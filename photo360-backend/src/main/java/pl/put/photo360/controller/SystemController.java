@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import pl.put.photo360.service.PhotoService;
 import pl.put.photo360.shared.dto.PhotoDataDto;
@@ -32,7 +34,7 @@ import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 
 @RequestMapping( "/photo360" )
 @RestController( "SystemController" )
-@Tag( name = "Photo360 main functions controller" )
+@Tag( name = "Photo360 main functions controller, each endpoint requires public api key." )
 public class SystemController
 {
     private final PhotoService photoService;
@@ -45,7 +47,12 @@ public class SystemController
 
     @PostMapping( "/uploadPhotos" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint to upload user's photos." )
+    @Operation( summary = "Endpoint allows to upload user's photos to create a gif, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Photos uploaded successful." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token." ),
+        @ApiResponse( responseCode = "406", description = "Unsupported zip/file format." ) } )
     public ResponseEntity< RequestResponseDto > uploadPhoto(
         @RequestParam( value = "zipFile" ) MultipartFile aFile,
         @RequestParam( value = "isPublic" ) Boolean isPublic,
@@ -59,7 +66,10 @@ public class SystemController
 
     @GetMapping( "/downloadPublicGifs" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint to get all public gifs." )
+    @Operation( summary = "Endpoint to get all public gifs, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Returns public gifs." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ) } )
     public ResponseEntity< Collection< PhotoDataDto > > downloadPublicGif()
     {
         var publicGifs = photoService.downloadPublicGifs();
@@ -68,7 +78,11 @@ public class SystemController
 
     @GetMapping( "/downloadPrivateGifs" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint to get all private gifs, which are owned by logged user." )
+    @Operation( summary = "Endpoint to get all private gifs, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Returns private gifs." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token." ) } )
     public ResponseEntity< Collection< PhotoDataDto > > downloadPrivateGif(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {
@@ -78,7 +92,10 @@ public class SystemController
 
     @GetMapping( "/downloadAllGifs" )
     @RequiredRole( role = UserRoles.ADMIN_ROLE )
-    @Operation( summary = "Endpoint to get all gifs in database, allowed only for admin user." )
+    @Operation( summary = "Endpoint to get all gifs in database, allowed only for admin role, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Returns gifs." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ) } )
     public ResponseEntity< Collection< PhotoDataDto > > downloadAllGif()
     {
         var gifs = photoService.downloadAllGifs();
@@ -87,7 +104,11 @@ public class SystemController
 
     @DeleteMapping( "/removeGif/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint to remove gif, which is owned by logged user, also allows to remove any gif, if user has admin role" )
+    @Operation( summary = "Endpoint to remove gif, which is owned by currently logged user, also allows to remove any gif, if user has admin role, public api key is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Gif removed." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token." ) } )
     public ResponseEntity< RequestResponseDto > removeUserGif(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
@@ -99,7 +120,12 @@ public class SystemController
 
     @GetMapping( "/downloadGif/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id." )
+    @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Returns gif." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
+        @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
     public ResponseEntity< PhotoDataDto > downloadGif(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
@@ -110,7 +136,13 @@ public class SystemController
 
     @PutMapping( "/addToFavourite/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint used to save public/personal gif to favourite." )
+    @Operation( summary = "Endpoint used to save public/personal gif to favourite, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Gif added to favourite." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
+        @ApiResponse( responseCode = "405", description = "Gif already marked as favourite." ),
+        @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
     public ResponseEntity< RequestResponseDto > addToFavourite(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
@@ -122,7 +154,11 @@ public class SystemController
 
     @DeleteMapping( "/removeFromFavourite/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint used to remove public/personal gif from favourites." )
+    @Operation( summary = "Endpoint used to remove public/personal gif from favourite, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Removed gif from favourite." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token, gif was not marked as favourite." ) } )
     public ResponseEntity< RequestResponseDto > removeFromFavourite(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
@@ -134,7 +170,11 @@ public class SystemController
 
     @GetMapping( "/getFavourites" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint which returns all user's favourites gifs." )
+    @Operation( summary = "Endpoint which returns all user's favourites gifs, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Removed gif from favourite." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token" ) } )
     public ResponseEntity< Collection< PhotoDataDto > > getFavourites(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {

@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.shared.dto.LoginRequestDto;
@@ -35,7 +37,7 @@ import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 
 @RequestMapping( "/photo360/authorization" )
 @RestController( "AuthController" )
-@Tag( name = "Authorization controller" )
+@Tag( name = "Authorization controller, each endpoint requires public api key." )
 public class AuthController
 {
     private final AuthService userAuthService;
@@ -47,7 +49,12 @@ public class AuthController
     }
 
     @PostMapping( "/login" )
-    @Operation( summary = "Endpoint to authenticate user, public api key is required" )
+    @Operation( summary = "Endpoint to authenticate user, public api key is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "202", description = "Successfully logged, returns jwt token with user details." ),
+        @ApiResponse( responseCode = "401", description = "Wrong password." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by given login." ),
+        @ApiResponse( responseCode = "423", description = "User account is locked, too many unsuccessful login requests." ) } )
     public ResponseEntity< LoginResponseDto > logIn( @RequestBody LoginRequestDto aLoginRequestDto )
     {
         var loginServerResponse = userAuthService.logIntoSystemAttempt( aLoginRequestDto );
@@ -55,7 +62,11 @@ public class AuthController
     }
 
     @PostMapping( "/register" )
-    @Operation( summary = "Endpoint which requires public api key to create new user" )
+    @Operation( summary = "Create new user, public api key is required." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "201", description = "Successfully registered." ),
+        @ApiResponse( responseCode = "406", description = "Wrong field validation." ),
+        @ApiResponse( responseCode = "403", description = "User was given login/email already exists." ) } )
     public ResponseEntity< RequestResponseDto > createNewUser(
         @RequestBody RegisterRequestDto aRegisterRequestDto )
     {
@@ -66,7 +77,13 @@ public class AuthController
 
     @PutMapping( "/changePassword" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-    @Operation( summary = "Endpoint which requires public api key to authenticate user" )
+    @Operation( summary = "Endpoint allows to change currently logged user, public api key and jwt token is required to authenticate user." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Password successfully changed." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role or passed wrong old password." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token." ),
+        @ApiResponse( responseCode = "406", description = "Wrong field validation." ),
+        @ApiResponse( responseCode = "409", description = "Email is not verified." ) } )
     public ResponseEntity< RequestResponseDto > changePassword(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @RequestBody PasswordChangeRequestDto aPasswordChangeRequestDto )
@@ -78,6 +95,12 @@ public class AuthController
 
     @GetMapping( "/confirmEmail/{emailVerificationCode}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
+    @Operation( summary = "Endpoint allows to verify user email, required to pass public api key, currently logged user's jwt token and verification code." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Email successfully verified." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token." ),
+        @ApiResponse( responseCode = "406", description = "Email already verified/email token not valid/email token expired." ) } )
     public ResponseEntity< RequestResponseDto > confirmEmail(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable String emailVerificationCode )
@@ -89,6 +112,12 @@ public class AuthController
 
     @GetMapping( "/emailConfirmationRequest" )
     @RequiredRole( role = UserRoles.USER_ROLE )
+    @Operation( summary = "Endpoint allows to send verification email to currently logged user, required to pass public api key and currently logged user's jwt token." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Email successfully send." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token." ),
+        @ApiResponse( responseCode = "406", description = "Email already verified" ) } )
     public ResponseEntity< RequestResponseDto > sendConfirmEmailRequest(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {
@@ -98,6 +127,11 @@ public class AuthController
     }
 
     @PostMapping( "/resetPasswordRequest" )
+    @Operation( summary = "Endpoint allows to send email request for password request, required to pass public api key." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Email successfully send." ),
+        @ApiResponse( responseCode = "409", description = "Email is not verified verified" ),
+        @ApiResponse( responseCode = "423", description = "User account is locked, too many unsuccessful login requests." ) } )
     public ResponseEntity< RequestResponseDto > requestPasswordReset(
         @RequestBody ResetPasswordRequestDto request )
     {
@@ -107,11 +141,18 @@ public class AuthController
     }
 
     @PostMapping( "/resetPasswordConfirmation" )
+    @Operation( summary = "Endpoint allows to reset user's password, required to pass public api key, new password and generated reset password token." )
+    @ApiResponses( value =
+    { @ApiResponse( responseCode = "200", description = "Password changed successful." ),
+        @ApiResponse( responseCode = "401", description = "UReset token expired." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by given email." ),
+        @ApiResponse( responseCode = "406", description = "Passed same password as old one/validation not passed." ),
+        @ApiResponse( responseCode = "409", description = "Email is not verified verified" ) } )
     public ResponseEntity< RequestResponseDto > confirmPasswordReset(
         @RequestBody ResetPasswordRequestDto request )
     {
         userAuthService.resetPassword( request );
-        return new ResponseEntity<>( new RequestResponseDto( STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND ),
-            STATUS_RESET_PASSWORD_REQUEST_EMAIL_SEND.getStatus() );
+        return new ResponseEntity<>( new RequestResponseDto( STATUS_PASSWORD_CHANGED ),
+            STATUS_PASSWORD_CHANGED.getStatus() );
     }
 }

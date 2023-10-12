@@ -26,11 +26,11 @@ export class GifService {
   }
 
   removeGif(gifData: GitDataDto) {
-    this.networkService.sendGetRequest<RequestResponse>(ConnectionConstants.removeGifUrl, null, [gifData.gifId]);
+    this.networkService.sendDeleteRequest<RequestResponse>(ConnectionConstants.removeGifUrl, null, [gifData.gifId]);
   }
 
   removeGifFromFavourite(gifData: GitDataDto) {
-    this.networkService.sendGetRequest<RequestResponse>(ConnectionConstants.removeFromFavouriteUrl, null, [gifData.gifId]);
+    this.networkService.sendDeleteRequest<RequestResponse>(ConnectionConstants.removeFromFavouriteUrl, null, [gifData.gifId]);
   }
 
   fetchFavouriteGifs() {

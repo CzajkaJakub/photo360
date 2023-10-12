@@ -1,18 +1,19 @@
 import {Injectable} from "@angular/core";
 import {HttpErrorResponse} from "@angular/common/http";
-import {throwError} from "rxjs";
+import {catchError, throwError} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {ResponseStatus} from "./response-codes";
 import {RequestResponse} from "../interface/interface";
 import {Constants} from "../properties/properties";
+import {AuthService} from "../auth/auth.service";
 
 @Injectable()
-export class ResponseStatusHandler {
+export class ResponseTranslationStatusHandler {
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private authService: AuthService) {
   }
 
-  public handleStatusMessage(status: RequestResponse) {
+  public handleStatusMessage(status: any) {
     let message;
     switch (status.responseMessage) {
       case ResponseStatus.STATUS_USER_CREATED:
@@ -32,10 +33,11 @@ export class ResponseStatusHandler {
    * @private
    */
   public handleRequestError(errorResult: HttpErrorResponse) {
-    console.log(errorResult)
     let errorMessage = this.translate.instant('error.unknownErrorOccurred');
+
     if (!errorResult.status) {
       errorMessage = this.translate.instant(Constants.serverStatusTranslatePrefix.concat(ResponseStatus.STATUS_SERVER_UNREACHABLE));
+      this.authService.forceLogoutConfirmation()
     } else {
       switch (errorResult.error.responseMessage) {
         case ResponseStatus.STATUS_ACCOUNT_LOCKED:
@@ -58,6 +60,7 @@ export class ResponseStatusHandler {
           break;
         case ResponseStatus.STATUS_AUTH_TOKEN_NOT_VALID:
           errorMessage = this.translate.instant(Constants.serverStatusTranslatePrefix.concat(ResponseStatus.STATUS_AUTH_TOKEN_NOT_VALID));
+          this.authService.forceLogoutConfirmation()
           break;
         case ResponseStatus.STATUS_WRONG_PUBLIC_API_KEY:
           errorMessage = this.translate.instant(Constants.serverStatusTranslatePrefix.concat(ResponseStatus.STATUS_WRONG_PUBLIC_API_KEY));

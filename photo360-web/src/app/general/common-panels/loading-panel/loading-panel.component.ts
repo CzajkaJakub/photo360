@@ -1,10 +1,5 @@
 import {AfterViewInit, Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
-
-/**
- *  Value of time [ms], used to skip loading panel if time of request is very short.
- */
-
-const timeOfDataRequestWithoutShowingPanel = 2000
+import {Constants} from "../../properties/properties";
 
 @Component({
   selector: 'app-loading-panel',
@@ -26,13 +21,13 @@ export class LoadingPanelComponent implements AfterViewInit {
   }
 
   /**
-   *          Function shows panel with label, after {@link timeOfDataRequestWithoutShowingPanel} time
+   *          Function shows panel with label, after {@link Constants.timeOfDataRequestWithoutShowingPanel} time
    *          to avoid flashed of label when request time is short.
    * @private
    */
   private showDelayedLoadingPanel() {
     setTimeout(() => {
       this.renderer.setStyle(this.componentContainers.nativeElement, "visibility", "visible")
-    }, timeOfDataRequestWithoutShowingPanel)
+    }, Constants.timeOfDataRequestWithoutShowingPanel)
   }
 }

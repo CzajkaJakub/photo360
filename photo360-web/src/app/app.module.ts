@@ -26,12 +26,14 @@ import {AuthService} from "./general/auth/auth.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthGuard} from "./general/auth/auth-guard.service";
 import {NotLoggedInGuard} from "./general/auth/not.logged-guard.service";
-import {ResponseStatusHandler} from "./general/response-status/response-status.service";
+import {ResponseTranslationStatusHandler} from "./general/response-status/response-status.service";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS} from "@angular/material-moment-adapter";
 import {ImageUploaderService} from "./general/data/image.uploader.service";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {MatNativeDateModule} from "@angular/material/core";
+import {NetworkService} from "./general/network/network-server.service";
+import {LoadingPanelComponent} from "./general/common-panels/loading-panel/loading-panel.component";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 
 @NgModule({
@@ -49,6 +51,7 @@ import {MatNativeDateModule} from "@angular/material/core";
     LoggingPanelSpinnerComponent,
     RegisterPanelComponent,
     ChangePasswordPanelComponent,
+    LoadingPanelComponent
   ],
   imports: [
     BrowserModule,
@@ -62,8 +65,9 @@ import {MatNativeDateModule} from "@angular/material/core";
     I18nModule,
     MatDialogModule,
     PasswordStrengthMeterModule.forRoot(),
+    MatProgressSpinnerModule,
   ],
-  providers: [MatSnackBar, ToastComponent, AuthService, AuthGuard, NotLoggedInGuard, ResponseStatusHandler, ImageUploaderService, MatDialog,
+  providers: [NetworkService, MatSnackBar, ToastComponent, AuthService, AuthGuard, NotLoggedInGuard, ResponseTranslationStatusHandler, ImageUploaderService, MatDialog,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,

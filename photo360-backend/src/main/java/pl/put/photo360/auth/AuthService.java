@@ -37,6 +37,7 @@ import pl.put.photo360.shared.dto.LoginRequestDto;
 import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
+import pl.put.photo360.shared.dto.ResetPasswordConfirmationDto;
 import pl.put.photo360.shared.dto.ResetPasswordRequestDto;
 import pl.put.photo360.shared.dto.UserRoles;
 import pl.put.photo360.shared.exception.AccountLockedException;
@@ -196,7 +197,7 @@ public class AuthService
         }
     }
 
-    public void resetPassword( ResetPasswordRequestDto request )
+    public void resetPassword( ResetPasswordConfirmationDto request )
     {
         var userEntity = findUserByEmail( request.getEmail() );
         if( userEntity.isEmailVerified() )

@@ -31,6 +31,7 @@ import pl.put.photo360.shared.dto.LoginResponseDto;
 import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
 import pl.put.photo360.shared.dto.RegisterRequestDto;
 import pl.put.photo360.shared.dto.RequestResponseDto;
+import pl.put.photo360.shared.dto.ResetPasswordConfirmationDto;
 import pl.put.photo360.shared.dto.ResetPasswordRequestDto;
 import pl.put.photo360.shared.dto.UserRoles;
 import pl.put.photo360.tokenValidator.annotation.RequiredRole;
@@ -149,7 +150,7 @@ public class AuthController
         @ApiResponse( responseCode = "406", description = "Passed same password as old one/validation not passed." ),
         @ApiResponse( responseCode = "409", description = "Email is not verified verified" ) } )
     public ResponseEntity< RequestResponseDto > confirmPasswordReset(
-        @RequestBody ResetPasswordRequestDto request )
+        @RequestBody ResetPasswordConfirmationDto request )
     {
         userAuthService.resetPassword( request );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PASSWORD_CHANGED ),

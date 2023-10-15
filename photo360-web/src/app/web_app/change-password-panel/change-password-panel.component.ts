@@ -4,6 +4,7 @@ import {AuthService} from "../../general/auth/auth.service";
 import {passwordMatchingValidator} from "../../general/directives/password-validator.directive";
 import {emailValidator} from "../../general/directives/email-regex-validator.directive";
 import {emailInputValidator} from "../../general/directives/email-input-validator.directive";
+import {ChangePasswordRequestDto} from "../../general/interface/interface";
 
 @Component({
   selector: 'app-change-password-panel',
@@ -37,7 +38,13 @@ export class ChangePasswordPanelComponent implements OnInit {
     const oldPassword = this.changePasswordForm.value.oldPassword;
     const newPassword = this.changePasswordForm.value.password;
     this.isLoading = true;
-    this.authService.changePassword(email, oldPassword, newPassword).subscribe(
+
+    let requestDto: ChangePasswordRequestDto = {
+      newPassword: newPassword,
+      oldPassword: oldPassword
+    }
+
+    this.authService.changePassword(requestDto).subscribe(
       (resultMessage) => {
         this.isLoading = false;
         this.info = resultMessage.responseMessage;

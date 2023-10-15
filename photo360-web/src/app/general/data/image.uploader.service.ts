@@ -1,14 +1,12 @@
 import {Injectable} from "@angular/core";
 import {ConnectionConstants} from "../properties/properties";
-import {ResponseTranslationStatusHandler} from "../response-status/response-status.service";
 import {RequestResponse, UploadImagesConfig} from "../interface/interface";
 import {NetworkService} from "../network/network-server.service";
 
 @Injectable()
 export class ImageUploaderService {
 
-  constructor(private networkService: NetworkService,
-              private responseStatusHandler: ResponseTranslationStatusHandler) {
+  constructor(private networkService: NetworkService) {
   }
 
   uploadFilesWithImages(uploadImagesConfig: UploadImagesConfig) {

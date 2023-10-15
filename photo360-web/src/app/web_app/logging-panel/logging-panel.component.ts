@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../general/auth/auth.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
+import {ChangePasswordRequestDto, LoginRequestDto} from "../../general/interface/interface";
 
 @Component({
   selector: 'app-logging-panel',
@@ -33,13 +34,14 @@ export class LoggingPanelComponent implements OnInit {
     const login = this.loginForm.value.login;
     const password = this.loginForm.value.password;
     this.isLoading = true;
-    this.authService.authorize(login, password).subscribe(
-      () => {
-        this.isLoading = false;
-      }, errorMessage => {
-        this.isLoading = false;
-        this.error = errorMessage
-      })
+
+
+    let requestDto: LoginRequestDto = {
+      login: login,
+      password: password
+    }
+
+    this.authService.authorize(requestDto)
   }
 
   private initForm() {

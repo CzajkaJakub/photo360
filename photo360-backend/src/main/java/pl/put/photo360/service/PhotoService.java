@@ -6,7 +6,6 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_ALREADY_A
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_IS_NOT_PUBLIC;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_FROM_TOKEN;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_FILE_FORMAT;
 
 import java.io.IOException;
@@ -30,7 +29,6 @@ import pl.put.photo360.entity.PhotoEntity;
 import pl.put.photo360.shared.converter.GifCreator;
 import pl.put.photo360.shared.dto.PhotoDataDto;
 import pl.put.photo360.shared.exception.ServiceException;
-import pl.put.photo360.shared.exception.UserNotFoundException;
 import pl.put.photo360.shared.utils.JwtValidator;
 
 @Service
@@ -118,78 +116,60 @@ public class PhotoService
     public PhotoDataDto downloadGifById( String aAuthorizationToken, Long aGifId )
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
-        var gif = photoDataDao.findGifById( aGifId );
-        if( gif != null )
+        var gif = findGifById( aGifId );
+
+        if( gif.isPublic() || gif.getUserId()
+            .getLogin()
+            .equals( userId ) )
         {
-            if( gif.isPublic() || gif.getUserId()
-                .getLogin()
-                .equals( userId ) )
-            {
-                return getExternalFromInternal( gif );
-            }
-            else
-            {
-                throw new ServiceException( STATUS_GIF_IS_NOT_PUBLIC );
-            }
+            return getExternalFromInternal( gif );
         }
         else
         {
-            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+            throw new ServiceException( STATUS_GIF_IS_NOT_PUBLIC );
         }
     }
 
     public void removeUserGif( String aAuthorizationToken, Long aGifId )
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
-        var gif = photoDataDao.findGifById( aGifId );
-        if( gif != null )
+        var gif = findGifById( aGifId );
+
+        if( gif.getUserId()
+            .getLogin()
+            .equals( userId ) || jwtValidator.isAdminRoleToken( aAuthorizationToken ) )
         {
-            if( gif.getUserId()
-                .getLogin()
-                .equals( userId ) || jwtValidator.isAdminRoleToken( aAuthorizationToken ) )
-            {
-                photoDataDao.delete( gif );
-            }
-            else
-            {
-                throw new ServiceException( STATUS_DELETE_NOT_ALLOWED );
-            }
+            photoDataDao.delete( gif );
         }
         else
         {
-            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+            throw new ServiceException( STATUS_DELETE_NOT_ALLOWED );
         }
     }
 
     public void addToFavourite( String aAuthorizationToken, Long aGifId )
     {
         var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
-        var gif = photoDataDao.findGifById( aGifId );
-        if( gif != null )
+        var gif = findGifById( aGifId );
+
+        if( user.getFavouritesGif()
+            .stream()
+            .anyMatch( favouriteGifRecord -> favouriteGifRecord.getPhotoDataId()
+                .getId()
+                .equals( aGifId ) ) )
         {
-            if( user.getFavouritesGif()
-                .stream()
-                .anyMatch( favouriteGifRecord -> favouriteGifRecord.getPhotoDataId()
-                    .getId()
-                    .equals( aGifId ) ) )
-            {
-                throw new ServiceException( STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE );
-            }
-            if( gif.getUserId()
-                .getLogin()
-                .equals( user.getLogin() ) || gif.isPublic() )
-            {
-                var favouriteGifData = new FavouriteGifDataEntity( user, gif );
-                favouriteGifDataDao.save( favouriteGifData );
-            }
-            else
-            {
-                throw new ServiceException( STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED );
-            }
+            throw new ServiceException( STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE );
+        }
+        if( gif.getUserId()
+            .getLogin()
+            .equals( user.getLogin() ) || gif.isPublic() )
+        {
+            var favouriteGifData = new FavouriteGifDataEntity( user, gif );
+            favouriteGifDataDao.save( favouriteGifData );
         }
         else
         {
-            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+            throw new ServiceException( STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED );
         }
     }
 
@@ -232,6 +212,19 @@ public class PhotoService
     {
         var gifs = photoDataDao.findAll();
         return getExternalFromInternal( gifs );
+    }
+
+    public PhotoDataEntity findGifById( Long aGifId )
+    {
+        var gif = photoDataDao.findGifById( aGifId );
+        if( gif.isPresent() )
+        {
+            return gif.get();
+        }
+        else
+        {
+            throw new ServiceException( STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS );
+        }
     }
 
     private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )

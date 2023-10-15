@@ -37,6 +37,8 @@ export const Constants = {
     ]
   ),
 
+  STATUS_SERVER_UNREACHABLE: "SERVER_UNREACHABLE",
+  STATUS_AUTH_TOKEN_NOT_VALID: "AUTH_TOKEN_NOT_VALID",
   publicApiKey: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJpt3Bs6fwMc2S7h5cpIP6nkG9DsISp0MfKTpwtt31/a1ZF2+Pv8I0f64CIcBj4GPWP4PWWe9nI4WSUKkf5CdxT6sUh4toHvBemfQiSw3sCaHfgL0WBrdqhqIxYUwsedb9ZuCXRp6acmbvqttNI2r5V8rsuT0nTDYCnVTl5OgnQIDAQAB",
   serverStatusTranslatePrefix: "status.",
   toastDisplayTime: 4000,

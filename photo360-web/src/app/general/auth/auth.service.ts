@@ -55,7 +55,7 @@ export class AuthService {
 
   createNewUser(registerRequestData: RegisterRequestDto) {
     registerRequestData.password.normalize("NFKC");
-    this.networkService.sendPostRequest<RequestResponse>(ConnectionConstants.createNewUserUrl, registerRequestData, null, null);
+    return this.networkService.sendPostRequest<RequestResponse>(ConnectionConstants.createNewUserUrl, registerRequestData, null, null);
   }
 
   resetUserPassword(resetPasswordRequestDto: ResetPasswordRequestDto) {
@@ -81,7 +81,7 @@ export class AuthService {
   changePassword(userData: ChangePasswordRequestDto) {
     userData.oldPassword.normalize("NFKC");
     userData.newPassword.normalize("NFKC");
-    this.networkService.sendPutRequest<RequestResponse>(ConnectionConstants.createNewUserUrl, userData, null, null);
+    return this.networkService.sendPutRequest<RequestResponse>(ConnectionConstants.createNewUserUrl, userData, null, null);
   }
 
   /**
@@ -91,7 +91,7 @@ export class AuthService {
   autoLogout(expirationDuration: number) {
     this.tokenExpirationTimer = setTimeout(() => {
       this.toast.openSnackBar(this.translate.instant('toast.loggedOut'))
-      this.clearCache()
+      this.logout()
     }, expirationDuration)
   }
 
@@ -121,13 +121,19 @@ export class AuthService {
    */
   logoutConfirmation() {
     if (this.showConfirmToast(this.translate.instant('toast.logOutConfirm'))) {
-      this.clearCache()
+      this.logout()
       this.toast.openSnackBar(this.translate.instant('toast.loggedOut'))
     }
   }
 
-  forceLogoutConfirmation() {
-    this.clearCache()
+  /**
+   *               Function clears our choices (saved time series ids, ranges, directions etc.)
+   */
+  logout() {
+    this.user.next(null!);
+    this.router.navigate(['/auth'])
+    this.tokenExpirationTimer = null
+    localStorage.clear()
   }
 
   /**
@@ -153,16 +159,5 @@ export class AuthService {
    */
   private showConfirmToast(message: string) {
     return confirm(message);
-  }
-
-  /**
-   *               Function clears our choices (saved time series ids, ranges, directions etc.)
-   * @private
-   */
-  private clearCache() {
-    this.user.next(null!);
-    this.router.navigate(['/auth'])
-    this.tokenExpirationTimer = null
-    localStorage.clear()
   }
 }

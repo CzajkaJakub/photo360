@@ -10,34 +10,34 @@ export class GifService {
   }
 
   fetchGif(number: number) {
-    this.networkService.sendGetRequest<GitDataDto>(ConnectionConstants.downloadGifUrl, null, [number]);
+    return this.networkService.sendGetRequest<GitDataDto>(ConnectionConstants.downloadGifUrl, null, [number]);
   }
 
   fetchPublicGifs() {
-    this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPublicGifs, null, null);
+    return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPublicGifs, null, null);
   }
 
   fetchPrivateGifs() {
-    this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPrivateGifs, null, null);
+    return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPrivateGifs, null, null);
   }
 
   fetchAllGifs() {
-    this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadAllGifsUrl, null, null);
+    return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadAllGifsUrl, null, null);
   }
 
   removeGif(gifData: GitDataDto) {
-    this.networkService.sendDeleteRequest<RequestResponse>(ConnectionConstants.removeGifUrl, null, [gifData.gifId]);
+    return this.networkService.sendDeleteRequest<RequestResponse>(ConnectionConstants.removeGifUrl, null, [gifData.gifId]);
   }
 
   removeGifFromFavourite(gifData: GitDataDto) {
-    this.networkService.sendDeleteRequest<RequestResponse>(ConnectionConstants.removeFromFavouriteUrl, null, [gifData.gifId]);
+    return this.networkService.sendDeleteRequest<RequestResponse>(ConnectionConstants.removeFromFavouriteUrl, null, [gifData.gifId]);
   }
 
   fetchFavouriteGifs() {
-    this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.getFavouriteGifsUrl, null, null);
+    return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.getFavouriteGifsUrl, null, null);
   }
 
   addGifToFavourite(gifData: GitDataDto) {
-    this.networkService.sendGetRequest<RequestResponse>(ConnectionConstants.addToFavouriteUrl, null, [gifData.gifId]);
+    return this.networkService.sendGetRequest<RequestResponse>(ConnectionConstants.addToFavouriteUrl, null, [gifData.gifId]);
   }
 }

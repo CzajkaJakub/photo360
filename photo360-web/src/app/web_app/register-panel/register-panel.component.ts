@@ -5,6 +5,7 @@ import {passwordMatchingValidator} from "../../general/directives/password-valid
 import {emailValidator} from "../../general/directives/email-regex-validator.directive";
 import {emailInputValidator} from "../../general/directives/email-input-validator.directive";
 import {ActivatedRoute, Router} from "@angular/router";
+import {LoginRequestDto, RegisterRequestDto} from "../../general/interface/interface";
 
 @Component({
   selector: 'app-register-panel',
@@ -36,7 +37,13 @@ export class RegisterPanelComponent implements OnInit {
     const email = this.registrationForm.value.email;
     this.isLoading = true;
 
-    this.authService.createNewUser(login, password, email).subscribe(
+    let requestDto: RegisterRequestDto = {
+      email: email,
+      login: login,
+      password: password
+    }
+
+    this.authService.createNewUser(requestDto).subscribe(
       (result) => {
         this.isLoading = false;
         this.router.navigate(['/auth'], {

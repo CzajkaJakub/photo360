@@ -31,5 +31,10 @@ public class Configuration
     private String RESET_PASSWORD_EMAIL_TEXT;
     private String EMAIL_VERIFICATION_TEXT;
     private String EMAIL_VERIFICATION_SUBJECT;
+    private Boolean SAVING_GIF_PHOTOS;
+    private Boolean GIF_LOOP_CONTINUOUSLY;
+    private Boolean GIF_CREATE_TRANSPARENT_BACKGROUND;
+    private Integer GIF_PHOTOS_SAVED_STEP;
+    private Integer GIF_TIME_BETWEEN_FRAME;
     private List< String > SUPPORTED_PHOTO_FORMATS;
 }

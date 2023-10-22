@@ -64,9 +64,4 @@ public class PhotoDataEntity implements Serializable
         this.description = aDescription;
         this.uploadDateTime = Instant.now();
     }
-
-    public void sortPhotosByIndex()
-    {
-        photos.sort( new PhotoEntityComparator() );
-    }
 }

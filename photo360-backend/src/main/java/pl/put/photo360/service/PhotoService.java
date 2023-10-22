@@ -8,9 +8,12 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_IS_NOT_PU
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_FILE_FORMAT;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -30,6 +33,7 @@ import pl.put.photo360.shared.converter.GifCreator;
 import pl.put.photo360.shared.dto.PhotoDataDto;
 import pl.put.photo360.shared.exception.ServiceException;
 import pl.put.photo360.shared.utils.JwtValidator;
+import pl.put.photo360.shared.utils.PhotoEntityComparator;
 
 @Service
 public class PhotoService
@@ -62,6 +66,7 @@ public class PhotoService
         try (ZipInputStream zipInputStream = new ZipInputStream( aFile.getInputStream() ))
         {
             PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, isPublic, description );
+            List< PhotoEntity > photos = new ArrayList<>();
             ZipEntry entry;
             while( (entry = zipInputStream.getNextEntry()) != null )
             {
@@ -71,13 +76,21 @@ public class PhotoService
                     checkFileFormat( fileName, configuration.getSUPPORTED_PHOTO_FORMATS() );
                     byte[] data = IOUtils.toByteArray( zipInputStream );
                     PhotoEntity photoEntity = new PhotoEntity( fileName, data );
-                    photoDataEntity.getPhotos()
-                        .add( photoEntity );
+                    photos.add( photoEntity );
                 }
             }
-            photoDataEntity.sortPhotosByIndex();
-            var gifByte = gifCreator.convertImagesIntoGif( photoDataEntity.getPhotos() );
+            photos.sort( new PhotoEntityComparator() );
+            var gifByte = gifCreator.convertImagesIntoGif( photos );
             photoDataEntity.setConvertedGif( gifByte );
+
+            if( configuration.getSAVING_GIF_PHOTOS() )
+            {
+                photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
+                    .filter( i -> i % configuration.getGIF_PHOTOS_SAVED_STEP() == 0 )
+                    .mapToObj( photos::get )
+                    .collect( Collectors.toList() ) );
+            }
+
             photoDataDao.save( photoDataEntity );
         }
         catch( IOException aE )

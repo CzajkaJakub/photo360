@@ -134,6 +134,22 @@ public class SystemController
         return new ResponseEntity<>( gifData, HttpStatus.OK );
     }
 
+    @GetMapping( "/downloadGifFile/{gifId}" )
+    @RequiredRole( role = UserRoles.USER_ROLE )
+//    @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id, public api key and currently logged user's jwt token is required." )
+    @ApiResponses( value =
+            { @ApiResponse( responseCode = "200", description = "Returns gif." ),
+                    @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+                    @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
+                    @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
+    public ResponseEntity< byte[] > downloadGifFile(
+            @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
+            @PathVariable Long gifId )
+    {
+        var gifData = photoService.downloadGifById( authorizationToken, gifId );
+        return new ResponseEntity<>( gifData.getGif(), HttpStatus.OK );
+    }
+
     @PutMapping( "/addToFavourite/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
     @Operation( summary = "Endpoint used to save public/personal gif to favourite, public api key and currently logged user's jwt token is required." )

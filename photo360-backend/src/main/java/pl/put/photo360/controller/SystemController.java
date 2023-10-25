@@ -57,9 +57,10 @@ public class SystemController
         @RequestParam( value = "zipFile" ) MultipartFile aFile,
         @RequestParam( value = "isPublic" ) Boolean isPublic,
         @RequestParam( value = "description" ) String description,
+        @RequestParam( value = "backgroundColor", required = false ) String backgroundColor,
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {
-        photoService.savePhotos( isPublic, description, authorizationToken, aFile );
+        photoService.savePhotos( isPublic, description, authorizationToken, aFile, backgroundColor );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PHOTO_UPLOADED ),
             STATUS_PHOTO_UPLOADED.getStatus() );
     }
@@ -136,15 +137,16 @@ public class SystemController
 
     @GetMapping( "/downloadGifFile/{gifId}" )
     @RequiredRole( role = UserRoles.USER_ROLE )
-//    @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id, public api key and currently logged user's jwt token is required." )
+    // @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id,
+    // public api key and currently logged user's jwt token is required." )
     @ApiResponses( value =
-            { @ApiResponse( responseCode = "200", description = "Returns gif." ),
-                    @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
-                    @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
-                    @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
+    { @ApiResponse( responseCode = "200", description = "Returns gif." ),
+        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
+        @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
+        @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
     public ResponseEntity< byte[] > downloadGifFile(
-            @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
-            @PathVariable Long gifId )
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
+        @PathVariable Long gifId )
     {
         var gifData = photoService.downloadGifById( authorizationToken, gifId );
         return new ResponseEntity<>( gifData.getGif(), HttpStatus.OK );

@@ -6,18 +6,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.Buffer;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.put.photo360.config.Configuration;
@@ -34,7 +30,8 @@ public class GifCreator
         this.configuration = configuration;
     }
 
-    public byte[] convertImagesIntoGif( List< PhotoEntity > aImages ) throws IOException
+    public byte[] convertImagesIntoGif( List< PhotoEntity > aImages, String backgroundColorHex )
+        throws IOException
     {
         try
         {
@@ -47,7 +44,17 @@ public class GifCreator
             for( PhotoEntity photoEntity : aImages )
             {
                 InputStream inputByteStream = new ByteArrayInputStream( photoEntity.getPhoto() );
-                BufferedImage bufferedImage = ImageIO.read( inputByteStream );
+                BufferedImage bufferedImage;
+                if( backgroundColorHex == null )
+                {
+                    bufferedImage = ImageIO.read( inputByteStream );
+                }
+                else
+                {
+                    Color backgroundColor = Color.decode( backgroundColorHex );
+                    bufferedImage = changeBackgroundColor( ImageIO.read( inputByteStream ), backgroundColor );
+                }
+
                 writer.writeToSequence( bufferedImage );
             }
 
@@ -60,5 +67,30 @@ public class GifCreator
         {
             throw new ServiceException( STATUS_WRONG_FILE_FORMAT );
         }
+    }
+
+    private BufferedImage changeBackgroundColor( BufferedImage inputImage, Color backgroundColor )
+    {
+        BufferedImage tmpImg =
+            new BufferedImage( inputImage.getWidth(), inputImage.getHeight(), BufferedImage.TYPE_4BYTE_ABGR );
+
+        for( int w = 0; w < inputImage.getWidth(); w++ )
+        {
+            for( int h = 0; h < inputImage.getHeight(); h++ )
+            {
+                Color pixelColor = new Color( inputImage.getRGB( w, h ), true );
+
+                if( pixelColor.getAlpha() == 0 )
+                {
+                    tmpImg.setRGB( w, h, backgroundColor.getRGB() );
+                }
+                else
+                {
+                    tmpImg.setRGB( w, h, inputImage.getRGB( w, h ) );
+                }
+            }
+        }
+
+        return tmpImg;
     }
 }

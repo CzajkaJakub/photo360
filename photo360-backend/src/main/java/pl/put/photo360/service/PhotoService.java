@@ -8,7 +8,6 @@ import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_IS_NOT_PU
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
 import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_FILE_FORMAT;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +57,7 @@ public class PhotoService
     }
 
     public void savePhotos( Boolean isPublic, String description, String aAuthorizationToken,
-        MultipartFile aFile )
+        MultipartFile aFile, String backgroundColor )
     {
         var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
 
@@ -80,7 +79,7 @@ public class PhotoService
                 }
             }
             photos.sort( new PhotoEntityComparator() );
-            var gifByte = gifCreator.convertImagesIntoGif( photos );
+            var gifByte = gifCreator.convertImagesIntoGif( photos, backgroundColor );
             photoDataEntity.setConvertedGif( gifByte );
 
             if( configuration.getSAVING_GIF_PHOTOS() )

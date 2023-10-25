@@ -47,9 +47,7 @@ public class GifCreator
             for( PhotoEntity photoEntity : aImages )
             {
                 InputStream inputByteStream = new ByteArrayInputStream( photoEntity.getPhoto() );
-                BufferedImage bufferedImage = transparentBG( ImageIO.read( inputByteStream ),
-                    configuration.getGIF_CREATE_TRANSPARENT_BACKGROUND() );
-
+                BufferedImage bufferedImage = ImageIO.read( inputByteStream );
                 writer.writeToSequence( bufferedImage );
             }
 
@@ -62,43 +60,5 @@ public class GifCreator
         {
             throw new ServiceException( STATUS_WRONG_FILE_FORMAT );
         }
-    }
-
-    public static BufferedImage transparentBG( BufferedImage image, Boolean transparent )
-    {
-        BufferedImage tmpImg =
-            new BufferedImage( image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR );
-        for( int w = 0; w < image.getWidth(); w++ )
-        {
-            for( int h = 0; h < image.getHeight(); h++ )
-            {
-                var pixelColor = new Color( image.getRGB( w, h ) );
-                var isGreyOrWhitePixel = isGrayOrWhite( pixelColor );
-                if( isGreyOrWhitePixel && transparent )
-                {
-                    tmpImg.setRGB( w, h, 0 );
-                }
-                else if( isGreyOrWhitePixel )
-                {
-                    tmpImg.setRGB( w, h, Color.WHITE.getRGB() );
-                }
-                else
-                {
-                    tmpImg.setRGB( w, h, image.getRGB( w, h ) );
-                }
-            }
-        }
-        return tmpImg;
-    }
-
-    private static boolean isGrayOrWhite( Color color )
-    {
-        int tolerance = 180;
-
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
-
-        return r >= tolerance && g >= tolerance && b >= tolerance;
     }
 }

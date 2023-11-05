@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.internet.MimeMessage;
 import pl.put.photo360.config.Configuration;
+import pl.put.photo360.dto.ServerResponseCode;
 import pl.put.photo360.entity.UserDataEntity;
-import pl.put.photo360.shared.dto.ServerResponseCode;
-import pl.put.photo360.shared.exception.ServiceException;
 
 @Service
 public class EmailService

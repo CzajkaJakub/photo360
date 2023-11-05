@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.1.2</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>pl.put.photo360</groupId>
+    <artifactId>photo360</artifactId>
+    <version>${revision}</version>
+    <name>photo360</name>
+    <description>photo360</description>
+    <packaging>pom</packaging>
+
+    <properties>
+        <java.version>18</java.version>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
+        <liquibase.version>4.16.0</liquibase.version>
+        <maven-resources-plugin-version>3.2.0</maven-resources-plugin-version>
+        <javax.servelet.version>3.1.0</javax.servelet.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
+        <postgresql.version>42.5.1</postgresql.version>
+        <lombok.version>1.18.24</lombok.version>
+        <jakarta.validation.version>3.0.2</jakarta.validation.version>
+        <auth0.version>4.4.0</auth0.version>
+        <springframework.security.version>6.1.3</springframework.security.version>
+        <org.apache.httpcomponents.client5.version>5.2.1</org.apache.httpcomponents.client5.version>
+        <appache.commons.io.version>2.11.0</appache.commons.io.version>
+        <spring-boot-starter-mail.version>3.1.4</spring-boot-starter-mail.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <revision>1.0.0-SNAPSHOT</revision>
+    </properties>
+
+    <modules>
+        <module>photo360-backend</module>
+        <module>photo360-common</module>
+        <module>photo360-client</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>${org.apache.httpcomponents.client5.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin-version}</version>
+
+                <executions>
+                    <execution>
+                        <id>copy_properties_file_to_backend_server</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${basedir}/photo360-backend/src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/docker-sys-photo360-conf</directory>
+                                    <includes>
+                                        <include>application.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy_properties_file_to_common</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${basedir}/photo360-common/src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/docker-sys-photo360-conf</directory>
+                                    <includes>
+                                        <include>application.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy_properties_file_to_client</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${basedir}/photo360-client/src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/docker-sys-photo360-conf</directory>
+                                    <includes>
+                                        <include>application.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

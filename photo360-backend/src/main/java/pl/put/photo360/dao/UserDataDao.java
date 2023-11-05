@@ -1,15 +1,15 @@
 package pl.put.photo360.dao;
 
-import jakarta.transaction.Transactional;
+import java.time.Instant;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import jakarta.transaction.Transactional;
 import pl.put.photo360.entity.UserDataEntity;
-
-import java.time.Instant;
-import java.util.Optional;
 
 /**
  * User data

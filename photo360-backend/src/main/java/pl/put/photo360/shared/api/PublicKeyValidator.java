@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import pl.put.photo360.config.Configuration;
-import pl.put.photo360.shared.dto.ServerResponseCode;
-import pl.put.photo360.shared.exception.WrongPublicApiKeyException;
+import pl.put.photo360.dto.ServerResponseCode;
+import pl.put.photo360.exception.WrongPublicApiKeyException;
 
 @Service
 public class PublicKeyValidator implements ConstraintValidator< PublicKeyConstraint, String >

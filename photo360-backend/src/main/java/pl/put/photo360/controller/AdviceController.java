@@ -4,21 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import pl.put.photo360.shared.dto.RequestResponseDto;
-import pl.put.photo360.shared.exception.AccountLockedException;
-import pl.put.photo360.shared.exception.EmailExistsInDbException;
-import pl.put.photo360.shared.exception.ExpiredTokenException;
-import pl.put.photo360.shared.exception.FieldValidationException;
-import pl.put.photo360.shared.exception.LoginExistsInDbException;
-import pl.put.photo360.shared.exception.MissingRequiredFieldsException;
-import pl.put.photo360.shared.exception.ServiceException;
-import pl.put.photo360.shared.exception.TokenNotValidException;
-import pl.put.photo360.shared.exception.UnauthorizedRoleException;
-import pl.put.photo360.shared.exception.UserNotFoundException;
-import pl.put.photo360.shared.exception.WrongCredentialsException;
-import pl.put.photo360.shared.exception.WrongPasswordException;
-import pl.put.photo360.shared.exception.WrongPublicApiKeyException;
-import pl.put.photo360.shared.fieldValidator.FieldValidator;
+import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.exception.*;
+import pl.put.photo360.fieldValidator.FieldValidator;
 
 @RestControllerAdvice
 public class AdviceController

@@ -8,7 +8,7 @@
     {{'general.main-text' | translate}}
   </h4>
 
-  <select [(ngModel)]="pickedGif" (ngModelChange)="handleSelectionChange()">
+  <select (ngModelChange)="handleSelectionChange()" [(ngModel)]="pickedGif">
     <option value="1">1</option>
     <option value="2">2</option>
     <option value="3">3</option>

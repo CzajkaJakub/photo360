@@ -23,12 +23,12 @@
 
     <input #fileUpload (change)="uploadFilesWithImages($event)" accept=".zip" class="file-input" type="file">
 
-    <mat-checkbox class="margin" [(ngModel)]="data.isPublic">{{'header.isPublic' | translate}}</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.isPublic" class="margin">{{'header.isPublic' | translate}}</mat-checkbox>
 
   </section>
 
   <div mat-dialog-actions style="justify-content: center">
-    <button [mat-dialog-close]=data [disabled]="data.description == null || data.zipFile == null" class="navbarButton"
+    <button [disabled]="data.description == null || data.zipFile == null" [mat-dialog-close]=data class="navbarButton"
             color="primary"
             mat-flat-button>{{'general.upload' | translate}}</button>
 

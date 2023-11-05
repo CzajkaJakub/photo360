@@ -1,4 +1,4 @@
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {catchError, exhaustMap, Observable, take, tap, throwError} from "rxjs";
 import {AuthService} from "../auth/auth.service";
 import {Injectable} from "@angular/core";

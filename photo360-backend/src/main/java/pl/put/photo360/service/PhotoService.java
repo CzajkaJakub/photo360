@@ -1,12 +1,6 @@
 package pl.put.photo360.service;
 
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_DELETE_NOT_ALLOWED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_IS_NOT_PUBLIC;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_FILE_FORMAT;
+import static pl.put.photo360.dto.ServerResponseCode.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,14 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
+import pl.put.photo360.converter.GifCreator;
 import pl.put.photo360.dao.FavouriteGifDataDao;
 import pl.put.photo360.dao.PhotoDataDao;
+import pl.put.photo360.dto.PhotoDataDto;
 import pl.put.photo360.entity.FavouriteGifDataEntity;
 import pl.put.photo360.entity.PhotoDataEntity;
 import pl.put.photo360.entity.PhotoEntity;
-import pl.put.photo360.shared.converter.GifCreator;
-import pl.put.photo360.shared.dto.PhotoDataDto;
-import pl.put.photo360.shared.exception.ServiceException;
+import pl.put.photo360.exception.ServiceException;
 import pl.put.photo360.shared.utils.JwtValidator;
 import pl.put.photo360.shared.utils.PhotoEntityComparator;
 
@@ -241,13 +235,16 @@ public class PhotoService
 
     private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
     {
-        return new PhotoDataDto( aPhotoDataEntity );
+        return new PhotoDataDto( aPhotoDataEntity.getConvertedGif(), aPhotoDataEntity.getId(),
+            aPhotoDataEntity.isPublic(), aPhotoDataEntity.getUserId()
+                .getLogin(),
+            aPhotoDataEntity.getDescription(), aPhotoDataEntity.getUploadDateTime() );
     }
 
     private List< PhotoDataDto > getExternalFromInternal( List< PhotoDataEntity > listOfPhotoDataEntities )
     {
         return listOfPhotoDataEntities.stream()
-            .map( PhotoDataDto::new )
+            .map( this::getExternalFromInternal )
             .collect( Collectors.toList() );
     }
 }

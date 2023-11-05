@@ -1,8 +1,6 @@
 package pl.put.photo360.shared.utils;
 
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_AUTH_TOKEN_EXPIRED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_AUTH_TOKEN_NOT_VALID;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_UNAUTHORIZED_ROLE;
+import static pl.put.photo360.dto.ServerResponseCode.*;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -23,12 +21,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 import lombok.Getter;
 import pl.put.photo360.config.Configuration;
+import pl.put.photo360.dto.UserRoles;
 import pl.put.photo360.entity.RoleEntity;
 import pl.put.photo360.entity.UserDataEntity;
-import pl.put.photo360.shared.dto.UserRoles;
-import pl.put.photo360.shared.exception.ExpiredTokenException;
-import pl.put.photo360.shared.exception.TokenNotValidException;
-import pl.put.photo360.shared.exception.UnauthorizedRoleException;
+import pl.put.photo360.exception.ExpiredTokenException;
+import pl.put.photo360.exception.TokenNotValidException;
+import pl.put.photo360.exception.UnauthorizedRoleException;
 
 @Service
 @Getter

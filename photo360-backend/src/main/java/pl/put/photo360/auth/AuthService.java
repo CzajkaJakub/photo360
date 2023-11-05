@@ -1,18 +1,6 @@
 package pl.put.photo360.auth;
 
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_ACCOUNT_LOCKED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_ALREADY_EXISTS;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_ALREADY_VERIFIED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_NOT_CONFIRMED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_VERIFICATION_TOKEN_EXPIRED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_EMAIL_VERIFICATION_TOKEN_NOT_VALID;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_LOGIN_ALREADY_EXISTS;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PASSWORD_CAN_NOT_BE_THE_SAME;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_RESET_TOKEN_EXPIRED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_EMAIL;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_BY_LOGIN;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_USER_NOT_FOUND_FROM_TOKEN;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_WRONG_PASSWORD;
+import static pl.put.photo360.dto.ServerResponseCode.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -30,23 +18,12 @@ import jakarta.transaction.Transactional;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dao.UserDataDao;
 import pl.put.photo360.dao.UserRoleDao;
+import pl.put.photo360.dto.*;
 import pl.put.photo360.entity.RoleEntity;
 import pl.put.photo360.entity.UserDataEntity;
+import pl.put.photo360.exception.*;
+import pl.put.photo360.fieldValidator.FieldValidator;
 import pl.put.photo360.service.EmailService;
-import pl.put.photo360.shared.dto.LoginRequestDto;
-import pl.put.photo360.shared.dto.LoginResponseDto;
-import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
-import pl.put.photo360.shared.dto.RegisterRequestDto;
-import pl.put.photo360.shared.dto.ResetPasswordConfirmationDto;
-import pl.put.photo360.shared.dto.ResetPasswordRequestDto;
-import pl.put.photo360.shared.dto.UserRoles;
-import pl.put.photo360.shared.exception.AccountLockedException;
-import pl.put.photo360.shared.exception.EmailExistsInDbException;
-import pl.put.photo360.shared.exception.LoginExistsInDbException;
-import pl.put.photo360.shared.exception.ServiceException;
-import pl.put.photo360.shared.exception.UserNotFoundException;
-import pl.put.photo360.shared.exception.WrongPasswordException;
-import pl.put.photo360.shared.fieldValidator.FieldValidator;
 import pl.put.photo360.shared.utils.JwtValidator;
 
 /**

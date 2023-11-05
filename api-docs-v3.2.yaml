@@ -3,22 +3,22 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://localhost:8095
-  description: Generated server url
+  - url: http://localhost:8095
+    description: Generated server url
 paths:
   /photo360/authorization/changePassword:
     put:
       tags:
-      - "Authorization controller, each endpoint requires public api key."
+        - "Authorization controller, each endpoint requires public api key."
       summary: "Endpoint allows to change currently logged user, public api key and\
         \ jwt token is required to authenticate user."
       operationId: changePassword
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -60,22 +60,22 @@ paths:
   /photo360/addToFavourite/{gifId}:
     put:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint used to save public/personal gif to favourite, public api\
         \ key and currently logged user's jwt token is required."
       operationId: addToFavourite
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
-      - name: gifId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: gifId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "401":
           description: Passed jwt token not valid/expired/unauthorized role.
@@ -110,32 +110,32 @@ paths:
   /photo360/uploadPhotos:
     post:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint allows to upload user's photos to create a gif, public api\
         \ key and currently logged user's jwt token is required."
       operationId: uploadPhoto
       parameters:
-      - name: isPublic
-        in: query
-        required: true
-        schema:
-          type: boolean
-      - name: description
-        in: query
-        required: true
-        schema:
-          type: string
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
+        - name: isPublic
+          in: query
+          required: true
+          schema:
+            type: boolean
+        - name: description
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
               required:
-              - zipFile
+                - zipFile
               type: object
               properties:
                 zipFile:
@@ -169,7 +169,7 @@ paths:
   /photo360/authorization/resetPasswordRequest:
     post:
       tags:
-      - "Authorization controller, each endpoint requires public api key."
+        - "Authorization controller, each endpoint requires public api key."
       summary: "Endpoint allows to send email request for password request, required\
         \ to pass public api key."
       operationId: requestPasswordReset
@@ -201,7 +201,7 @@ paths:
   /photo360/authorization/resetPasswordConfirmation:
     post:
       tags:
-      - "Authorization controller, each endpoint requires public api key."
+        - "Authorization controller, each endpoint requires public api key."
       summary: "Endpoint allows to reset user's password, required to pass public\
         \ api key, new password and generated reset password token."
       operationId: confirmPasswordReset
@@ -245,7 +245,7 @@ paths:
   /photo360/authorization/register:
     post:
       tags:
-      - "Authorization controller, each endpoint requires public api key."
+        - "Authorization controller, each endpoint requires public api key."
       summary: "Create new user, public api key is required."
       operationId: createNewUser
       requestBody:
@@ -276,7 +276,7 @@ paths:
   /photo360/authorization/login:
     post:
       tags:
-      - "Authorization controller, each endpoint requires public api key."
+        - "Authorization controller, each endpoint requires public api key."
       summary: "Endpoint to authenticate user, public api key is required."
       operationId: logIn
       requestBody:
@@ -313,16 +313,16 @@ paths:
   /photo360/getFavourites:
     get:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint which returns all user's favourites gifs, public api key\
         \ and currently logged user's jwt token is required."
       operationId: getFavourites
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
       responses:
         "404":
           description: User was not found by passed token
@@ -351,7 +351,7 @@ paths:
   /photo360/downloadPublicGifs:
     get:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint to get all public gifs, public api key and currently logged\
         \ user's jwt token is required."
       operationId: downloadPublicGif
@@ -375,16 +375,16 @@ paths:
   /photo360/downloadPrivateGifs:
     get:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint to get all private gifs, public api key and currently logged\
         \ user's jwt token is required."
       operationId: downloadPrivateGif
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Returns private gifs.
@@ -413,22 +413,22 @@ paths:
   /photo360/downloadGif/{gifId}:
     get:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint to get specific public gif or private owned by logged user\
         \ by id, public api key and currently logged user's jwt token is required."
       operationId: downloadGif
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
-      - name: gifId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: gifId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "401":
           description: Passed jwt token not valid/expired/unauthorized role.
@@ -457,7 +457,7 @@ paths:
   /photo360/downloadAllGifs:
     get:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint to get all gifs in database, allowed only for admin role,\
         \ public api key and currently logged user's jwt token is required."
       operationId: downloadAllGif
@@ -481,16 +481,16 @@ paths:
   /photo360/authorization/emailConfirmationRequest:
     get:
       tags:
-      - "Authorization controller, each endpoint requires public api key."
+        - "Authorization controller, each endpoint requires public api key."
       summary: "Endpoint allows to send verification email to currently logged user,\
         \ required to pass public api key and currently logged user's jwt token."
       operationId: sendConfirmEmailRequest
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Email successfully send.
@@ -519,21 +519,21 @@ paths:
   /photo360/authorization/confirmEmail/{emailVerificationCode}:
     get:
       tags:
-      - "Authorization controller, each endpoint requires public api key."
+        - "Authorization controller, each endpoint requires public api key."
       summary: "Endpoint allows to verify user email, required to pass public api\
         \ key, currently logged user's jwt token and verification code."
       operationId: confirmEmail
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
-      - name: emailVerificationCode
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: emailVerificationCode
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "401":
           description: Passed jwt token not valid/expired/unauthorized.
@@ -562,22 +562,22 @@ paths:
   /photo360/removeGif/{gifId}:
     delete:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint to remove gif, which is owned by currently logged user, also\
         \ allows to remove any gif, if user has admin role, public api key is required."
       operationId: removeUserGif
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
-      - name: gifId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: gifId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: Gif removed.
@@ -600,22 +600,22 @@ paths:
   /photo360/removeFromFavourite/{gifId}:
     delete:
       tags:
-      - "Photo360 main functions controller, each endpoint requires public api key."
+        - "Photo360 main functions controller, each endpoint requires public api key."
       summary: "Endpoint used to remove public/personal gif from favourite, public\
         \ api key and currently logged user's jwt token is required."
       operationId: removeFromFavourite
       parameters:
-      - name: Authorization
-        in: header
-        required: false
-        schema:
-          type: string
-      - name: gifId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
+        - name: Authorization
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: gifId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "401":
           description: Passed jwt token not valid/expired/unauthorized role.

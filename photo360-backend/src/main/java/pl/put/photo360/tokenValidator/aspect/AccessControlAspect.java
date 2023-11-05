@@ -2,18 +2,18 @@ package pl.put.photo360.tokenValidator.aspect;
 
 import java.util.Objects;
 
+import org.apache.hc.core5.http.HttpHeaders;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
-import pl.put.photo360.shared.dto.UserRoles;
+import pl.put.photo360.dto.UserRoles;
 import pl.put.photo360.shared.utils.JwtValidator;
 import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 

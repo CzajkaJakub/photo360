@@ -1,9 +1,6 @@
 package pl.put.photo360.controller;
 
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_ADDED_TO_FAVOURITE;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_REMOVED;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_GIF_REMOVED_FROM_FAVOURITE;
-import static pl.put.photo360.shared.dto.ServerResponseCode.STATUS_PHOTO_UPLOADED;
+import static pl.put.photo360.dto.ServerResponseCode.*;
 
 import java.util.Collection;
 
@@ -11,25 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import pl.put.photo360.dto.PhotoDataDto;
+import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.dto.UserRoles;
 import pl.put.photo360.service.PhotoService;
-import pl.put.photo360.shared.dto.PhotoDataDto;
-import pl.put.photo360.shared.dto.RequestResponseDto;
-import pl.put.photo360.shared.dto.UserRoles;
 import pl.put.photo360.tokenValidator.annotation.RequiredRole;
 
 @RequestMapping( "/photo360" )

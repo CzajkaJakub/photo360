@@ -9,16 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.ClassOrderer;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestClassOrder;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,13 +25,7 @@ import org.springframework.util.MultiValueMap;
 
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
-import pl.put.photo360.shared.dto.LoginRequestDto;
-import pl.put.photo360.shared.dto.LoginResponseDto;
-import pl.put.photo360.shared.dto.PhotoDataDto;
-import pl.put.photo360.shared.dto.RegisterRequestDto;
-import pl.put.photo360.shared.dto.RequestResponseDto;
-import pl.put.photo360.shared.dto.ServerResponseCode;
-import pl.put.photo360.shared.dto.UserRoles;
+import pl.put.photo360.dto.*;
 
 @TestInstance( TestInstance.Lifecycle.PER_CLASS )
 @TestClassOrder( ClassOrderer.OrderAnnotation.class )

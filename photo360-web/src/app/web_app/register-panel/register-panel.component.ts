@@ -5,7 +5,7 @@ import {passwordMatchingValidator} from "../../general/directives/password-valid
 import {emailValidator} from "../../general/directives/email-regex-validator.directive";
 import {emailInputValidator} from "../../general/directives/email-input-validator.directive";
 import {ActivatedRoute, Router} from "@angular/router";
-import {LoginRequestDto, RegisterRequestDto} from "../../general/interface/interface";
+import {RegisterRequestDto} from "../../general/interface/interface";
 
 @Component({
   selector: 'app-register-panel',

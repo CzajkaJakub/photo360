@@ -24,13 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
-import pl.put.photo360.shared.dto.LoginRequestDto;
-import pl.put.photo360.shared.dto.LoginResponseDto;
-import pl.put.photo360.shared.dto.PasswordChangeRequestDto;
-import pl.put.photo360.shared.dto.RegisterRequestDto;
-import pl.put.photo360.shared.dto.RequestResponseDto;
-import pl.put.photo360.shared.dto.ServerResponseCode;
-import pl.put.photo360.shared.dto.UserRoles;
+import pl.put.photo360.dto.*;
 
 @TestInstance( TestInstance.Lifecycle.PER_CLASS )
 @SpringBootTest( webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT )

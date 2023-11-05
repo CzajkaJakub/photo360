@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../general/auth/auth.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
-import {ChangePasswordRequestDto, LoginRequestDto} from "../../general/interface/interface";
+import {LoginRequestDto} from "../../general/interface/interface";
 
 @Component({
   selector: 'app-logging-panel',

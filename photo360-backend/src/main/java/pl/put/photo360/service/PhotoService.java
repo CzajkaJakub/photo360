@@ -150,7 +150,7 @@ public class PhotoService
 
         if( gif.isPublic() || gif.getUserId()
             .getLogin()
-            .equals( userId ) )
+            .equals( userId ) || jwtValidator.isAdminRoleToken(aAuthorizationToken) )
         {
             return getExternalFromInternal( gif );
         }

@@ -7,11 +7,11 @@ import {Subscription} from "rxjs";
 import {AuthService} from "../../general/auth/auth.service";
 
 @Component({
-  selector: 'app-home-page',
-  templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css']
+  selector: 'app-my-photos',
+  templateUrl: './my-photos.component.html',
+  styleUrls: ['./my-photos.component.css']
 })
-export class HomePageComponent implements OnInit, OnDestroy{
+export class MyPhotosComponent implements OnInit, OnDestroy{
 
   gifs: any[] = []
 
@@ -32,8 +32,9 @@ export class HomePageComponent implements OnInit, OnDestroy{
         this.currentlyLoggedUser = user
       }
     });
-    this.gifService.fetchPublicGifs().subscribe(gifDataList => {
+    this.gifService.fetchPrivateGifs().subscribe(gifDataList => {
       this.gifs = gifDataList;
+      console.log(gifDataList);
     });
   }
 

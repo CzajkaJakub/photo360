@@ -13,7 +13,8 @@
     "changePassword": "Change Password",
     "languagePicker": "Choose language",
     "loggedAs": "Logged as : ",
-    "documentation": "Documentation"
+    "documentation": "Documentation",
+    "uploadPhotos": "Upload"
   },
   "logPanel": {
     "usernameField": "Username",

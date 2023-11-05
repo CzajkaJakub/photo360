@@ -14,15 +14,21 @@ export class GifService {
     }
 
     fetchPublicGifs() {
-        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPublicGifs, null, null, null);
+        let previewMode = new Map<string, string>();
+        previewMode.set("previewMode", 'True');
+        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPublicGifs, null, previewMode, null);
     }
 
     fetchPrivateGifs() {
-        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPrivateGifs, null, null, null);
+        let previewMode = new Map<string, string>();
+        previewMode.set("previewMode", 'True');
+        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadPrivateGifs, null, previewMode, null);
     }
 
     fetchAllGifs() {
-        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadAllGifsUrl, null, null, null);
+        let previewMode = new Map<string, string>();
+        previewMode.set("previewMode", 'True');
+        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.downloadAllGifsUrl, null, previewMode, null);
     }
 
     removeGif(gifData: GitDataDto) {
@@ -34,10 +40,12 @@ export class GifService {
     }
 
     fetchFavouriteGifs() {
-        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.getFavouriteGifsUrl, null, null, null);
+        let previewMode = new Map<string, string>();
+        previewMode.set("previewMode", 'True');
+        return this.networkService.sendGetRequest<Array<GitDataDto>>(ConnectionConstants.getFavouriteGifsUrl, null, previewMode, null);
     }
 
     addGifToFavourite(gifData: GitDataDto) {
-        return this.networkService.sendGetRequest<RequestResponse>(ConnectionConstants.addToFavouriteUrl, null, null, [gifData.gifId]);
+        return this.networkService.sendPutRequest<RequestResponse>(ConnectionConstants.addToFavouriteUrl, null, null, null,[gifData.gifId]);
     }
 }

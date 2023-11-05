@@ -64,7 +64,7 @@ mat-sidenav-content {
 .image-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 50px;
+  gap: 50px; /* Odstęp między obrazami */
   justify-content: center;
 }
 
@@ -109,5 +109,8 @@ mat-sidenav-content {
   margin-left: 20px;
   text-align: left;
 }
+
+
+
 
 

@@ -39,20 +39,27 @@ export interface AuthResponseDataDto {
   _token: string,
   _tokenExpirationDate: string,
   _lastLoggedDatetime: Date,
-  roles: string[]
+  userRolesList: string[]
 }
 
 export interface UploadImagesConfig {
   zipFile: File,
   isPublic: Boolean,
-  description: String
+  description: String,
+  title: String,
+  // savePhotos: Boolean,
+  // savePhoto360: Boolean,
+  // backgroundColor: String
 }
 
 export interface GitDataDto {
-  gif: String,
+  gif: string,
   gifId: number,
-  userLogin: String,
+  userLogin: string,
   isPublic: Boolean,
-  description: String,
+  description: string,
   uploadDateTime: number,
+  title: string,
+  listOfPhotos: string[],
+  headPhoto: string
 }

@@ -51,4 +51,7 @@ export const Constants = {
   headersApplicationJson: new HttpHeaders({
     'Content-Type': 'application/json'
   }),
+
+  headersWithFormData: new HttpHeaders({
+  }),
 }

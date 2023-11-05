@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-data-visualizer',
@@ -7,16 +8,17 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 })
 export class DataVisualizerComponent implements OnInit, OnDestroy {
 
-  ngOnInit(): void {
+  constructor(private router: Router) {}
 
+  ngOnInit() {
   }
 
   /**
    *            Function clears subscription, after panel switch.
    */
   ngOnDestroy(): void {
-
   }
+
 }
 
 

@@ -1,12 +1,17 @@
 package pl.put.photo360.service;
 
-import static pl.put.photo360.dto.ServerResponseCode.*;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_DELETE_NOT_ALLOWED;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_IS_NOT_PUBLIC;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_WRONG_FILE_FORMAT;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -51,7 +56,7 @@ public class PhotoService
     }
 
     public void savePhotos( Boolean isPublic, String description, String aAuthorizationToken,
-        MultipartFile aFile, String backgroundColor )
+        MultipartFile aFile, String backgroundColor, Boolean aSavePhotos, Boolean aSavePhoto360 )
     {
         var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
 
@@ -73,15 +78,16 @@ public class PhotoService
                 }
             }
             photos.sort( new PhotoEntityComparator() );
-            var gifByte = gifCreator.convertImagesIntoGif( photos, backgroundColor );
-            photoDataEntity.setConvertedGif( gifByte );
 
-            if( configuration.getSAVING_GIF_PHOTOS() )
+            if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos )
             {
-                photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
-                    .filter( i -> i % configuration.getGIF_PHOTOS_SAVED_STEP() == 0 )
-                    .mapToObj( photos::get )
-                    .collect( Collectors.toList() ) );
+                photoDataEntity.setPhotos( photos );
+            }
+
+            if( configuration.getSAVING_GIF_360() && aSavePhoto360 )
+            {
+                var gifByte = gifCreator.convertImagesIntoGif( photos, backgroundColor );
+                photoDataEntity.setConvertedGif( gifByte );
             }
 
             photoDataDao.save( photoDataEntity );

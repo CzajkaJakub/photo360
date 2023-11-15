@@ -9,7 +9,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.ClassOrderer;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestClassOrder;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +34,13 @@ import org.springframework.util.MultiValueMap;
 
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
-import pl.put.photo360.dto.*;
+import pl.put.photo360.dto.LoginRequestDto;
+import pl.put.photo360.dto.LoginResponseDto;
+import pl.put.photo360.dto.PhotoDataDto;
+import pl.put.photo360.dto.RegisterRequestDto;
+import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.dto.ServerResponseCode;
+import pl.put.photo360.dto.UserRoles;
 
 @TestInstance( TestInstance.Lifecycle.PER_CLASS )
 @TestClassOrder( ClassOrderer.OrderAnnotation.class )
@@ -162,6 +177,8 @@ public class SystemControllerTest
             formData.add( "isPublic", true );
             formData.add( "description", "testDescription" );
             formData.add( "zipFile", fileResource );
+            formData.add( "savePhoto360", true );
+            formData.add( "savePhotos", true );
 
             IntStream.range( 0, amountOfPublicGifsIteration )
                 .forEach( iteration -> restTemplate.exchange( uploadPhotosEndpointPath, HttpMethod.POST,
@@ -1404,6 +1421,8 @@ public class SystemControllerTest
 
             formData.add( "isPublic", true );
             formData.add( "description", "testDescription" );
+            formData.add( "savePhoto360", true );
+            formData.add( "savePhotos", true );
 
             formDataWrongFormat.addAll( formData );
             formDataWrongInput.addAll( formData );

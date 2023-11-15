@@ -1,6 +1,9 @@
 package pl.put.photo360.controller;
 
-import static pl.put.photo360.dto.ServerResponseCode.*;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_ADDED_TO_FAVOURITE;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_REMOVED;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_REMOVED_FROM_FAVOURITE;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_PHOTO_UPLOADED;
 
 import java.util.Collection;
 
@@ -8,7 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,11 +56,14 @@ public class SystemController
     public ResponseEntity< RequestResponseDto > uploadPhoto(
         @RequestParam( value = "zipFile" ) MultipartFile aFile,
         @RequestParam( value = "isPublic" ) Boolean isPublic,
+        @RequestParam( value = "savePhotos" ) Boolean savePhotos,
+        @RequestParam( value = "savePhoto360" ) Boolean savePhoto360,
         @RequestParam( value = "description" ) String description,
         @RequestParam( value = "backgroundColor", required = false ) String backgroundColor,
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {
-        photoService.savePhotos( isPublic, description, authorizationToken, aFile, backgroundColor );
+        photoService.savePhotos( isPublic, description, authorizationToken, aFile, backgroundColor,
+            savePhotos, savePhoto360 );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PHOTO_UPLOADED ),
             STATUS_PHOTO_UPLOADED.getStatus() );
     }
@@ -122,23 +136,6 @@ public class SystemController
     {
         var gifData = photoService.downloadGifById( authorizationToken, gifId );
         return new ResponseEntity<>( gifData, HttpStatus.OK );
-    }
-
-    @GetMapping( "/downloadGifFile/{gifId}" )
-    @RequiredRole( role = UserRoles.USER_ROLE )
-    // @Operation( summary = "Endpoint to get specific public gif or private owned by logged user by id,
-    // public api key and currently logged user's jwt token is required." )
-    @ApiResponses( value =
-    { @ApiResponse( responseCode = "200", description = "Returns gif." ),
-        @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
-        @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
-        @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
-    public ResponseEntity< byte[] > downloadGifFile(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
-        @PathVariable Long gifId )
-    {
-        var gifData = photoService.downloadGifById( authorizationToken, gifId );
-        return new ResponseEntity<>( gifData.getGif(), HttpStatus.OK );
     }
 
     @PutMapping( "/addToFavourite/{gifId}" )

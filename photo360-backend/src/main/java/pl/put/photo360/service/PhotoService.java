@@ -249,7 +249,11 @@ public class PhotoService
         return new PhotoDataDto( aPhotoDataEntity.getConvertedGif(), aPhotoDataEntity.getId(),
             aPhotoDataEntity.isPublic(), aPhotoDataEntity.getUserId()
                 .getLogin(),
-            aPhotoDataEntity.getDescription(), aPhotoDataEntity.getUploadDateTime() );
+            aPhotoDataEntity.getDescription(), aPhotoDataEntity.getUploadDateTime(),
+            aPhotoDataEntity.getPhotos()
+                .stream()
+                .map( PhotoEntity::getPhoto )
+                .collect( Collectors.toSet() ) );
     }
 
     private List< PhotoDataDto > getExternalFromInternal( List< PhotoDataEntity > listOfPhotoDataEntities )

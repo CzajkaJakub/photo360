@@ -57,13 +57,15 @@ public class SystemController
         @RequestParam( value = "zipFile" ) MultipartFile aFile,
         @RequestParam( value = "isPublic" ) Boolean isPublic,
         @RequestParam( value = "savePhotos" ) Boolean savePhotos,
+        @RequestParam( value = "amountOfPhotosToSave" ) Integer amountOfPhotosToSave,
         @RequestParam( value = "savePhoto360" ) Boolean savePhoto360,
         @RequestParam( value = "description" ) String description,
+        @RequestParam( value = "title" ) String title,
         @RequestParam( value = "backgroundColor", required = false ) String backgroundColor,
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
     {
-        photoService.savePhotos( isPublic, description, authorizationToken, aFile, backgroundColor,
-            savePhotos, savePhoto360 );
+        photoService.savePhotos( isPublic, title, description, authorizationToken, aFile, backgroundColor,
+            savePhotos, savePhoto360, amountOfPhotosToSave );
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PHOTO_UPLOADED ),
             STATUS_PHOTO_UPLOADED.getStatus() );
     }

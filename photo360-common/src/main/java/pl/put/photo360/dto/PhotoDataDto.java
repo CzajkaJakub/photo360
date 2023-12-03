@@ -1,6 +1,7 @@
 package pl.put.photo360.dto;
 
 import java.time.Instant;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,4 +20,5 @@ public class PhotoDataDto
     private String userLogin;
     private String description;
     private Instant uploadDateTime;
+    private Set< byte[] > listOfPhotos;
 }

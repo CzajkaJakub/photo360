@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 
-<HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.photo360.gui.controllers.SwitchSceneController">
+<HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.SwitchSceneController">
     <ToolBar fx:id="toolbarMenu" centerShape="false" prefHeight="35.0" snapToPixel="false">
         <items>
             <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene" prefHeight="25.0" prefWidth="63.0" text="Program" />

@@ -33,7 +33,10 @@ public class Main extends Application {
     public void start(Stage stage) {
         try {
 //            Parent root = fxmlLoader.load("scenes/sceneRejestracja.fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneMain.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneLogowanie.fxml"));
+            System.out.println(fxmlLoader.getResources());
+//            fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneMain.fxml"));
+            System.out.println(fxmlLoader.getResources());
             Parent root = fxmlLoader.load();
             Scene mainScene = new Scene(root);
 

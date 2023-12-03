@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -55,15 +56,16 @@ public class PhotoService
         favouriteGifDataDao = aFavouriteGifDataDao;
     }
 
-    public void savePhotos( Boolean isPublic, String description, String aAuthorizationToken,
-        MultipartFile aFile, String backgroundColor, Boolean aSavePhotos, Boolean aSavePhoto360 )
+    public void savePhotos( Boolean isPublic, String aTitle, String description, String aAuthorizationToken,
+        MultipartFile aFile, String backgroundColor, Boolean aSavePhotos, Boolean aSavePhoto360,
+        Integer aAmountOfPhotosToSave )
     {
         var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
 
         checkFileFormat( aFile.getOriginalFilename(), List.of( configuration.getSUPPORTED_FORMAT() ) );
         try (ZipInputStream zipInputStream = new ZipInputStream( aFile.getInputStream() ))
         {
-            PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, isPublic, description );
+            PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, isPublic, description, aTitle );
             List< PhotoEntity > photos = new ArrayList<>();
             ZipEntry entry;
             while( (entry = zipInputStream.getNextEntry()) != null )
@@ -81,7 +83,10 @@ public class PhotoService
 
             if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos )
             {
-                photoDataEntity.setPhotos( photos );
+                photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
+                    .filter( i -> i % photos.size() / aAmountOfPhotosToSave == 0 )
+                    .mapToObj( photos::get )
+                    .toList() );
             }
 
             if( configuration.getSAVING_GIF_360() && aSavePhoto360 )

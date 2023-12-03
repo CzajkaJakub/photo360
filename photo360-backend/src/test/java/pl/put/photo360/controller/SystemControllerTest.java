@@ -176,6 +176,8 @@ public class SystemControllerTest
 
             formData.add( "isPublic", true );
             formData.add( "description", "testDescription" );
+            formData.add( "title", "testTitle" );
+            formData.add( "amountOfPhotosToSave", 1 );
             formData.add( "zipFile", fileResource );
             formData.add( "savePhoto360", true );
             formData.add( "savePhotos", true );
@@ -1421,6 +1423,8 @@ public class SystemControllerTest
 
             formData.add( "isPublic", true );
             formData.add( "description", "testDescription" );
+            formData.add( "title", "testTitle" );
+            formData.add( "amountOfPhotosToSave", 1 );
             formData.add( "savePhoto360", true );
             formData.add( "savePhotos", true );
 

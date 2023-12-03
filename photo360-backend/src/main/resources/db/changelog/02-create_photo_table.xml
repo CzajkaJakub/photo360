@@ -91,4 +91,16 @@
 
     </changeSet>
 
+    <changeSet id="2023-12-03T11:29:32" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="photo_data"/>
+        </preConditions>
+
+        <addColumn tableName="photo_data">
+            <column name="title" type="VARCHAR(255)"/>
+        </addColumn>
+
+    </changeSet>
+
 </databaseChangeLog>

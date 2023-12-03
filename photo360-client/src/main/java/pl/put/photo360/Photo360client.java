@@ -20,6 +20,7 @@ public class Photo360client extends Application
 {
 
     private ConfigurableApplicationContext context;
+    ApplicationContextHolder applicationContextHolder;
 
     @Override
     public void stop() throws Exception
@@ -41,6 +42,9 @@ public class Photo360client extends Application
             .initializers( initializer )
             .run( getParameters().getRaw()
                 .toArray( new String[ 0 ] ) );
+
+        applicationContextHolder = new ApplicationContextHolder();
+        applicationContextHolder.setApplicationContext(context);
     }
 
     @Override
@@ -48,10 +52,9 @@ public class Photo360client extends Application
     {
         try
         {
-
             FXMLLoader fxmlLoader =
-                new FXMLLoader( Photo360client.class.getResource( "scenes/sceneRejestracja.fxml" ) );
-            fxmlLoader.setControllerFactory( context::getBean );
+                    new FXMLLoader( Photo360client.class.getResource( "scenes/sceneLogowanie.fxml" ) );
+            fxmlLoader.setControllerFactory(context::getBean);
             Parent root = fxmlLoader.load();
             Scene mainScene = new Scene( root );
 

@@ -57,7 +57,7 @@ public class SystemController
         @RequestParam( value = "zipFile" ) MultipartFile aFile,
         @RequestParam( value = "isPublic" ) Boolean isPublic,
         @RequestParam( value = "savePhotos" ) Boolean savePhotos,
-        @RequestParam( value = "amountOfPhotosToSave" ) Integer amountOfPhotosToSave,
+        @RequestParam( value = "amountOfPhotosToSave", required = false ) Integer amountOfPhotosToSave,
         @RequestParam( value = "savePhoto360" ) Boolean savePhoto360,
         @RequestParam( value = "description" ) String description,
         @RequestParam( value = "title" ) String title,
@@ -132,12 +132,12 @@ public class SystemController
         @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
         @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
         @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
-    public ResponseEntity< PhotoDataDto > downloadGif(
+    public ResponseEntity< byte[] > downloadGif(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
     {
         var gifData = photoService.downloadGifById( authorizationToken, gifId );
-        return new ResponseEntity<>( gifData, HttpStatus.OK );
+        return new ResponseEntity<>( gifData.getGif(), HttpStatus.OK );
     }
 
     @PutMapping( "/addToFavourite/{gifId}" )

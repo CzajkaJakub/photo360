@@ -34,7 +34,6 @@ public class Configuration
     private Boolean SAVING_GIF_PHOTOS;
     private Boolean SAVING_GIF_360;
     private Boolean GIF_LOOP_CONTINUOUSLY;
-    private Boolean GIF_CREATE_TRANSPARENT_BACKGROUND;
     private Integer GIF_TIME_BETWEEN_FRAME;
     private List< String > SUPPORTED_PHOTO_FORMATS;
 }

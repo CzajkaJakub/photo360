@@ -17,6 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!-- versions -->
         <java.version>18</java.version>
         <maven.compiler.source>18</maven.compiler.source>
         <maven.compiler.target>18</maven.compiler.target>
@@ -32,8 +33,13 @@
         <org.apache.httpcomponents.client5.version>5.2.1</org.apache.httpcomponents.client5.version>
         <appache.commons.io.version>2.11.0</appache.commons.io.version>
         <spring-boot-starter-mail.version>3.1.4</spring-boot-starter-mail.version>
+
+        <!-- project prop -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <revision>1.0.0-SNAPSHOT</revision>
+
+        <!-- default profile-->
+        <spring.profiles.active>local</spring.profiles.active>
     </properties>
 
     <modules>
@@ -72,76 +78,33 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin-version}</version>
+    <profiles>
 
-                <executions>
-                    <execution>
-                        <id>copy_properties_file_to_backend_server</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <overwrite>true</overwrite>
-                            <outputDirectory>${basedir}/photo360-backend/src/main/resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/docker-sys-photo360-conf</directory>
-                                    <includes>
-                                        <include>application.properties</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spring.profiles.active>local</spring.profiles.active>
+                <activatedProperties>local</activatedProperties>
+            </properties>
+        </profile>
 
-                    <execution>
-                        <id>copy_properties_file_to_common</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <overwrite>true</overwrite>
-                            <outputDirectory>${basedir}/photo360-common/src/main/resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/docker-sys-photo360-conf</directory>
-                                    <includes>
-                                        <include>application.properties</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
+        <profile>
+            <id>docker</id>
+            <properties>
+                <spring.profiles.active>docker</spring.profiles.active>
+                <activatedProperties>docker</activatedProperties>
+            </properties>
+        </profile>
 
-                    <execution>
-                        <id>copy_properties_file_to_client</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <overwrite>true</overwrite>
-                            <outputDirectory>${basedir}/photo360-client/src/main/resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/docker-sys-photo360-conf</directory>
-                                    <includes>
-                                        <include>application.properties</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+        <profile>
+            <id>skipTests</id>
+            <properties>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

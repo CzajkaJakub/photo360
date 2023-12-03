@@ -7,7 +7,18 @@ import java.util.Set;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -56,9 +67,6 @@ public class UserDataEntity implements Serializable
     @Column( name = "lock_time" )
     private Instant lockTime;
 
-    @Column( name = "salt", nullable = false )
-    private String salt;
-
     @Column( name = "reset_password_token_expiration_date" )
     private Instant resetPasswordTokenExpirationDate;
 
@@ -88,10 +96,9 @@ public class UserDataEntity implements Serializable
     public UserDataEntity( RegisterRequestDto aRegisterRequestDto, Set< RoleEntity > aUserRoles,
         String aEmailVerificationToken )
     {
-        salt = BCrypt.gensalt( 10 );
         login = aRegisterRequestDto.getLogin();
         email = aRegisterRequestDto.getEmail();
-        password = BCrypt.hashpw( aRegisterRequestDto.getPassword(), salt );
+        password = BCrypt.hashpw( aRegisterRequestDto.getPassword(), BCrypt.gensalt( 10 ) );
         emailVerificationToken = aEmailVerificationToken;
         creationDate = Instant.now();
         roles = aUserRoles;

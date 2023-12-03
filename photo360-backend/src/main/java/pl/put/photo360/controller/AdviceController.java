@@ -5,7 +5,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import pl.put.photo360.dto.RequestResponseDto;
-import pl.put.photo360.exception.*;
+import pl.put.photo360.exception.AccountLockedException;
+import pl.put.photo360.exception.EmailExistsInDbException;
+import pl.put.photo360.exception.ExpiredTokenException;
+import pl.put.photo360.exception.FieldValidationException;
+import pl.put.photo360.exception.LoginExistsInDbException;
+import pl.put.photo360.exception.MissingRequiredFieldsException;
+import pl.put.photo360.exception.ServiceException;
+import pl.put.photo360.exception.TokenNotValidException;
+import pl.put.photo360.exception.UnauthorizedRoleException;
+import pl.put.photo360.exception.UserNotFoundException;
+import pl.put.photo360.exception.WrongCredentialsException;
+import pl.put.photo360.exception.WrongPasswordException;
+import pl.put.photo360.exception.WrongPublicApiKeyException;
 import pl.put.photo360.fieldValidator.FieldValidator;
 
 @RestControllerAdvice

@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ToolBar;
 import javafx.stage.Stage;
 import org.springframework.stereotype.Controller;
-import pl.put.photo360.Main;
+import pl.put.photo360.Photo360client;
 
 import java.io.IOException;
 
@@ -27,22 +27,22 @@ public class SwitchSceneController {
     }
 
     public void switchToLoginScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneLogowanie.fxml"));
-        root = fxmlLoader.load();
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        //String css = this.getClass().getResource("/application.css").toExternalForm();
-        //scene.getStylesheets().add(css);
-
-        stage.setScene(scene);
-        stage.show();
+//        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneLogowanie.fxml"));
+//        root = fxmlLoader.load();
+//
+//        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
+//        scene = new Scene(root);
+//
+//        //String css = this.getClass().getResource("/application.css").toExternalForm();
+//        //scene.getStylesheets().add(css);
+//
+//        stage.setScene(scene);
+//        stage.show();
     }
 
     public void switchToOptionScene(ActionEvent event) throws IOException {
 
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneOpcje.fxml"));
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneOpcje.fxml"));
         root = fxmlLoader.load();
 
 
@@ -60,7 +60,7 @@ public class SwitchSceneController {
     }
 
     public void switchToProgramScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneMain.fxml"));
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneMain.fxml"));
         root = fxmlLoader.load();
 
         stage =(Stage)((Node)event.getSource()).getScene().getWindow();
@@ -75,7 +75,7 @@ public class SwitchSceneController {
     }
 
     public void switchToResetPasswordScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneResetPassword.fxml"));
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneResetPassword.fxml"));
         root = fxmlLoader.load();
 
         stage =(Stage)((Node)event.getSource()).getScene().getWindow();
@@ -89,7 +89,7 @@ public class SwitchSceneController {
     }
 
     public void switchToRegisterScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneRejestracja.fxml"));
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneRejestracja.fxml"));
         root = fxmlLoader.load();
 
         stage =(Stage)((Node)event.getSource()).getScene().getWindow();
@@ -103,7 +103,7 @@ public class SwitchSceneController {
     }
 
     public void switchToScenerioScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneScenariusze.fxml"));
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneScenariusze.fxml"));
         root = fxmlLoader.load();
 
         stage =(Stage)((Node)event.getSource()).getScene().getWindow();
@@ -118,7 +118,7 @@ public class SwitchSceneController {
     }
 
     public void switchToPhotosScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/scenePhotos.fxml"));
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/scenePhotos.fxml"));
         root = fxmlLoader.load();
 
         stage =(Stage)((Node)event.getSource()).getScene().getWindow();
@@ -133,7 +133,7 @@ public class SwitchSceneController {
     }
 
     public void switchToInformationScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneInformacje.fxml"));
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneInformacje.fxml"));
         root = fxmlLoader.load();
 
         stage =(Stage)((Node)event.getSource()).getScene().getWindow();

@@ -1,4 +1,4 @@
-module pl.photo.gui.photo360gui {
+open module pl.photo.gui.photo360 {
     requires javafx.controls;
     requires javafx.fxml;
     requires okhttp3;
@@ -6,10 +6,8 @@ module pl.photo.gui.photo360gui {
     requires spring.context;
     requires spring.beans;
     requires lombok;
-
-    opens pl.put.photo360 to javafx.fxml;
-    exports pl.put.photo360;
-    exports pl.put.photo360.controllers;
-    exports pl.put.photo360.web to com.fasterxml.jackson.databind;
-    opens pl.put.photo360.controllers to javafx.fxml;
+    requires spring.boot.autoconfigure;
+    requires org.slf4j;
+    requires spring.boot;
+    requires spring.core;
 }

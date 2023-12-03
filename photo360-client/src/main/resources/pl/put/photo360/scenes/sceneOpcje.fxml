@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.OptionsSceneController">
+    <children>
+        <fx:include source="modules/MenuBar.fxml" />
+        <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0" />
+
+        <Label alignment="CENTER" layoutX="1.0" layoutY="32.0" prefHeight="69.0" prefWidth="600.0" text="Foto 360" textAlignment="CENTER">
+            <font>
+                <Font size="47.0" />
+            </font>
+        </Label>
+        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="33.0" layoutY="125.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../gifs/gif_(1).gif" />
+            </image>
+        </ImageView>
+      <Slider layoutX="372.0" layoutY="193.0" />
+    </children>
+</AnchorPane>

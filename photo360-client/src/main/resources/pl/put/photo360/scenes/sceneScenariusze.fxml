@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.SceneriosSceneController">
+   <children>
+      <fx:include source="modules/MenuBar.fxml" />
+      <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0" />
+
+      <ScrollPane layoutX="46.0" layoutY="73.0" prefHeight="251.0" prefWidth="223.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="329.0" prefWidth="213.0" />
+        </content>
+      </ScrollPane>
+      <ScrollPane layoutX="354.0" layoutY="74.0" prefHeight="251.0" prefWidth="223.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="329.0" prefWidth="231.0" />
+         </content>
+      </ScrollPane>
+      <Label layoutX="127.0" layoutY="43.0" text="Scenariusze" />
+      <Label layoutX="435.0" layoutY="43.0" text="Komendy" />
+      <Button layoutX="249.0" layoutY="344.0" mnemonicParsing="false" onAction="#switchToProgramScene" text="Załaduj scenariusz" />
+   </children>
+</AnchorPane>

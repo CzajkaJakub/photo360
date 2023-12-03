@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.ProgramSceneController">
+   <children>
+      <fx:include source="modules/MenuBar.fxml" />
+      <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0" />
+
+      <ScrollPane layoutX="31.0" layoutY="85.0" prefHeight="135.0" prefWidth="191.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="135.0" prefWidth="191.0" />
+        </content>
+      </ScrollPane>
+      <AnchorPane layoutX="347.0" layoutY="82.0" prefHeight="147.0" prefWidth="207.0" style="-fx-border-color: black;">
+         <children>
+            <Button layoutX="31.0" layoutY="122.0" mnemonicParsing="false" text="Usuń" />
+            <Button layoutX="122.0" layoutY="122.0" mnemonicParsing="false" text="Dodaj" />
+            <Label layoutX="2.0" layoutY="35.0" text="Typ zdjęcia:" />
+            <ComboBox layoutX="74.0" layoutY="31.0" prefHeight="25.0" prefWidth="125.0" promptText="Zdjęcię 360" visibleRowCount="2" />
+         </children>
+      </AnchorPane>
+      <Button layoutX="92.0" layoutY="291.0" mnemonicParsing="false" text="Zapisz scenariusz" />
+      <Button layoutX="245.0" layoutY="291.0" mnemonicParsing="false" onAction="#switchToScenerioScene" text="Przeglądaj scenariusz" />
+      <Button layoutX="425.0" layoutY="291.0" mnemonicParsing="false" text="Uruchom" />
+   </children>
+</AnchorPane>

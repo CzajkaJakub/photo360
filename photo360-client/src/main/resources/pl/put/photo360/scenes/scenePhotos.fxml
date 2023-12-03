@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.PhotosSceneController">
+   <children>
+      <fx:include source="modules/MenuBar.fxml" />
+
+      <ScrollPane layoutX="357.0" layoutY="60.0" prefHeight="316.0" prefWidth="197.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="314.0" prefWidth="173.0" />
+        </content>
+      </ScrollPane>
+      <AnchorPane layoutX="52.0" layoutY="60.0" prefHeight="316.0" prefWidth="235.0" style="-fx-border-color: black; -fx-border-width: 1;">
+         <children>
+            <ImageView fitHeight="111.0" fitWidth="134.0" layoutX="49.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-color: black;">
+               <image>
+                  <Image url="@../images/OIP.jpg" />
+               </image>
+            </ImageView>
+            <ScrollPane layoutX="18.0" layoutY="222.0" prefHeight="83.0" prefWidth="200.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="65.0" prefWidth="199.0" />
+              </content>
+            </ScrollPane>
+            <Button layoutX="189.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="31.0" text="&gt;" />
+            <Button layoutX="14.0" layoutY="107.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="31.0" text="&lt;" />
+            <Label layoutX="74.0" layoutY="22.0" text="Projekt Zdjęcie 1" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

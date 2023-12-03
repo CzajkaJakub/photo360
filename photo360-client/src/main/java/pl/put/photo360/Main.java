@@ -13,12 +13,6 @@ import org.springframework.context.annotation.Bean;
 import java.util.Objects;
 
 public class Main extends Application {
-//    private final SpringFXMLLoader fxmlLoader;
-//
-//    public Main(SpringFXMLLoader fxmlLoader) {
-//        this.fxmlLoader = fxmlLoader;
-//    }
-
     @Bean
     public OkHttpClient okHttpClient() {
         return new OkHttpClient();
@@ -32,11 +26,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-//            Parent root = fxmlLoader.load("scenes/sceneRejestracja.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneLogowanie.fxml"));
-            System.out.println(fxmlLoader.getResources());
-//            fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/sceneMain.fxml"));
-            System.out.println(fxmlLoader.getResources());
             Parent root = fxmlLoader.load();
             Scene mainScene = new Scene(root);
 

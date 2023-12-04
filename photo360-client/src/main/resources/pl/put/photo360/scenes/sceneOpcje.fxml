@@ -9,9 +9,33 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.Region?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.OptionsSceneController">
     <children>
-        <fx:include source="modules/MenuBar.fxml" />
+        <HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+            <ToolBar fx:id="toolbarMenu" centerShape="false" prefHeight="35.0" snapToPixel="false">
+                <items>
+                    <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene" prefHeight="25.0" prefWidth="63.0" text="Program" />
+                    <Button fx:id="buttonScenerio" mnemonicParsing="false" onAction="#switchToScenerioScene" prefHeight="25.0" prefWidth="79.0" text="Scenariusze" />
+                    <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene" prefHeight="25.0" prefWidth="62.0" text="Zdjęcia" />
+                    <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene" prefHeight="25.0" prefWidth="78.0" text="Informacje" />
+                    <Button fx:id="buttonOption" mnemonicParsing="false" onAction="#switchToOptionScene" prefHeight="25.0" prefWidth="62.0" text="Opcje" />
+                </items>
+            </ToolBar>
+
+            <!-- Elastyczny separator -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Przycisk "Wyloguj" -->
+            <ToolBar centerShape="false" prefHeight="35.0" snapToPixel="false">
+                <items>
+                    <Button mnemonicParsing="false" onAction="#switchToLoginScene" prefHeight="25.0" prefWidth="62.0" text="Wyloguj" />
+                </items>
+            </ToolBar>
+        </HBox>
+
         <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0" />
 
         <Label alignment="CENTER" layoutX="1.0" layoutY="32.0" prefHeight="69.0" prefWidth="600.0" text="Foto 360" textAlignment="CENTER">

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 
 import javafx.application.Application;
 import okhttp3.OkHttpClient;
+import pl.put.photo360.controllers.SwitchSceneController;
 
 @SpringBootApplication( scanBasePackages = "pl.put.photo360" )
 public class Photo360JavaFxApplication

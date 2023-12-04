@@ -48,118 +48,56 @@ public class SwitchSceneController {
         Platform.runLater(button::requestFocus);
     }
 
-    public void switchToLoginScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneLogowanie.fxml"));
+    public void switchScene(ActionEvent event, String scenePath) throws IOException {
+        switchScene(event, scenePath, -1);
+    }
+
+    public void switchScene(ActionEvent event, String scenePath, int index) throws IOException {
+        fxmlLoader = new FXMLLoader(Photo360client.class.getResource(scenePath));
         fxmlLoader.setControllerFactory(context::getBean);
         root = fxmlLoader.load();
 
         stage =(Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
 
+        if (index > -1) {
+            toolBar = (ToolBar) scene.lookup("#toolbarMenu");
+            setToolbarTab(toolBar, index);
+        }
+
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void switchToLoginScene(ActionEvent event) throws IOException {
+        switchScene(event, "scenes/sceneLogowanie.fxml");
     }
 
     public void switchToOptionScene(ActionEvent event) throws IOException {
-
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneOpcje.fxml"));
-        fxmlLoader.setControllerFactory(context::getBean);
-        root = fxmlLoader.load();
-
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        toolBar = (ToolBar) scene.lookup("#toolbarMenu");
-        setToolbarTab(toolBar, 4);
-
-        stage.setScene(scene);
-        stage.show();
-
-
+        switchScene(event, "scenes/sceneOpcje.fxml", 4);
     }
 
     public void switchToProgramScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneMain.fxml"));
-        fxmlLoader.setControllerFactory(context::getBean);
-        root = fxmlLoader.load();
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        toolBar = (ToolBar) scene.lookup("#toolbarMenu");
-        setToolbarTab(toolBar, 0);
-
-        stage.setScene(scene);
-        stage.show();
+        switchScene(event, "scenes/sceneMain.fxml", 0);
     }
 
     public void switchToResetPasswordScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneResetPassword.fxml"));
-        fxmlLoader.setControllerFactory(context::getBean);
-        root = fxmlLoader.load();
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        stage.setScene(scene);
-        stage.show();
+        switchScene(event, "scenes/sceneResetPassword.fxml");
     }
 
     public void switchToRegisterScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneRejestracja.fxml"));
-        fxmlLoader.setControllerFactory(context::getBean);
-        root = fxmlLoader.load();
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        stage.setScene(scene);
-        stage.show();
+        switchScene(event, "scenes/sceneRejestracja.fxml");
     }
 
     public void switchToScenerioScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneScenariusze.fxml"));
-        fxmlLoader.setControllerFactory(context::getBean);
-        root = fxmlLoader.load();
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        toolBar = (ToolBar) scene.lookup("#toolbarMenu");
-        setToolbarTab(toolBar, 1);
-
-        stage.setScene(scene);
-        stage.show();
+        switchScene(event, "scenes/sceneScenariusze.fxml", 1);
     }
 
     public void switchToPhotosScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/scenePhotos.fxml"));
-        fxmlLoader.setControllerFactory(context::getBean);
-        root = fxmlLoader.load();
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        toolBar = (ToolBar) scene.lookup("#toolbarMenu");
-        setToolbarTab(toolBar, 2);
-
-        stage.setScene(scene);
-        stage.show();
+        switchScene(event, "scenes/scenePhotos.fxml", 2);
     }
 
     public void switchToInformationScene(ActionEvent event) throws IOException {
-        fxmlLoader = new FXMLLoader(Photo360client.class.getResource("scenes/sceneInformacje.fxml"));
-        fxmlLoader.setControllerFactory(context::getBean);
-        root = fxmlLoader.load();
-
-        stage =(Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-
-        toolBar = (ToolBar) scene.lookup("#toolbarMenu");
-        setToolbarTab(toolBar, 3);
-
-        stage.setScene(scene);
-        stage.show();
+        switchScene(event, "scenes/sceneInformacje.fxml", 3);
     }
 }

@@ -41,7 +41,7 @@ public class RequestService
         headers.add("publicApiKey", configuration.getPUBLIC_API_KEY());
         HttpEntity<RegisterRequestDto> request = new HttpEntity<>(registerRequestDto, headers);
         RequestResponseDto requestResponseDto = restTemplate.postForObject(
-                "http://127.0.0.1:8095/photo360/authorization/register",
+                configuration.getREGISTER_ENDPOINT_LINK(),
                 request,
                 RequestResponseDto.class);
 

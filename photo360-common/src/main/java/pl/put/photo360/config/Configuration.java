@@ -16,6 +16,7 @@ import lombok.Setter;
 @PropertySource( value = "classpath:/application.properties", encoding = "UTF-8" )
 public class Configuration
 {
+    private String REGISTER_ENDPOINT_LINK;
     private String PUBLIC_API_KEY;
     private Integer MAX_LOGIN_ATTEMPT;
     private Integer ACCOUNT_LOCK_TIME;

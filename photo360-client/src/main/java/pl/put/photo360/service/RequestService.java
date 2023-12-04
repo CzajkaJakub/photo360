@@ -13,6 +13,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.springframework.web.client.RestTemplate;
+import pl.put.photo360.dto.LoginRequestDto;
+import pl.put.photo360.dto.LoginResponseDto;
 import pl.put.photo360.dto.RegisterRequestDto;
 import pl.put.photo360.dto.RequestResponseDto;
 import pl.put.photo360.config.Configuration;
@@ -34,17 +36,29 @@ public class RequestService
         this.configuration = configuration;
     }
 
-    public RequestResponseDto registerUser( RegisterRequestDto registerRequestDto ) throws Exception
-    {
+    public RequestResponseDto registerUser( RegisterRequestDto registerRequestDto ) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("publicApiKey", configuration.getPUBLIC_API_KEY());
         HttpEntity<RegisterRequestDto> request = new HttpEntity<>(registerRequestDto, headers);
         RequestResponseDto requestResponseDto = restTemplate.postForObject(
-                configuration.getREGISTER_ENDPOINT_LINK(),
+                configuration.getREGISTER_ENDPOINT_URL(),
                 request,
                 RequestResponseDto.class);
 
         return requestResponseDto;
+    }
+
+    public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("publicApiKey", configuration.getPUBLIC_API_KEY());
+        HttpEntity<LoginRequestDto> request = new HttpEntity<>(loginRequestDto, headers);
+        LoginResponseDto loginResponseDto = restTemplate.postForObject(
+                configuration.getLOGIN_ENDPOINT_URL(),
+                request,
+                LoginResponseDto.class);
+
+        return loginResponseDto;
     }
 }

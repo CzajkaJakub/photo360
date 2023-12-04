@@ -1,11 +1,7 @@
 package pl.put.photo360.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.application.Application;
-import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -13,19 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.stage.Stage;
-import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Controller;
 import pl.put.photo360.ApplicationContextHolder;
-import pl.put.photo360.Photo360JavaFxApplication;
 import pl.put.photo360.Photo360client;
-import pl.put.photo360.config.Configuration;
 import pl.put.photo360.service.RequestService;
-
-import javax.tools.Tool;
 import java.io.IOException;
 
 @Controller

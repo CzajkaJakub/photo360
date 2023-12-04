@@ -5,14 +5,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
 import pl.put.photo360.dto.RequestResponseDto;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.dto.RegisterRequestDto;
-
 import java.io.IOException;
 
 @Controller

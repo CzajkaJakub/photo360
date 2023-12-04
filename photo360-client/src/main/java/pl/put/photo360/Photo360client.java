@@ -18,19 +18,18 @@ import javafx.stage.Stage;
 
 public class Photo360client extends Application
 {
-
     private ConfigurableApplicationContext context;
     ApplicationContextHolder applicationContextHolder;
 
     @Override
-    public void stop() throws Exception
+    public void stop()
     {
         this.context.close();
         Platform.exit();
     }
 
     @Override
-    public void init() throws Exception
+    public void init()
     {
         ApplicationContextInitializer< GenericApplicationContext > initializer = ac -> {
             ac.registerBean( Application.class, () -> Photo360client.this );
@@ -76,7 +75,5 @@ public class Photo360client extends Application
         {
             e.printStackTrace();
         }
-
     }
-
 }

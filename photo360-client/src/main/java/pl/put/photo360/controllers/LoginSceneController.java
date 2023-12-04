@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import pl.put.photo360.dto.LoginRequestDto;
 import pl.put.photo360.dto.LoginResponseDto;
-import pl.put.photo360.dto.RegisterRequestDto;
-import pl.put.photo360.dto.RequestResponseDto;
 import pl.put.photo360.service.RequestService;
-
 import java.io.IOException;
 
 @Controller

@@ -5,10 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import pl.put.photo360.dto.LoginRequestDto;
-import pl.put.photo360.dto.LoginResponseDto;
-import pl.put.photo360.dto.RegisterRequestDto;
-import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.dto.*;
 import pl.put.photo360.config.Configuration;
 
 @Component

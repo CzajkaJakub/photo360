@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import pl.put.photo360.dto.LoginRequestDto;
 import pl.put.photo360.dto.LoginResponseDto;
+import pl.put.photo360.dto.LoginResponseDtoStatic;
 import pl.put.photo360.service.RequestService;
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ public class LoginSceneController extends SwitchSceneController {
     private PasswordField loginPassFX;
     @FXML
     private TextField loginLogFX;
+    private LoginResponseDtoStatic loginResponseDtoStatic;
 
     @Autowired
     public LoginSceneController(RequestService requestService) {
@@ -31,12 +33,7 @@ public class LoginSceneController extends SwitchSceneController {
 
         try {
             LoginResponseDto loginResponseDto = requestService.loginUser( loginRequestDto );
-            System.out.println( loginResponseDto.getEmail() );
-            System.out.println( loginResponseDto.get_token() );
-            System.out.println( loginResponseDto.getEmailVerified() );
-            System.out.println( loginResponseDto.get_tokenExpirationDate() );
-            System.out.println( loginResponseDto.get_lastLoggedDatetime() );
-            System.out.println( loginResponseDto.getUserRolesList() );
+            loginResponseDtoStatic = new LoginResponseDtoStatic(loginResponseDto);
         }
         catch( Exception e ) {
             System.out.println(e);

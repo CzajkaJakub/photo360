@@ -15,25 +15,33 @@
             <Font size="46.0" />
          </font>
       </Label>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="110.0" layoutY="261.0" mnemonicParsing="false" onAction="#login" prefHeight="43.0" prefWidth="149.0" text="Zaloguj się" textAlignment="CENTER">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
-      <PasswordField fx:id="loginPassFX" layoutX="226.0" layoutY="188.0" />
-      <Label layoutX="148.0" layoutY="192.0" text="Hasło:" />
-      <TextField fx:id="loginLogFX" layoutX="226.0" layoutY="138.0" />
-      <Label layoutX="148.0" layoutY="142.0" text="Login:" />
-      <Hyperlink alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="222.0" onAction="#switchToResetPasswordScene" prefHeight="24.0" prefWidth="600.0" text="Nie pamiętam hasła" />
+
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="82.0" prefHeight="35.0" prefWidth="600.0" text="Logowanie" textAlignment="CENTER">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
+
+      <TextField fx:id="loginLogFX" layoutX="226.0" layoutY="138.0" />
+      <Label layoutX="148.0" layoutY="142.0" text="Login:" />
+
+      <PasswordField fx:id="loginPassFX" layoutX="226.0" layoutY="188.0" />
+      <Label layoutX="148.0" layoutY="192.0" text="Hasło:" />
+
+
+      <Hyperlink alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="222.0" onAction="#switchToResetPasswordScene" prefHeight="24.0" prefWidth="600.0" text="Nie pamiętam hasła" />
+
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="110.0" layoutY="261.0" mnemonicParsing="false" onAction="#login" prefHeight="43.0" prefWidth="149.0" text="Zaloguj się" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Button>
+
       <Button layoutX="348.0" layoutY="261.0" mnemonicParsing="false" onAction="#switchToRegisterScene" prefHeight="43.0" prefWidth="149.0" text="Rejestracja">
          <font>
             <Font size="20.0" />
          </font>
       </Button>
+
    </children>
 </AnchorPane>

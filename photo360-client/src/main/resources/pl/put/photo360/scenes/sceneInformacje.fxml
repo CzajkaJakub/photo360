@@ -9,6 +9,8 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.InformationsSceneController">
    <children>
       <HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
@@ -24,6 +26,15 @@
 
          <!-- Elastyczny separator -->
          <Region HBox.hgrow="ALWAYS" />
+
+         <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
+            <font>
+               <Font size="14.0" />
+            </font>
+            <HBox.margin>
+               <Insets right="10.0" top="7.0" />
+            </HBox.margin>
+         </Label>
 
          <!-- Przycisk "Wyloguj" -->
          <ToolBar centerShape="false" prefHeight="35.0" snapToPixel="false">

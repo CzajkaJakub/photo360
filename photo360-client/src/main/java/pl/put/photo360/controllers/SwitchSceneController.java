@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
@@ -22,6 +23,7 @@ public abstract class SwitchSceneController {
     private FXMLLoader fxmlLoader;
     private Parent root;
     private ToolBar toolBar;
+    private Label label;
     private ApplicationContext context = ApplicationContextHolder.getApplicationContext();
     protected final RequestService requestService;
     protected final AuthHandler authHandler;
@@ -51,6 +53,9 @@ public abstract class SwitchSceneController {
         if (index > -1) {
             toolBar = (ToolBar) scene.lookup("#toolbarMenu");
             setToolbarTab(toolBar, index);
+
+            label = (Label) scene.lookup("#userLabel");
+            label.setText(authHandler.getLogin());
         }
 
         stage.setScene(scene);

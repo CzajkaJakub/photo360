@@ -32,7 +32,7 @@ public class LoginSceneController extends SwitchSceneController {
 
         try {
             LoginResponseDto loginResponseDto = requestService.loginUser( loginRequestDto );
-            authHandler.fillWithUserData(loginResponseDto);
+            authHandler.fillWithUserData(loginResponseDto, loginRequestDto.getLogin());
         }
         catch( Exception e ) {
             System.out.println(e);

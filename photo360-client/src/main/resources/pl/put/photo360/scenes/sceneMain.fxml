@@ -15,6 +15,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.geometry.Insets?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.ProgramSceneController">
    <children>
       <HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
@@ -30,6 +31,15 @@
 
          <!-- Elastyczny separator -->
          <Region HBox.hgrow="ALWAYS" />
+
+         <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
+            <font>
+               <Font size="14.0" />
+            </font>
+            <HBox.margin>
+               <Insets right="10.0" top="7.0" />
+            </HBox.margin>
+         </Label>
 
          <!-- Przycisk "Wyloguj" -->
          <ToolBar centerShape="false" prefHeight="35.0" snapToPixel="false">
@@ -65,24 +75,37 @@
 <!--            <ComboBox fx:id="comboList" layoutX="107.0" layoutY="22.0" onAction="#changeComboListElements" prefHeight="25.0" prefWidth="125.0" promptText="Zdjęcie 360" visibleRowCount="2" />-->
          </children>
       </AnchorPane>
-      <Button layoutX="92.0" layoutY="291.0" mnemonicParsing="false" text="Zapisz scenariusz" />
-      <Button layoutX="245.0" layoutY="291.0" mnemonicParsing="false" onAction="#switchToScenerioScene" text="Przeglądaj scenariusz" />
-      <Button layoutX="425.0" layoutY="291.0" mnemonicParsing="false" text="Uruchom" />
-      <Label layoutX="75.0" layoutY="49.0" text="Lista komend" textAlignment="CENTER">
+      <Button layoutX="32.0" layoutY="311.0" mnemonicParsing="false" text="Zapisz scenariusz" AnchorPane.leftAnchor="32.0">
          <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <ListView fx:id="listViewCommands" layoutX="32.0" layoutY="91.0" prefHeight="179.0" prefWidth="230.0" />
-      <Button fx:id="arrowPushUp" disable="true" layoutX="273.0" layoutY="136.0" mnemonicParsing="false" onAction="#handleMoveUp" prefHeight="30.0" prefWidth="15.0" text="↑" textAlignment="CENTER">
+            <Font size="18.0" />
+         </font></Button>
+      <Button layoutX="205.0" layoutY="311.0" mnemonicParsing="false" onAction="#switchToScenerioScene" text="Przeglądaj scenariusz">
          <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
-      <Button fx:id="arrowPushDown" disable="true" layoutX="273.0" layoutY="181.0" mnemonicParsing="false" onAction="#handleMoveDown" text="↓" textAlignment="CENTER">
+            <Font size="18.0" />
+         </font></Button>
+      <Button layoutX="452.0" layoutY="311.0" mnemonicParsing="false" text="Uruchom" AnchorPane.rightAnchor="52.49289245605462">
          <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Button>
+            <Font size="18.0" />
+         </font></Button>
+      <AnchorPane layoutX="24.0" layoutY="60.0" prefHeight="211.0" prefWidth="273.0" style="-fx-border-color: black;">
+         <children>
+            <Label layoutX="66.0" layoutY="14.0" text="Lista komend" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <ListView fx:id="listViewCommands" layoutX="14.0" layoutY="57.0" prefHeight="139.0" prefWidth="210.0" />
+            <Button fx:id="arrowPushUp" disable="true" layoutX="233.0" layoutY="90.0" mnemonicParsing="false" onAction="#handleMoveUp" prefHeight="30.0" prefWidth="15.0" text="↑" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="arrowPushDown" disable="true" layoutX="233.0" layoutY="127.0" mnemonicParsing="false" onAction="#handleMoveDown" text="↓" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

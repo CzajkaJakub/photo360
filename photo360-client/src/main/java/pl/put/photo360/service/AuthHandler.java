@@ -10,6 +10,7 @@ import java.util.Set;
 @Component
 @NoArgsConstructor
 public class AuthHandler {
+    private String login;
     private String email;
     private String _token;
     private Boolean emailVerified;
@@ -17,13 +18,18 @@ public class AuthHandler {
     private Instant _lastLoggedDatetime;
     private Set< String > userRolesList;
 
-    public void fillWithUserData(LoginResponseDto loginResponseDto) {
+    public void fillWithUserData(LoginResponseDto loginResponseDto, String login) {
+        this.login = login;
         this.email = loginResponseDto.getEmail();
         this._token = loginResponseDto.get_token();
         this.emailVerified = loginResponseDto.getEmailVerified();
         this._tokenExpirationDate = loginResponseDto.get_tokenExpirationDate();
         this._lastLoggedDatetime = loginResponseDto.get_lastLoggedDatetime();
         this.userRolesList = loginResponseDto.getUserRolesList();
+    }
+
+    public String getLogin() {
+        return login;
     }
 
     public String getEmail() {

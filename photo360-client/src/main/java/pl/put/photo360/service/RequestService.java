@@ -23,19 +23,16 @@ public class RequestService
 
     public RequestResponseDto registerUser( RegisterRequestDto registerRequestDto ) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("publicApiKey", configuration.getPUBLIC_API_KEY());
         HttpEntity<RegisterRequestDto> request = new HttpEntity<>(registerRequestDto, headers);
         RequestResponseDto requestResponseDto = restTemplate.postForObject(
                 configuration.getREGISTER_ENDPOINT_URL(),
                 request,
                 RequestResponseDto.class);
-
         return requestResponseDto;
     }
 
     public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("publicApiKey", configuration.getPUBLIC_API_KEY());
         HttpEntity<LoginRequestDto> request = new HttpEntity<>(loginRequestDto, headers);
         LoginResponseDto loginResponseDto = restTemplate.postForObject(
                 configuration.getLOGIN_ENDPOINT_URL(),

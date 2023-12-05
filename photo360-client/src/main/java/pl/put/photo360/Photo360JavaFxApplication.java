@@ -4,6 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javafx.application.Application;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+import pl.put.photo360.config.Configuration;
+import pl.put.photo360.interceptors.RestTemplateFilter;
 
 @SpringBootApplication( scanBasePackages = "pl.put.photo360" )
 public class Photo360JavaFxApplication
@@ -14,7 +16,9 @@ public class Photo360JavaFxApplication
     }
 
     @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+    public RestTemplate restTemplate(Configuration configuration) {
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getInterceptors().add(new RestTemplateFilter(configuration));
+        return restTemplate;
     }
 }

@@ -34,6 +34,9 @@
         <spring-boot-starter-mail.version>3.1.4</spring-boot-starter-mail.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <revision>1.0.0-SNAPSHOT</revision>
+        <org.onenjfx.version>19.0.2.1</org.onenjfx.version>
+
+
     </properties>
 
     <modules>

@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
-import pl.put.photo360.dto.LoginResponseDtoStatic;
 import pl.put.photo360.dto.RequestResponseDto;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.dto.RegisterRequestDto;

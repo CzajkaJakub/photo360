@@ -10,7 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import pl.put.photo360.dto.LoginResponseDtoStatic;
 import pl.put.photo360.service.RequestService;
 
 import java.net.URL;

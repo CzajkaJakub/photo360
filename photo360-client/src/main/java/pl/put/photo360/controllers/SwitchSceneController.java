@@ -14,7 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import pl.put.photo360.ApplicationContextHolder;
 import pl.put.photo360.Photo360client;
-import pl.put.photo360.dto.LoginResponseDtoStatic;
+import pl.put.photo360.dto.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import java.io.IOException;
 
@@ -27,6 +27,7 @@ public class SwitchSceneController {
     private ToolBar toolBar;
     private ApplicationContext context = ApplicationContextHolder.getApplicationContext();
     public final RequestService requestService;
+
 
     @Autowired
     public SwitchSceneController(RequestService requestService) {
@@ -69,7 +70,7 @@ public class SwitchSceneController {
 
     public void switchToProgramScene(ActionEvent event) throws IOException {
         switchScene(event, "scenes/sceneMain.fxml", 0);
-        System.out.println(LoginResponseDtoStatic.getEmail());
+        System.out.println(AuthHandler.getEmail());
     }
 
     public void switchToResetPasswordScene(ActionEvent event) throws IOException {

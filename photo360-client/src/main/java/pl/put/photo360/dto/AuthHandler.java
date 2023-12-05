@@ -1,9 +1,11 @@
 package pl.put.photo360.dto;
 
+import org.springframework.stereotype.Component;
+
 import java.time.Instant;
 import java.util.Set;
 
-public class LoginResponseDtoStatic {
+public class AuthHandler {
     private static String email;
     private static String _token;
     private static Boolean emailVerified;
@@ -11,7 +13,7 @@ public class LoginResponseDtoStatic {
     private static Instant _lastLoggedDatetime;
     private static Set< String > userRolesList;
 
-    public LoginResponseDtoStatic(LoginResponseDto loginResponseDto) {
+    public AuthHandler(LoginResponseDto loginResponseDto) {
         email = loginResponseDto.getEmail();
         _token = loginResponseDto.get_token();
         emailVerified = loginResponseDto.getEmailVerified();

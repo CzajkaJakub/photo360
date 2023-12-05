@@ -48,6 +48,9 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
     @FXML
     private Button deleteButton;
 
+    @FXML
+    private Button editButton;
+
     private ObservableList<String> listItems = FXCollections.observableArrayList();
 
     @Autowired
@@ -167,6 +170,7 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
         listViewCommands.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             updateMoveButtonsState();
             deleteButton.setDisable(newSelection == null);
+            editButton.setDisable(newSelection == null);
             if (newSelection != null) {
                 setupCommandCreator(newSelection);
             }
@@ -228,6 +232,25 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
                 listViewCommands.getSelectionModel().select(Math.min(selectedIndex, items.size() - 1));
             }
         }
+    }
 
+    public void editActiveElement(ActionEvent event) {
+        int selectedIndex = listViewCommands.getSelectionModel().getSelectedIndex();
+        if (selectedIndex != -1) {
+            String command = comboList.getValue();
+            String degrees = textFieldDegree.getText();
+            String updatedItem = (selectedIndex + 1) + ": " + command + (command.equals("Pojedyncze zdjęcie") ? " " + degrees + " stopni" : "");
+            listViewCommands.getItems().set(selectedIndex, updatedItem);
+            updatePrefixesInList();
+
+            String degree = "";
+            String method = comboList.getValue();
+
+            if (textFieldDegree.isVisible()) {
+                degree = " " + textFieldDegree.getText() + " stopni";
+            }
+            listItems.set(selectedIndex, method + degree);
+            updatePrefixesInList();
+        }
     }
 }

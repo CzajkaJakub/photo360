@@ -9,29 +9,26 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
 import pl.put.photo360.ApplicationContextHolder;
 import pl.put.photo360.Photo360client;
-import pl.put.photo360.dto.AuthHandler;
+import pl.put.photo360.service.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import java.io.IOException;
 
-@Controller
-public class SwitchSceneController {
+public abstract class SwitchSceneController {
     private Stage stage;
     private Scene scene;
     private FXMLLoader fxmlLoader;
     private Parent root;
     private ToolBar toolBar;
     private ApplicationContext context = ApplicationContextHolder.getApplicationContext();
-    public final RequestService requestService;
+    protected final RequestService requestService;
+    protected final AuthHandler authHandler;
 
-
-    @Autowired
-    public SwitchSceneController(RequestService requestService) {
+    public SwitchSceneController(RequestService requestService, AuthHandler authHandler) {
         this.requestService = requestService;
+        this.authHandler = authHandler;
     }
 
     private void setToolbarTab(ToolBar toolBar, int index) {
@@ -70,7 +67,7 @@ public class SwitchSceneController {
 
     public void switchToProgramScene(ActionEvent event) throws IOException {
         switchScene(event, "scenes/sceneMain.fxml", 0);
-        System.out.println(AuthHandler.getEmail());
+        System.out.println(authHandler.getEmail());
     }
 
     public void switchToResetPasswordScene(ActionEvent event) throws IOException {

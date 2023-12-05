@@ -5,15 +5,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.service.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.dto.RegisterRequestDto;
 import java.io.IOException;
 
-@Controller
+@Component
 public class RegisterSceneController extends SwitchSceneController
 {
     @FXML
@@ -24,8 +25,8 @@ public class RegisterSceneController extends SwitchSceneController
     private PasswordField password1FX;
 
     @Autowired
-    public RegisterSceneController(RequestService requestService) {
-        super(requestService);
+    public RegisterSceneController(RequestService requestService, AuthHandler authHandler) {
+        super(requestService, authHandler);
     }
 
     public void register( ActionEvent event )

@@ -9,7 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
+import pl.put.photo360.service.AuthHandler;
 import pl.put.photo360.service.RequestService;
 
 import java.net.URL;
@@ -19,7 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Controller
+@Component
 public class ProgramSceneController extends SwitchSceneController implements Initializable {
     private String command;
 
@@ -50,8 +51,8 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
     private ObservableList<String> listItems = FXCollections.observableArrayList();
 
     @Autowired
-    public ProgramSceneController(RequestService requestService) {
-        super(requestService);
+    public ProgramSceneController(RequestService requestService, AuthHandler authHandler) {
+        super(requestService, authHandler);
     }
 
     private void setSinglePhotoVisibility(Boolean flag) {

@@ -45,6 +45,9 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
     @FXML
     private Button arrowPushDown;
 
+    @FXML
+    private Button deleteButton;
+
     private ObservableList<String> listItems = FXCollections.observableArrayList();
 
     @Autowired
@@ -119,11 +122,9 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
         setSinglePhotoVisibility(false);
 
         listViewCommands.setItems(listItems);
-        listViewCommands.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            updateMoveButtonsState();
-        });
 
         textFieldDegree.setText(String.valueOf((int) Math.round(sliderDegree.getValue())));
+
         sliderDegree.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                                 Number old_val, Number new_val) {
@@ -164,6 +165,8 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
         });
 
         listViewCommands.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            updateMoveButtonsState();
+            deleteButton.setDisable(newSelection == null);
             if (newSelection != null) {
                 setupCommandCreator(newSelection);
             }
@@ -213,5 +216,18 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
             updatePrefixesInList();
             listViewCommands.getSelectionModel().select(selectedIndex + 1);
         }
+    }
+
+    public void removeActiveElement(ActionEvent event) {
+        int selectedIndex = listViewCommands.getSelectionModel().getSelectedIndex();
+        if (selectedIndex != -1) {
+            ObservableList<String> items = listViewCommands.getItems();
+            items.remove(selectedIndex);
+            if (!items.isEmpty()) {
+                updatePrefixesInList();
+                listViewCommands.getSelectionModel().select(Math.min(selectedIndex, items.size() - 1));
+            }
+        }
+
     }
 }

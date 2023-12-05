@@ -31,6 +31,9 @@ public class AuthHandler {
     }
 
     public String get_token() {
+        if (_tokenExpirationDate == null || Instant.now().isAfter(_tokenExpirationDate)) {
+            return null;
+        }
         return _token;
     }
 

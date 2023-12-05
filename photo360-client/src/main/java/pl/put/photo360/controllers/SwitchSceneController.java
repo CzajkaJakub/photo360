@@ -67,7 +67,6 @@ public abstract class SwitchSceneController {
 
     public void switchToProgramScene(ActionEvent event) throws IOException {
         switchScene(event, "scenes/sceneMain.fxml", 0);
-        System.out.println(authHandler.getEmail());
     }
 
     public void switchToResetPasswordScene(ActionEvent event) throws IOException {

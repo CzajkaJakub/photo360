@@ -12,15 +12,16 @@ import pl.put.photo360.config.Configuration;
 public class RequestService
 {
     private final Configuration configuration;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public RequestService(Configuration configuration)
+    public RequestService(Configuration configuration, RestTemplate restTemplate)
     {
         this.configuration = configuration;
+        this.restTemplate = restTemplate;
     }
 
     public RequestResponseDto registerUser( RegisterRequestDto registerRequestDto ) {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("publicApiKey", configuration.getPUBLIC_API_KEY());
         HttpEntity<RegisterRequestDto> request = new HttpEntity<>(registerRequestDto, headers);
@@ -33,7 +34,6 @@ public class RequestService
     }
 
     public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("publicApiKey", configuration.getPUBLIC_API_KEY());
         HttpEntity<LoginRequestDto> request = new HttpEntity<>(loginRequestDto, headers);

@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.put.photo360.dto.RequestResponseDto;
-import pl.put.photo360.service.AuthHandler;
+import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.dto.RegisterRequestDto;
 import java.io.IOException;
@@ -36,7 +36,6 @@ public class RegisterSceneController extends SwitchSceneController
 
         try {
             RequestResponseDto requestResponseDto = requestService.registerUser( registerRequestDto );
-            System.out.println( requestResponseDto.getStatusCode() );
         }
         catch( Exception e ) {
             System.out.println(e);

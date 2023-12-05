@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import pl.put.photo360.ApplicationContextHolder;
 import pl.put.photo360.Photo360client;
-import pl.put.photo360.service.AuthHandler;
+import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import java.io.IOException;
 

@@ -21,7 +21,6 @@ public class RestTemplateFilter implements ClientHttpRequestInterceptor {
     public ClientHttpResponse intercept(HttpRequest request,
                                         byte[] body,
                                         ClientHttpRequestExecution execution) throws IOException {
-        System.out.println(configuration.getPUBLIC_API_KEY());
         request.getHeaders().set("publicApiKey", configuration.getPUBLIC_API_KEY());
         return execution.execute(request, body);
     }

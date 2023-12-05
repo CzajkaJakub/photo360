@@ -1,4 +1,4 @@
-package pl.put.photo360.service;
+package pl.put.photo360.handlers;
 
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -16,6 +16,10 @@ public class Toast {
 
     public static void showToast(ActionEvent actionEvent, IOException exception) {
         String message = exception.getCause().toString().split(":")[1];
+        showToast(actionEvent, message);
+    }
+
+    public static void showToast(ActionEvent actionEvent, String message) {
         Node source = (Node) actionEvent.getSource();
         Stage ownerStage = (Stage) source.getScene().getWindow();
 

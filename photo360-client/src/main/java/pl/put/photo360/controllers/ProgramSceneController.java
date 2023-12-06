@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
+import pl.put.photo360.toast.Toast;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.ResourceBundle;
@@ -189,7 +191,7 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
 
     public void addElementToList(ActionEvent event) {
         if (listItems.size() >= 10) {
-//            TODO Dodać wyskakujące powiadomienie o maksymalnym rozmiarze, coś jak Toast na mobilkach
+            Toast.showToast(event, "Maksymalna liczba elementów w liście wynosi 10");
             return;
         }
         String degree = "";
@@ -252,5 +254,10 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
             listItems.set(selectedIndex, method + degree);
             updatePrefixesInList();
         }
+    }
+
+    public void logout(ActionEvent event) throws IOException {
+        authHandler.clearUserData();
+        switchToLoginScene(event);
     }
 }

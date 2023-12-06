@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.LoginSceneController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.LoginSceneController">
    <children>
       <Label alignment="CENTER" layoutY="14.0" prefHeight="68.0" prefWidth="600.0" text="Photo 360 Desktop App" textAlignment="CENTER">
          <font>
@@ -37,7 +37,7 @@
          </font>
       </Button>
 
-      <Button layoutX="348.0" layoutY="261.0" mnemonicParsing="false" onAction="#switchToRegisterScene" prefHeight="43.0" prefWidth="149.0" text="Rejestracja">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="348.0" layoutY="261.0" mnemonicParsing="false" onAction="#switchToRegisterScene" prefHeight="43.0" prefWidth="149.0" text="Rejestracja">
          <font>
             <Font size="20.0" />
          </font>

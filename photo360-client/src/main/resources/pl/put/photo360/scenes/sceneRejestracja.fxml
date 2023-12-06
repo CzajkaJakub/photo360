@@ -38,5 +38,6 @@
             <Font size="20.0" />
          </font>
       </Button>
+      <Button layoutX="152.0" layoutY="328.0" mnemonicParsing="false" onAction="#switchToLoginScene" text="Wstecz" />
    </children>
 </AnchorPane>

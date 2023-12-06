@@ -12,20 +12,30 @@ import java.util.Set;
 public class AuthHandler {
     private String login;
     private String email;
-    private String _token;
+    private String token;
     private Boolean emailVerified;
-    private Instant _tokenExpirationDate;
-    private Instant _lastLoggedDatetime;
+    private Instant tokenExpirationDate;
+    private Instant lastLoggedDatetime;
     private Set< String > userRolesList;
 
     public void fillWithUserData(LoginResponseDto loginResponseDto, String login) {
         this.login = login;
         this.email = loginResponseDto.getEmail();
-        this._token = loginResponseDto.get_token();
+        this.token = loginResponseDto.get_token();
         this.emailVerified = loginResponseDto.getEmailVerified();
-        this._tokenExpirationDate = loginResponseDto.get_tokenExpirationDate();
-        this._lastLoggedDatetime = loginResponseDto.get_lastLoggedDatetime();
+        this.tokenExpirationDate = loginResponseDto.get_tokenExpirationDate();
+        this.lastLoggedDatetime = loginResponseDto.get_lastLoggedDatetime();
         this.userRolesList = loginResponseDto.getUserRolesList();
+    }
+
+    public void clearUserData() {
+        this.login = null;
+        this.email = null;
+        this.token = null;
+        this.emailVerified = null;
+        this.tokenExpirationDate = null;
+        this.lastLoggedDatetime = null;
+        this.userRolesList = null;
     }
 
     public String getLogin() {
@@ -36,23 +46,23 @@ public class AuthHandler {
         return email;
     }
 
-    public String get_token() {
-        if (_tokenExpirationDate == null || Instant.now().isAfter(_tokenExpirationDate)) {
+    public String getToken() {
+        if (tokenExpirationDate == null || Instant.now().isAfter(tokenExpirationDate)) {
             return null;
         }
-        return _token;
+        return token;
     }
 
     public Boolean getEmailVerified() {
         return emailVerified;
     }
 
-    public Instant get_tokenExpirationDate() {
-        return _tokenExpirationDate;
+    public Instant getTokenExpirationDate() {
+        return tokenExpirationDate;
     }
 
-    public Instant get_lastLoggedDatetime() {
-        return _lastLoggedDatetime;
+    public Instant getLastLoggedDatetime() {
+        return lastLoggedDatetime;
     }
 
     public Set<String> getUserRolesList() {

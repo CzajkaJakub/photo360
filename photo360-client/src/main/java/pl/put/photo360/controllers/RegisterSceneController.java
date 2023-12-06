@@ -33,9 +33,6 @@ public class RegisterSceneController extends SwitchSceneController
 
     public void register( ActionEvent event )
     {
-        System.out.println(password1FX.getText());
-        System.out.println(password2FX.getText());
-
         // Sprawdzanie czy hasła są identyczne
         if (!password1FX.getText().equals(password2FX.getText())) {
             System.out.println("Hasła nie są takie same!");
@@ -52,6 +49,7 @@ public class RegisterSceneController extends SwitchSceneController
             requestResponseDto = requestService.registerUser( registerRequestDto );
         }
         catch( IOException e ) {
+            // TODO - dodać tutaj wywołanie Popupa
             System.out.println("Kontroller - dostałem wyjątek: " + e.getMessage());
         }
 

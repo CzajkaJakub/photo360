@@ -28,22 +28,28 @@ public class LoginSceneController extends SwitchSceneController {
     public void login( ActionEvent event )
     {
         LoginRequestDto loginRequestDto = new LoginRequestDto(
-                loginLogFX.getText(), loginPassFX.getText());
+                (loginLogFX.getLength() > 0 ? loginLogFX.getText() : null),
+                (loginPassFX.getLength() > 0 ? loginPassFX.getText() : null));
+        LoginResponseDto loginResponseDto = null;
 
         try {
-            LoginResponseDto loginResponseDto = requestService.loginUser( loginRequestDto );
+            loginResponseDto = requestService.loginUser( loginRequestDto );
             authHandler.fillWithUserData(loginResponseDto, loginRequestDto.getLogin());
         }
         catch( Exception e ) {
-            System.out.println(e);
+            // TODO - dodać tutaj wywołanie Popupa
+            System.out.println("Kontroller - dostałem wyjątek: " + e.getMessage());
         }
 
+        LoginResponseDto loginResponseDtoFinal = loginResponseDto;
         Platform.runLater( () -> {
-            try {
-                switchToProgramScene(event);
-            }
-            catch( IOException e ) {
-                throw new RuntimeException( e );
+            if (loginResponseDtoFinal != null) {
+                try {
+                    switchToProgramScene(event);
+                }
+                catch( IOException e ) {
+                    throw new RuntimeException( e );
+                }
             }
         } );
     }

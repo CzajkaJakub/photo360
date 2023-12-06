@@ -5,72 +5,26 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import pl.put.photo360.dto.*;
-import pl.put.photo360.config.Configuration;
 
 import java.io.IOException;
 
 @Component
 public class RequestService
 {
-    private final Configuration configuration;
     private final RestTemplate restTemplate;
 
     @Autowired
-    public RequestService(Configuration configuration, RestTemplate restTemplate)
+    public RequestService(RestTemplate restTemplate)
     {
-        this.configuration = configuration;
         this.restTemplate = restTemplate;
     }
 
-    public RequestResponseDto registerUser( RegisterRequestDto registerRequestDto ) throws IOException {
+    // TODO - serwer nie odpowiada tak jak potrzeba na confirmationResetPassword
+    public <T, R> R executeRequest(T requestDto, String endpointUrl, Class<R> responseType) throws IOException {
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<RegisterRequestDto> request = new HttpEntity<>(registerRequestDto, headers);
+        HttpEntity<T> request = new HttpEntity<>(requestDto, headers);
         try {
-            return restTemplate.postForObject(
-                    configuration.getREGISTER_ENDPOINT_URL(),
-                    request,
-                    RequestResponseDto.class);
-        } catch (Exception e) {
-            throw new IOException(e.getCause());
-        }
-    }
-
-    public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) throws IOException {
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<LoginRequestDto> request = new HttpEntity<>(loginRequestDto, headers);
-        try {
-            return restTemplate.postForObject(
-                    configuration.getLOGIN_ENDPOINT_URL(),
-                    request,
-                    LoginResponseDto.class);
-        } catch (Exception e) {
-            throw new IOException(e.getCause());
-        }
-    }
-
-    public RequestResponseDto sendResetPassRequest(ResetPasswordRequestDto resetPasswordRequestDto) throws IOException {
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<ResetPasswordRequestDto> request = new HttpEntity<>(resetPasswordRequestDto, headers);
-        try {
-            return restTemplate.postForObject(
-                    configuration.getREQUEST_RESET_PASSWORD(),
-                    request,
-                    RequestResponseDto.class);
-        } catch (Exception e) {
-            throw new IOException(e.getCause());
-        }
-    }
-
-    // TODO - serwer nie odpowiada tak jak trzeba
-    public RequestResponseDto confirmResetPassword(ResetPasswordConfirmationDto resetPasswordConfirmationDto) throws IOException {
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<ResetPasswordConfirmationDto> request = new HttpEntity<>(resetPasswordConfirmationDto, headers);
-        try {
-            return restTemplate.postForObject(
-                    configuration.getCONFIRMATION_RESET_PASSWORD(),
-                    request,
-                    RequestResponseDto.class);
+            return restTemplate.postForObject(endpointUrl, request, responseType);
         } catch (Exception e) {
             throw new IOException(e.getCause());
         }

@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dto.RequestResponseDto;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
@@ -29,15 +30,15 @@ public class RegisterSceneController extends SwitchSceneController
     private PasswordField password2FX;
 
     @Autowired
-    public RegisterSceneController(RequestService requestService, AuthHandler authHandler) {
-        super(requestService, authHandler);
+    public RegisterSceneController(RequestService requestService, AuthHandler authHandler, Configuration configuration) {
+        super(requestService, authHandler, configuration);
     }
 
     public void register( ActionEvent event )
     {
         // Sprawdzanie czy hasła są identyczne
         if (!password1FX.getText().equals(password2FX.getText())) {
-            System.out.println("Hasła nie są takie same!");
+            Toast.showToast(event, "Hasła nie są takie same");
             return;
         }
 
@@ -48,7 +49,10 @@ public class RegisterSceneController extends SwitchSceneController
         RequestResponseDto requestResponseDto = null;
 
         try {
-            requestResponseDto = requestService.registerUser( registerRequestDto );
+            requestResponseDto = requestService.executeRequest(
+                    registerRequestDto,
+                    configuration.getREGISTER_ENDPOINT_URL(),
+                    RequestResponseDto.class);
         }
         catch( IOException e ) {
             Toast.showToast(event, e);

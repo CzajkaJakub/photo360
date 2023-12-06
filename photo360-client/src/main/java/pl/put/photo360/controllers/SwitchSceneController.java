@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import org.springframework.context.ApplicationContext;
 import pl.put.photo360.ApplicationContextHolder;
 import pl.put.photo360.Photo360client;
+import pl.put.photo360.config.Configuration;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import java.io.IOException;
@@ -27,10 +28,12 @@ public abstract class SwitchSceneController {
     private ApplicationContext context = ApplicationContextHolder.getApplicationContext();
     protected final RequestService requestService;
     protected final AuthHandler authHandler;
+    protected final Configuration configuration;
 
-    public SwitchSceneController(RequestService requestService, AuthHandler authHandler) {
+    public SwitchSceneController(RequestService requestService, AuthHandler authHandler, Configuration configuration) {
         this.requestService = requestService;
         this.authHandler = authHandler;
+        this.configuration = configuration;
     }
 
     private void setToolbarTab(ToolBar toolBar, int index) {

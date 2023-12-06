@@ -7,6 +7,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dto.LoginRequestDto;
 import pl.put.photo360.dto.LoginResponseDto;
 import pl.put.photo360.handlers.AuthHandler;
@@ -23,8 +24,8 @@ public class LoginSceneController extends SwitchSceneController {
     private TextField loginLogFX;
 
     @Autowired
-    public LoginSceneController(RequestService requestService, AuthHandler authHandler) {
-        super(requestService, authHandler);
+    public LoginSceneController(RequestService requestService, AuthHandler authHandler, Configuration configuration) {
+        super(requestService, authHandler, configuration);
     }
 
     public void login( ActionEvent event )
@@ -35,7 +36,10 @@ public class LoginSceneController extends SwitchSceneController {
         LoginResponseDto loginResponseDto = null;
 
         try {
-            loginResponseDto = requestService.loginUser( loginRequestDto );
+            loginResponseDto = requestService.executeRequest(
+                    loginRequestDto,
+                    configuration.getLOGIN_ENDPOINT_URL(),
+                    LoginResponseDto.class);
             authHandler.fillWithUserData(loginResponseDto, loginRequestDto.getLogin());
         }
         catch( IOException e ) {

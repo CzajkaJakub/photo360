@@ -12,6 +12,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dto.*;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
@@ -47,10 +48,11 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
     private Button resetPassButton;
     @FXML
     private Button backButton;
+    private String emailForConfirm = null;
 
     @Autowired
-    public ResetPasswordSceneController(RequestService requestService, AuthHandler authHandler) {
-        super(requestService, authHandler);
+    public ResetPasswordSceneController(RequestService requestService, AuthHandler authHandler, Configuration configuration) {
+        super(requestService, authHandler, configuration);
     }
 
     private void changeVisibleOfElements(boolean visible) {
@@ -92,7 +94,6 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
         changeVisibleOfElements(false);
     }
 
-    // TODO - zapisać maila po wysłaniu requesta i otrzymaniu odpowiedzi
     public void sendEmail(ActionEvent event) {
 
         ResetPasswordRequestDto resetPasswordRequestDto = new ResetPasswordRequestDto(
@@ -100,7 +101,10 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
         RequestResponseDto requestResponseDto = null;
 
         try {
-            requestResponseDto = requestService.sendResetPassRequest( resetPasswordRequestDto );
+            requestResponseDto = requestService.executeRequest(
+                    resetPasswordRequestDto,
+                    configuration.getREQUEST_RESET_PASSWORD(),
+                    RequestResponseDto.class);
         }
         catch( IOException e ) {
             Toast.showToast(event, e);
@@ -109,23 +113,32 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
         RequestResponseDto requestResponseDtoFinal = requestResponseDto;
         Platform.runLater( () -> {
             if (requestResponseDtoFinal != null) {
+                emailForConfirm = emailTextField.getText();
                 changeVisibleOfElements(true);
                 sendEmailButton.setText("Wyślij ponownie");
             }
         } );
     }
 
-    // TODO - maila pobierać z zapisanego stringa, a nie bezpośrednio z pola (może być już puste)
     // TODO - naprawić działanie serwera po otrzymaniu confirmation (nie zmienia hasła)
     public void resetPass(ActionEvent event) {
+        // Sprawdzanie czy hasła są identyczne
+        if (!pass1PasswordField.getText().equals(pass2PasswordField.getText())) {
+            Toast.showToast(event, "Hasła nie są takie same");
+            return;
+        }
+
         ResetPasswordConfirmationDto resetPasswordConfirmationDto = new ResetPasswordConfirmationDto(
-                (emailTextField.getLength() > 0 ? emailTextField.getText() : null),
+                (emailForConfirm),
                 (pass1PasswordField.getLength() > 0 ? pass1PasswordField.getText() : null),
                 (tokenTextField.getLength() > 0 ? tokenTextField.getText() : null));
         RequestResponseDto requestResponseDto = null;
 
         try {
-            requestResponseDto = requestService.confirmResetPassword( resetPasswordConfirmationDto );
+            requestResponseDto = requestService.executeRequest(
+                    resetPasswordConfirmationDto,
+                    configuration.getCONFIRMATION_RESET_PASSWORD(),
+                    RequestResponseDto.class);
         }
         catch( IOException e ) {
             Toast.showToast(event, e);

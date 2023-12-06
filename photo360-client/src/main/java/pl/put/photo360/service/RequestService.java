@@ -8,6 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import pl.put.photo360.dto.*;
 import pl.put.photo360.config.Configuration;
 
+import java.io.IOException;
+
 @Component
 public class RequestService
 {
@@ -21,24 +23,29 @@ public class RequestService
         this.restTemplate = restTemplate;
     }
 
-    public RequestResponseDto registerUser( RegisterRequestDto registerRequestDto ) {
+    public RequestResponseDto registerUser( RegisterRequestDto registerRequestDto ) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<RegisterRequestDto> request = new HttpEntity<>(registerRequestDto, headers);
-        RequestResponseDto requestResponseDto = restTemplate.postForObject(
-                configuration.getREGISTER_ENDPOINT_URL(),
-                request,
-                RequestResponseDto.class);
-        return requestResponseDto;
+        try {
+            return restTemplate.postForObject(
+                    configuration.getREGISTER_ENDPOINT_URL(),
+                    request,
+                    RequestResponseDto.class);
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
     }
 
-    public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<LoginRequestDto> request = new HttpEntity<>(loginRequestDto, headers);
-        LoginResponseDto loginResponseDto = restTemplate.postForObject(
-                configuration.getLOGIN_ENDPOINT_URL(),
-                request,
-                LoginResponseDto.class);
-
-        return loginResponseDto;
+        try {
+            return restTemplate.postForObject(
+                    configuration.getLOGIN_ENDPOINT_URL(),
+                    request,
+                    LoginResponseDto.class);
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
     }
 }

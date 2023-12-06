@@ -23,6 +23,8 @@ public class RegisterSceneController extends SwitchSceneController
     private TextField emailFX;
     @FXML
     private PasswordField password1FX;
+    @FXML
+    private PasswordField password2FX;
 
     @Autowired
     public RegisterSceneController(RequestService requestService, AuthHandler authHandler) {
@@ -31,22 +33,36 @@ public class RegisterSceneController extends SwitchSceneController
 
     public void register( ActionEvent event )
     {
+        System.out.println(password1FX.getText());
+        System.out.println(password2FX.getText());
+
+        // Sprawdzanie czy hasła są identyczne
+        if (!password1FX.getText().equals(password2FX.getText())) {
+            System.out.println("Hasła nie są takie same!");
+            return;
+        }
+
         RegisterRequestDto registerRequestDto = new RegisterRequestDto(
-                loginFX.getText(), emailFX.getText(), password1FX.getText());
+                (loginFX.getLength() > 0 ? loginFX.getText() : null) ,
+                (emailFX.getLength() > 0 ? emailFX.getText() : null),
+                (password1FX.getLength() > 0 ? password1FX.getText() : null));
+        RequestResponseDto requestResponseDto = null;
 
         try {
-            RequestResponseDto requestResponseDto = requestService.registerUser( registerRequestDto );
+            requestResponseDto = requestService.registerUser( registerRequestDto );
         }
-        catch( Exception e ) {
-            System.out.println(e);
+        catch( IOException e ) {
+            System.out.println("Kontroller - dostałem wyjątek: " + e.getMessage());
         }
 
+        RequestResponseDto requestResponseDtoFinal = requestResponseDto;
         Platform.runLater( () -> {
-            try {
-                switchToLoginScene( event );
-            }
-            catch( IOException e ) {
-                throw new RuntimeException( e );
+            if (requestResponseDtoFinal != null) {
+                try {
+                    switchToLoginScene(event);
+                } catch (IOException e) {
+                    throw new RuntimeException( e );
+                }
             }
         } );
     }

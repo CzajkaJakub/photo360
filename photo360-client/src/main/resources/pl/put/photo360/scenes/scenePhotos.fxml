@@ -41,7 +41,7 @@
            <!-- Przycisk "Wyloguj" -->
            <ToolBar centerShape="false" prefHeight="35.0" snapToPixel="false">
                <items>
-                   <Button mnemonicParsing="false" onAction="#switchToLoginScene" prefHeight="25.0" prefWidth="62.0" text="Wyloguj" />
+                   <Button mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="62.0" text="Wyloguj" />
                </items>
            </ToolBar>
        </HBox>

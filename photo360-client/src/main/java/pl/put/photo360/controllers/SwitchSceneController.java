@@ -93,4 +93,9 @@ public abstract class SwitchSceneController {
     public void switchToInformationScene(ActionEvent event) throws IOException {
         switchScene(event, "scenes/sceneInformacje.fxml", 3);
     }
+
+    public void logout(ActionEvent event) throws IOException {
+        authHandler.clearUserData();
+        switchToLoginScene(event);
+    }
 }

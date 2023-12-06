@@ -255,9 +255,4 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
             updatePrefixesInList();
         }
     }
-
-    public void logout(ActionEvent event) throws IOException {
-        authHandler.clearUserData();
-        switchToLoginScene(event);
-    }
 }

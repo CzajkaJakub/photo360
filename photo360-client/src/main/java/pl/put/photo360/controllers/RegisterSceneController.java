@@ -12,6 +12,8 @@ import pl.put.photo360.dto.RequestResponseDto;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.dto.RegisterRequestDto;
+import pl.put.photo360.toast.Toast;
+
 import java.io.IOException;
 
 @Component
@@ -49,8 +51,7 @@ public class RegisterSceneController extends SwitchSceneController
             requestResponseDto = requestService.registerUser( registerRequestDto );
         }
         catch( IOException e ) {
-            // TODO - dodać tutaj wywołanie Popupa
-            System.out.println("Kontroller - dostałem wyjątek: " + e.getMessage());
+            Toast.showToast(event, e);
         }
 
         RequestResponseDto requestResponseDtoFinal = requestResponseDto;

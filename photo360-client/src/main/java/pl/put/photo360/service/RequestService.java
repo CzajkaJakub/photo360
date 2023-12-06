@@ -32,7 +32,7 @@ public class RequestService
                     request,
                     RequestResponseDto.class);
         } catch (Exception e) {
-            throw new IOException(e.getMessage());
+            throw new IOException(e.getCause());
         }
     }
 
@@ -45,7 +45,7 @@ public class RequestService
                     request,
                     LoginResponseDto.class);
         } catch (Exception e) {
-            throw new IOException(e.getMessage());
+            throw new IOException(e.getCause());
         }
     }
 }

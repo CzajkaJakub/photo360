@@ -48,4 +48,31 @@ public class RequestService
             throw new IOException(e.getCause());
         }
     }
+
+    public RequestResponseDto sendResetPassRequest(ResetPasswordRequestDto resetPasswordRequestDto) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<ResetPasswordRequestDto> request = new HttpEntity<>(resetPasswordRequestDto, headers);
+        try {
+            return restTemplate.postForObject(
+                    configuration.getREQUEST_RESET_PASSWORD(),
+                    request,
+                    RequestResponseDto.class);
+        } catch (Exception e) {
+            throw new IOException(e.getCause());
+        }
+    }
+
+    // TODO - serwer nie odpowiada tak jak trzeba
+    public RequestResponseDto confirmResetPassword(ResetPasswordConfirmationDto resetPasswordConfirmationDto) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<ResetPasswordConfirmationDto> request = new HttpEntity<>(resetPasswordConfirmationDto, headers);
+        try {
+            return restTemplate.postForObject(
+                    configuration.getCONFIRMATION_RESET_PASSWORD(),
+                    request,
+                    RequestResponseDto.class);
+        } catch (Exception e) {
+            throw new IOException(e.getCause());
+        }
+    }
 }

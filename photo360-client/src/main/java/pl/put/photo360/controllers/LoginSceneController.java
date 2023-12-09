@@ -19,9 +19,9 @@ import java.io.IOException;
 @Component
 public class LoginSceneController extends SwitchSceneController {
     @FXML
-    private PasswordField loginPassFX;
+    private PasswordField passwordField;
     @FXML
-    private TextField loginLogFX;
+    private TextField loginField;
 
     @Autowired
     public LoginSceneController(RequestService requestService, AuthHandler authHandler, Configuration configuration) {
@@ -30,26 +30,15 @@ public class LoginSceneController extends SwitchSceneController {
 
     public void login( ActionEvent event )
     {
-        LoginRequestDto loginRequestDto = new LoginRequestDto(
-                (loginLogFX.getLength() > 0 ? loginLogFX.getText() : null),
-                (loginPassFX.getLength() > 0 ? loginPassFX.getText() : null));
-        LoginResponseDto loginResponseDto = null;
+        LoginRequestDto loginRequestDto = requestService.createRequest(LoginRequestDto.class, loginField, passwordField);
 
-        try {
-            loginResponseDto = requestService.executeRequest(
-                    loginRequestDto,
-                    configuration.getLOGIN_ENDPOINT_URL(),
-                    LoginResponseDto.class);
-            authHandler.fillWithUserData(loginResponseDto, loginRequestDto.getLogin());
-        }
-        catch( IOException e ) {
-            Toast.showToast(event, e);
-        }
+        LoginResponseDto loginResponseDto = requestService.executeRequest(event, loginRequestDto,
+                configuration.getLOGIN_ENDPOINT_URL(), LoginResponseDto.class);
 
-        LoginResponseDto loginResponseDtoFinal = loginResponseDto;
         Platform.runLater( () -> {
-            if (loginResponseDtoFinal != null) {
+            if (loginResponseDto != null) {
                 try {
+                    authHandler.fillWithUserData(loginResponseDto, loginRequestDto.getLogin());
                     switchToProgramScene(event);
                 }
                 catch( IOException e ) {

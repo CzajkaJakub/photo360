@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import pl.put.photo360.ApplicationContextHolder;
 import pl.put.photo360.Photo360client;
 import pl.put.photo360.config.Configuration;
+import pl.put.photo360.dto.ResourcesConstants;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import java.io.IOException;
@@ -66,35 +67,35 @@ public abstract class SwitchSceneController {
     }
 
     public void switchToLoginScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/sceneLogowanie.fxml");
+        switchScene(event, ResourcesConstants.SCENE_LOGIN.getPath());
     }
 
     public void switchToOptionScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/sceneOpcje.fxml", 4);
+        switchScene(event, ResourcesConstants.SCENE_OPTIONS.getPath(), 4);
     }
 
     public void switchToProgramScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/sceneMain.fxml", 0);
+        switchScene(event, ResourcesConstants.SCENE_MAIN.getPath(), 0);
     }
 
     public void switchToResetPasswordScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/sceneResetPassword.fxml");
+        switchScene(event, ResourcesConstants.SCENE_RESET_PASSWORD.getPath());
     }
 
     public void switchToRegisterScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/sceneRejestracja.fxml");
+        switchScene(event, ResourcesConstants.SCENE_REGISTER.getPath());
     }
 
     public void switchToScenerioScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/sceneScenariusze.fxml", 1);
+        switchScene(event, ResourcesConstants.SCENE_SCENERIOS.getPath(), 1);
     }
 
     public void switchToPhotosScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/scenePhotos.fxml", 2);
+        switchScene(event, ResourcesConstants.SCENE_PHOTOS.getPath() , 2);
     }
 
     public void switchToInformationScene(ActionEvent event) throws IOException {
-        switchScene(event, "scenes/sceneInformacje.fxml", 3);
+        switchScene(event, ResourcesConstants.SCENE_INFORMATIONS.getPath(), 3);
     }
 
     public void logout(ActionEvent event) throws IOException {

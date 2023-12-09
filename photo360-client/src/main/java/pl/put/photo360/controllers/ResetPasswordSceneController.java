@@ -95,27 +95,17 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
     }
 
     public void sendEmail(ActionEvent event) {
+        ResetPasswordRequestDto resetPasswordRequestDto = requestService.createRequest(
+                ResetPasswordRequestDto.class, emailTextField);
 
-        ResetPasswordRequestDto resetPasswordRequestDto = new ResetPasswordRequestDto(
-                (emailTextField.getLength() > 0 ? emailTextField.getText() : null));
-        RequestResponseDto requestResponseDto = null;
+        RequestResponseDto requestResponseDto = requestService.executeRequest(
+                event, resetPasswordRequestDto, configuration.getREQUEST_RESET_PASSWORD(), RequestResponseDto.class);
 
-        try {
-            requestResponseDto = requestService.executeRequest(
-                    resetPasswordRequestDto,
-                    configuration.getREQUEST_RESET_PASSWORD(),
-                    RequestResponseDto.class);
-        }
-        catch( IOException e ) {
-            Toast.showToast(event, e);
-        }
-
-        RequestResponseDto requestResponseDtoFinal = requestResponseDto;
         Platform.runLater( () -> {
-            if (requestResponseDtoFinal != null) {
+            if (requestResponseDto != null) {
                 emailForConfirm = emailTextField.getText();
                 changeVisibleOfElements(true);
-                sendEmailButton.setText("Wyślij ponownie");
+                sendEmailButton.setText(LabelsConstants.SEND_AGAIN.getPath());
             }
         } );
     }
@@ -124,30 +114,19 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
     public void resetPass(ActionEvent event) {
         // Sprawdzanie czy hasła są identyczne
         if (!pass1PasswordField.getText().equals(pass2PasswordField.getText())) {
-            Toast.showToast(event, "Hasła nie są takie same");
+            Toast.showToast(event, ToastsConstants.NOT_THE_SAME_PASSWORDS.getPath());
             return;
         }
 
-        ResetPasswordConfirmationDto resetPasswordConfirmationDto = new ResetPasswordConfirmationDto(
-                (emailForConfirm),
-                (pass1PasswordField.getLength() > 0 ? pass1PasswordField.getText() : null),
-                (tokenTextField.getLength() > 0 ? tokenTextField.getText() : null));
-        RequestResponseDto requestResponseDto = null;
+        ResetPasswordConfirmationDto resetPasswordConfirmationDto = requestService.createRequest(
+                ResetPasswordConfirmationDto.class, emailTextField, pass1PasswordField, tokenTextField);
 
-        try {
-            requestResponseDto = requestService.executeRequest(
-                    resetPasswordConfirmationDto,
-                    configuration.getCONFIRMATION_RESET_PASSWORD(),
-                    RequestResponseDto.class);
-        }
-        catch( IOException e ) {
-            Toast.showToast(event, e);
-        }
+        RequestResponseDto requestResponseDto =  requestService.executeRequest(event,
+                resetPasswordConfirmationDto, configuration.getCONFIRMATION_RESET_PASSWORD(), RequestResponseDto.class);
 
-        RequestResponseDto requestResponseDtoFinal = requestResponseDto;
         Platform.runLater( () -> {
-            if (requestResponseDtoFinal != null) {
-                Toast.showToast(event, "Hasło zostało pomyślnie zmienione");
+            if (requestResponseDto != null) {
+                Toast.showToast(event, ToastsConstants.PASSWORD_CHANGED.getPath());
                 try {
                     switchToLoginScene(event);
                 } catch (IOException e) {

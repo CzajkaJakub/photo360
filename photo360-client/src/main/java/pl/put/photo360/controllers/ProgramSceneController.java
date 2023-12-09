@@ -11,6 +11,8 @@ import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.put.photo360.config.Configuration;
+import pl.put.photo360.dto.LabelsConstants;
+import pl.put.photo360.dto.ToastsConstants;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.toast.Toast;
@@ -21,6 +23,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+// TODO - zrobić ogólny refactor klasy
 @Component
 public class ProgramSceneController extends SwitchSceneController implements Initializable {
     private String command;
@@ -95,19 +98,18 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
         String[] parts = selectedItem.substring(selectedItem.indexOf(":") + 1).trim().split(" ", 2);
 
         parts[0] += " " + parts[1].split(" ")[0];
-        System.out.println("Elem 1: " + parts[0]);
-        System.out.println("Elem 2: " + parts[1]);
 
         String commandType = parts[0]; // Zdjęcie 360 lub Pojedyncze zdjęcie
         int degrees = 0;
 
         // Sprawdzenie, czy jest to Pojedyncze zdjęcie z kątem
-        if (commandType.equals("Pojedyncze zdjęcie") && parts.length > 1) {
+        if (commandType.equals(LabelsConstants.SINGLE_PHOTO.getPath()) && parts.length > 1) {
             try {
                 // Ekstrakcja liczby stopni z drugiej części
                 degrees = Integer.parseInt(parts[1].split(" ")[1]);
             } catch (NumberFormatException e) {
-                System.err.println("Błąd przy parsowaniu stopni: " + e.getMessage());
+                // Możliwe, że będzie sie wywalalo przez new ActionEvent()
+                Toast.showToast(new ActionEvent(), "Błąd podczas parsowania stopni");
             }
         }
 
@@ -115,9 +117,8 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
         comboList.setValue(commandType);
         textFieldDegree.setText(String.valueOf(degrees));
         sliderDegree.setValue(degrees);
-        labelDegree.setText(String.valueOf(degrees) + " stopni");
+        labelDegree.setText(String.valueOf(degrees) + LabelsConstants.DEGREE_SUFFIX.getPath());
     }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -136,37 +137,53 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
             }
         });
 
+        // Listener do obserwowania zmian w polu textFieldDegree
         textFieldDegree.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // Sprawdzenie, czy nowa wartość zawiera tylko cyfry
                 if (!newValue.matches("\\d*")) {
+                    // Usunięcie wszystkich znaków niebędących cyframi
                     newValue = newValue.replaceAll("[^\\d]", "");
                 }
+
+                // Usunięcie wiodącego zera, jeśli jest obecne i wartość ma więcej niż jedną cyfrę
                 if (newValue.startsWith("0") && newValue.length() > 1) {
                     newValue = newValue.substring(1);
                 }
+
+                // Jeśli nowa wartość nie jest pusta, sprawdzanie czy nie przekracza 360
                 if (!newValue.isEmpty()) {
                     try {
                         int value = Integer.parseInt(newValue);
                         if (value > 360) {
+                            // Powrót do starej wartości, jeśli nowa przekracza 360
                             newValue = oldValue;
                         }
                     } catch (NumberFormatException e) {
+                        // Powrót do starej wartości w przypadku błędu konwersji
                         newValue = oldValue;
                     }
                 }
+
+                // Ograniczenie długości wartości do 3 cyfr
                 if (newValue.length() > 3) {
                     newValue = oldValue;
                 }
+
+                // Ustawienie nowej wartości w polu tekstowym
                 textFieldDegree.setText(newValue);
 
+                // Synchronizacja wartości suwaka z polem tekstowym
                 try {
                     sliderDegree.setValue(Integer.parseInt(newValue));
                 } catch (NumberFormatException e) {
+                    // Ustawienie wartości domyślnej, jeśli wystąpi błąd konwersji
                     textFieldDegree.setText("0");
                 }
             }
         });
+
 
         listViewCommands.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             updateMoveButtonsState();
@@ -181,23 +198,23 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
     public void changeComboListElements(ActionEvent event) {
         String selectedType = comboList.getValue();
 
-        if (selectedType.equals("Zdjęcie 360")) {
+        if (selectedType.equals(LabelsConstants.PHOTO_360_DEGREE.getPath())) {
             setSinglePhotoVisibility(false);
-        } else if (selectedType.equals("Pojedyncze zdjęcie")) {
+        } else if (selectedType.equals(LabelsConstants.SINGLE_PHOTO.getPath())) {
             setSinglePhotoVisibility(true);
         }
     }
 
     public void addElementToList(ActionEvent event) {
         if (listItems.size() >= 10) {
-            Toast.showToast(event, "Maksymalna liczba elementów w liście wynosi 10");
+            Toast.showToast(event, ToastsConstants.MAX_ITEMS_NUM.getPath());
             return;
         }
         String degree = "";
         String method = comboList.getValue();
 
         if (textFieldDegree.isVisible()) {
-            degree = " " + textFieldDegree.getText() + " stopni";
+            degree = " " + textFieldDegree.getText() + LabelsConstants.DEGREE_SUFFIX.getPath()    ;
         }
         listItems.add(method + degree);
         updatePrefixesInList();
@@ -240,7 +257,10 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
         if (selectedIndex != -1) {
             String command = comboList.getValue();
             String degrees = textFieldDegree.getText();
-            String updatedItem = (selectedIndex + 1) + ": " + command + (command.equals("Pojedyncze zdjęcie") ? " " + degrees + " stopni" : "");
+            String updatedItem = (selectedIndex + 1) + ": " + command + (
+                    command.equals(LabelsConstants.SINGLE_PHOTO.getPath()) ?
+                            " " + degrees + LabelsConstants.DEGREE_SUFFIX.getPath() : "");
+
             listViewCommands.getItems().set(selectedIndex, updatedItem);
             updatePrefixesInList();
 
@@ -248,7 +268,7 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
             String method = comboList.getValue();
 
             if (textFieldDegree.isVisible()) {
-                degree = " " + textFieldDegree.getText() + " stopni";
+                degree = " " + textFieldDegree.getText() + LabelsConstants.DEGREE_SUFFIX.getPath();
             }
             listItems.set(selectedIndex, method + degree);
             updatePrefixesInList();

@@ -28,19 +28,6 @@ public class AuthHandler {
         this.userRolesList = loginResponseDto.getUserRolesList();
     }
 
-    @Override
-    public String toString() {
-        return "{\n" +
-                "\t'login'='" + login + "',\n" +
-                "\temail='" + email + "',\n" +
-                "\ttoken='" + token + "',\n" +
-                "\temailVerified=" + emailVerified + "',\n" +
-                "\ttokenExpirationDate=" + tokenExpirationDate + "',\n" +
-                "\tlastLoggedDatetime=" + lastLoggedDatetime + "',\n" +
-                "\tuserRolesList=" + userRolesList + "'\n" +
-                '}';
-    }
-
     public void clearUserData() {
         this.login = null;
         this.email = null;

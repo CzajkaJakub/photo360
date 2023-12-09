@@ -22,16 +22,16 @@
       </Label>
 
       <Label layoutX="195.0" layoutY="152.0" text="Login:" />
-      <TextField fx:id="loginFX" layoutX="236.0" layoutY="148.0" />
+      <TextField fx:id="loginField" layoutX="236.0" layoutY="148.0" />
 
       <Label layoutX="160.0" layoutY="192.0" text="Adres e-mail:" />
-      <TextField fx:id="emailFX" layoutX="236.0" layoutY="187.0" />
+      <TextField fx:id="emailField" layoutX="236.0" layoutY="187.0" />
 
       <Label layoutX="195.0" layoutY="229.0" text="Hasło:" />
-      <PasswordField fx:id="password1FX" layoutX="236.0" layoutY="225.0" />
+      <PasswordField fx:id="password1Field" layoutX="236.0" layoutY="225.0" />
 
       <Label layoutX="152.0" layoutY="267.0" text="Powtórz hasło:" />
-      <PasswordField fx:id="password2FX" layoutX="236.0" layoutY="263.0" />
+      <PasswordField fx:id="password2Field" layoutX="236.0" layoutY="263.0" />
 
       <Button layoutX="231.0" layoutY="319.0" mnemonicParsing="false" onAction="#register" prefHeight="43.0" prefWidth="149.0" text="Zarejestruj">
          <font>

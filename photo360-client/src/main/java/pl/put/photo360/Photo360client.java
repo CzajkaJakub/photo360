@@ -15,6 +15,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import pl.put.photo360.dto.LabelsConstants;
+import pl.put.photo360.dto.ResourcesConstants;
 
 public class Photo360client extends Application
 {
@@ -51,21 +53,22 @@ public class Photo360client extends Application
     {
         try
         {
-            FXMLLoader fxmlLoader =
-                    new FXMLLoader( Photo360client.class.getResource( "scenes/sceneLogowanie.fxml" ) );
+            FXMLLoader fxmlLoader = new FXMLLoader( Photo360client.class.getResource(
+                    ResourcesConstants.SCENE_LOGIN.getPath()));
             fxmlLoader.setControllerFactory(context::getBean);
             Parent root = fxmlLoader.load();
             Scene mainScene = new Scene( root );
 
             // icon
             Image icon =
-                new Image( Objects.requireNonNull( Photo360client.class.getResource( "images/icon.jpg" ) )
+                new Image( Objects.requireNonNull( Photo360client.class.getResource(
+                        ResourcesConstants.IMAGE_APP_ICON.getPath() ) )
                     .toString() );
             stage.getIcons()
                 .add( icon );
 
             // title
-            stage.setTitle( "360 App" );
+            stage.setTitle(LabelsConstants.APP_NAME.getPath());
             stage.setScene( mainScene );
 
             stage.setResizable( false );

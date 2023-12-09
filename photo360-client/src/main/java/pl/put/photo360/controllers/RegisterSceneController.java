@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.dto.ToastsConstants;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.dto.RegisterRequestDto;
@@ -21,13 +22,13 @@ import java.io.IOException;
 public class RegisterSceneController extends SwitchSceneController
 {
     @FXML
-    private TextField loginFX;
+    private TextField loginField;
     @FXML
-    private TextField emailFX;
+    private TextField emailField;
     @FXML
-    private PasswordField password1FX;
+    private PasswordField password1Field;
     @FXML
-    private PasswordField password2FX;
+    private PasswordField password2Field;
 
     @Autowired
     public RegisterSceneController(RequestService requestService, AuthHandler authHandler, Configuration configuration) {
@@ -37,30 +38,19 @@ public class RegisterSceneController extends SwitchSceneController
     public void register( ActionEvent event )
     {
         // Sprawdzanie czy hasła są identyczne
-        if (!password1FX.getText().equals(password2FX.getText())) {
-            Toast.showToast(event, "Hasła nie są takie same");
+        if (!password1Field.getText().equals(password2Field.getText())) {
+            Toast.showToast(event, ToastsConstants.NOT_THE_SAME_PASSWORDS.getPath());
             return;
         }
 
-        RegisterRequestDto registerRequestDto = new RegisterRequestDto(
-                (loginFX.getLength() > 0 ? loginFX.getText() : null) ,
-                (emailFX.getLength() > 0 ? emailFX.getText() : null),
-                (password1FX.getLength() > 0 ? password1FX.getText() : null));
-        RequestResponseDto requestResponseDto = null;
+        RegisterRequestDto registerRequestDto = requestService.createRequest(
+                RegisterRequestDto.class, loginField, emailField, password1Field);
 
-        try {
-            requestResponseDto = requestService.executeRequest(
-                    registerRequestDto,
-                    configuration.getREGISTER_ENDPOINT_URL(),
-                    RequestResponseDto.class);
-        }
-        catch( IOException e ) {
-            Toast.showToast(event, e);
-        }
+        RequestResponseDto requestResponseDto = requestService.executeRequest(
+                event, registerRequestDto, configuration.getREGISTER_ENDPOINT_URL(), RequestResponseDto.class);
 
-        RequestResponseDto requestResponseDtoFinal = requestResponseDto;
         Platform.runLater( () -> {
-            if (requestResponseDtoFinal != null) {
+            if (requestResponseDto != null) {
                 try {
                     switchToLoginScene(event);
                 } catch (IOException e) {

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.dto.ToastsConstants;
 
 import java.io.IOException;
 
@@ -23,38 +24,38 @@ public class CustomResponseErrorHandler implements ResponseErrorHandler {
 
         throw new IOException(
                 switch (responseMessage) {
-                    case "USER_NOT_FOUND_BY_LOGIN" -> "Nie znaleziono użytkownika o podanym loginie";
-                    case "WRONG_FIELDS_SIZE" -> "Co najmniej jedno z pól jest nieprawidłowe";
-                    case "WRONG_CREDENTIALS" -> "ERROR"; // TODO
-                    case "AUTH_TOKEN_EXPIRED" -> "Token autoryzacyjny wygasł";
-                    case "RESET_TOKEN_EXPIRED" -> "Token resetowania hasła wygasł";
-                    case "AUTH_TOKEN_NOT_VALID" -> "Nieprawidłowy token autoryzacyjny";
-                    case "WRONG_PUBLIC_API_KEY" -> "Nieprawidłowy klucz publiczny";
-                    case "UNAUTHORIZED_ROLE" -> "Nie posiadasz uprawnień do tej akcji"; // TODO
-                    case "DELETE_NOT_ALLOWED" -> "Nie można usunąć elementu";
-                    case "ADD_TO_FAVOURITE_NOT_ALLOWED" -> "Nie można dodać elementu do ulubionych";
-                    case "PASSWORD_CAN_NOT_BE_THE_SAME" -> "Nowe hasło nie może być identyczne";
-                    case "VALIDATION_NOT_PASSED" -> "Walidacja nie powiodła się"; // TODO
-                    case "EMAIL_ALREADY_VERIFIED" -> "Adres email został już zweryfikowany";
-                    case "EMAIL_VERIFICATION_TOKEN_NOT_VALID" -> "Token weryfikacyjny jest nieprawidłowy";
-                    case "EMAIL_VERIFICATION_TOKEN_EXPIRED" -> "Token weryfikacyjny wygasł";
-                    case "GIF_IS_NOT_PUBLIC" -> "GIF nie jest publiczny"; // TODO
-                    case "FIELD_CONTAINS_WHITESPACES" -> "Co najmniej jedno pole zawiera spacje"; // TODO
-                    case "STATUS_MISSING_REQUIRED_FIELD" -> "Proszę uzupełnić wszystkie pola"; // TODO
-                    case "EMAIL_WRONG_FORMAT" -> "Niepoprawny format adresu email";
-                    case "UNSUPPORTED" -> "Nie wspierane"; // TODO
-                    case "WRONG_FILE_FORMAT" -> "Niepoprawny format danych";
-                    case "CONNECTION_REFUSED" -> "Połączenie zerwane"; // TODO
-                    case "USER_NOT_FOUND_BY_EMAIL" -> "Nie znaleziono użytkownika o podanym adresie email";
-                    case "USER_NOT_FOUND_FROM_TOKEN" -> "Nie znaleziono użytkownika o podanym tokenie"; // TODO
-                    case "GIF_BY_GIVEN_ID_NOT_EXISTS" -> "GIF o podanym ID nie istnieje";
-                    case "GIVEN_EMAIL_EXISTS" -> "Podany adres email jest już używany";
-                    case "GIVEN_LOGIN_EXISTS" -> "Podana nazwa użytkownika jest już używana";
-                    case "ACCOUNT_LOCKED" -> "Konto zostało zablokowane z powodu zbyt wielu nieudanych prób logowania";
-                    case "EMAIL_NOT_CONFIRMED" -> "Akcja niedostępna z powodu niepotwierdzonego adresu email"; // TODO
-                    case "EMAIL_SEND_FAILED" -> "Wysłanie wiadomości email nie powiodło się"; // TODO
-                    case "GIF_ALREADY_ADDED_TO_FAVOURITE" -> "GIF został już dodany do ulubionych";
-                    default -> "Nieznany błąd"; // TODO
+                    case "USER_NOT_FOUND_BY_LOGIN" -> ToastsConstants.USER_NOT_FOUND_BY_LOGIN.getPath();
+                    case "WRONG_FIELDS_SIZE" -> ToastsConstants.WRONG_FIELDS_SIZE.getPath();
+                    case "WRONG_CREDENTIALS" -> ToastsConstants.WRONG_CREDENTIALS.getPath();
+                    case "AUTH_TOKEN_EXPIRED" -> ToastsConstants.AUTH_TOKEN_EXPIRED.getPath();
+                    case "RESET_TOKEN_EXPIRED" -> ToastsConstants.RESET_TOKEN_EXPIRED.getPath();
+                    case "AUTH_TOKEN_NOT_VALID" -> ToastsConstants.AUTH_TOKEN_NOT_VALID.getPath();
+                    case "WRONG_PUBLIC_API_KEY" -> ToastsConstants.WRONG_PUBLIC_API_KEY.getPath();
+                    case "UNAUTHORIZED_ROLE" -> ToastsConstants.UNAUTHORIZED_ROLE.getPath();
+                    case "DELETE_NOT_ALLOWED" -> ToastsConstants.DELETE_NOT_ALLOWED.getPath();
+                    case "ADD_TO_FAVOURITE_NOT_ALLOWED" -> ToastsConstants.ADD_TO_FAVOURITE_NOT_ALLOWED.getPath();
+                    case "PASSWORD_CAN_NOT_BE_THE_SAME" -> ToastsConstants.PASSWORD_CAN_NOT_BE_THE_SAME.getPath();
+                    case "VALIDATION_NOT_PASSED" -> ToastsConstants.VALIDATION_NOT_PASSED.getPath();
+                    case "EMAIL_ALREADY_VERIFIED" -> ToastsConstants.EMAIL_ALREADY_VERIFIED.getPath();
+                    case "EMAIL_VERIFICATION_TOKEN_NOT_VALID" -> ToastsConstants.EMAIL_VERIFICATION_TOKEN_NOT_VALID.getPath();
+                    case "EMAIL_VERIFICATION_TOKEN_EXPIRED" -> ToastsConstants.EMAIL_VERIFICATION_TOKEN_EXPIRED.getPath();
+                    case "GIF_IS_NOT_PUBLIC" -> ToastsConstants.GIF_IS_NOT_PUBLIC.getPath();
+                    case "FIELD_CONTAINS_WHITESPACES" -> ToastsConstants.FIELD_CONTAINS_WHITESPACES.getPath();
+                    case "STATUS_MISSING_REQUIRED_FIELD" -> ToastsConstants.STATUS_MISSING_REQUIRED_FIELD.getPath();
+                    case "EMAIL_WRONG_FORMAT" -> ToastsConstants.EMAIL_WRONG_FORMAT.getPath();
+                    case "UNSUPPORTED" -> ToastsConstants.UNSUPPORTED.getPath();
+                    case "WRONG_FILE_FORMAT" -> ToastsConstants.WRONG_FILE_FORMAT.getPath();
+                    case "CONNECTION_REFUSED" -> ToastsConstants.CONNECTION_REFUSED.getPath();
+                    case "USER_NOT_FOUND_BY_EMAIL" -> ToastsConstants.USER_NOT_FOUND_BY_EMAIL.getPath();
+                    case "USER_NOT_FOUND_FROM_TOKEN" -> ToastsConstants.USER_NOT_FOUND_FROM_TOKEN.getPath();
+                    case "GIF_BY_GIVEN_ID_NOT_EXISTS" -> ToastsConstants.GIF_BY_GIVEN_ID_NOT_EXISTS.getPath();
+                    case "GIVEN_EMAIL_EXISTS" -> ToastsConstants.GIVEN_EMAIL_EXISTS.getPath();
+                    case "GIVEN_LOGIN_EXISTS" -> ToastsConstants.GIVEN_LOGIN_EXISTS.getPath();
+                    case "ACCOUNT_LOCKED" -> ToastsConstants.ACCOUNT_LOCKED.getPath();
+                    case "EMAIL_NOT_CONFIRMED" -> ToastsConstants.EMAIL_NOT_CONFIRMED.getPath();
+                    case "EMAIL_SEND_FAILED" -> ToastsConstants.EMAIL_SEND_FAILED.getPath();
+                    case "GIF_ALREADY_ADDED_TO_FAVOURITE" -> ToastsConstants.GIF_ALREADY_ADDED_TO_FAVOURITE.getPath();
+                    default -> ToastsConstants.DEFAULT_ERROR.getPath();
                 });
     }
 }

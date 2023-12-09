@@ -22,10 +22,10 @@
          </font>
       </Label>
 
-      <TextField fx:id="loginLogFX" layoutX="226.0" layoutY="138.0" />
+      <TextField fx:id="loginField" layoutX="226.0" layoutY="138.0" />
       <Label layoutX="148.0" layoutY="142.0" text="Login:" />
 
-      <PasswordField fx:id="loginPassFX" layoutX="226.0" layoutY="188.0" />
+      <PasswordField fx:id="passwordField" layoutX="226.0" layoutY="188.0" />
       <Label layoutX="148.0" layoutY="192.0" text="Hasło:" />
 
 

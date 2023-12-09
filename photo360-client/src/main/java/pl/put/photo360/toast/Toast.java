@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Toast {
 
     public static void showToast(ActionEvent actionEvent, IOException exception) {
-        String message = exception.getCause().toString().split(":")[1];
+        String message = exception.toString().split(":")[1];
         showToast(actionEvent, message);
     }
 

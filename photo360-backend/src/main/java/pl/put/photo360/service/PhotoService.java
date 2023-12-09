@@ -81,7 +81,7 @@ public class PhotoService
             }
             photos.sort( new PhotoEntityComparator() );
 
-            if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos )
+            if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos && aAmountOfPhotosToSave > 0 )
             {
                 photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
                     .filter( i -> i % photos.size() / aAmountOfPhotosToSave == 0 )

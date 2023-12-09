@@ -1,6 +1,8 @@
 package pl.put.photo360.shared.utils;
 
-import static pl.put.photo360.dto.ServerResponseCode.*;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_AUTH_TOKEN_EXPIRED;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_AUTH_TOKEN_NOT_VALID;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_UNAUTHORIZED_ROLE;
 
 import java.time.Instant;
 import java.util.HashMap;

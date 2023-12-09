@@ -11,9 +11,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.put.photo360.config.Configuration;
@@ -24,10 +23,13 @@ import pl.put.photo360.exception.ServiceException;
 public class GifCreator
 {
     private final Configuration configuration;
+    private final AnimatedGifEncoder animatedGifEncoder;
 
-    public GifCreator( Configuration configuration )
+    @Autowired
+    public GifCreator( Configuration configuration, AnimatedGifEncoder aAnimatedGifEncoder )
     {
         this.configuration = configuration;
+        this.animatedGifEncoder = aAnimatedGifEncoder;
     }
 
     public byte[] convertImagesIntoGif( List< PhotoEntity > aImages, String backgroundColorHex )
@@ -35,11 +37,11 @@ public class GifCreator
     {
         try
         {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageOutputStream output = new MemoryCacheImageOutputStream( byteArrayOutputStream );
-
-            GifSequenceWriter writer = new GifSequenceWriter( output, BufferedImage.TYPE_4BYTE_ABGR,
-                configuration.getGIF_TIME_BETWEEN_FRAME(), configuration.getGIF_LOOP_CONTINUOUSLY() );
+            ByteArrayOutputStream gifOutputStream = new ByteArrayOutputStream();
+            animatedGifEncoder.start( gifOutputStream );
+            animatedGifEncoder.setDelay( configuration.getGIF_TIME_BETWEEN_FRAME() );
+            animatedGifEncoder.setDispose( 2 );
+            animatedGifEncoder.setRepeat( 0 );
 
             for( PhotoEntity photoEntity : aImages )
             {
@@ -47,21 +49,18 @@ public class GifCreator
                 BufferedImage bufferedImage;
                 if( backgroundColorHex == null )
                 {
-                    bufferedImage = ImageIO.read( inputByteStream );
+                    animatedGifEncoder.addFrame( ImageIO.read( inputByteStream ) );
                 }
                 else
                 {
                     Color backgroundColor = Color.decode( backgroundColorHex );
                     bufferedImage = changeBackgroundColor( ImageIO.read( inputByteStream ), backgroundColor );
+                    animatedGifEncoder.addFrame( bufferedImage );
                 }
-
-                writer.writeToSequence( bufferedImage );
             }
 
-            writer.close();
-            output.close();
-
-            return byteArrayOutputStream.toByteArray();
+            animatedGifEncoder.finish();
+            return gifOutputStream.toByteArray();
         }
         catch( IOException aE )
         {

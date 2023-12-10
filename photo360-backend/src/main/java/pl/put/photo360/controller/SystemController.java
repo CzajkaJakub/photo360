@@ -76,9 +76,10 @@ public class SystemController
     @ApiResponses( value =
     { @ApiResponse( responseCode = "200", description = "Returns public gifs." ),
         @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ) } )
-    public ResponseEntity< Collection< PhotoDataDto > > downloadPublicGif()
+    public ResponseEntity< Collection< PhotoDataDto > > downloadPublicGif(
+        @RequestParam( value = "previewMode" ) Boolean previewMode )
     {
-        var publicGifs = photoService.downloadPublicGifs();
+        var publicGifs = photoService.downloadPublicGifs( previewMode );
         return new ResponseEntity<>( publicGifs, HttpStatus.OK );
     }
 
@@ -90,9 +91,10 @@ public class SystemController
         @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
         @ApiResponse( responseCode = "404", description = "User was not found by passed token." ) } )
     public ResponseEntity< Collection< PhotoDataDto > > downloadPrivateGif(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
+        @RequestParam( value = "previewMode" ) Boolean previewMode )
     {
-        var privateGifs = photoService.downloadPrivateGifs( authorizationToken );
+        var privateGifs = photoService.downloadPrivateGifs( authorizationToken, previewMode );
         return new ResponseEntity<>( privateGifs, HttpStatus.OK );
     }
 
@@ -102,9 +104,10 @@ public class SystemController
     @ApiResponses( value =
     { @ApiResponse( responseCode = "200", description = "Returns gifs." ),
         @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ) } )
-    public ResponseEntity< Collection< PhotoDataDto > > downloadAllGif()
+    public ResponseEntity< Collection< PhotoDataDto > > downloadAllGif(
+        @RequestParam( value = "previewMode" ) Boolean previewMode )
     {
-        var gifs = photoService.downloadAllGifs();
+        var gifs = photoService.downloadAllGifs( previewMode );
         return new ResponseEntity<>( gifs, HttpStatus.OK );
     }
 
@@ -182,9 +185,10 @@ public class SystemController
         @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
         @ApiResponse( responseCode = "404", description = "User was not found by passed token" ) } )
     public ResponseEntity< Collection< PhotoDataDto > > getFavourites(
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
+        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
+        @RequestParam( value = "previewMode" ) Boolean previewMode )
     {
-        var gifs = photoService.getFavourites( authorizationToken );
+        var gifs = photoService.getFavourites( authorizationToken, previewMode );
         return new ResponseEntity<>( gifs, HttpStatus.OK );
     }
 }

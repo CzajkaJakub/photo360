@@ -14,8 +14,8 @@ import pl.put.photo360.entity.PhotoDataEntity;
 @Repository
 public interface FavouriteGifDataDao extends JpaRepository< FavouriteGifDataEntity, Long >
 {
-    @Query( "select fgde.photoDataId from FavouriteGifDataEntity fgde where fgde.userId.login = :userId" )
-    List< PhotoDataEntity > findUserFavouriteGifs( @Param( "userId" ) String userId );
+    @Query( "select fgde.photoDataId.id from FavouriteGifDataEntity fgde where fgde.userId.login = :userId" )
+    List< Long > findUserFavouriteGifsIds( @Param( "userId" ) String userId );
 
     @Query( "select fgde from FavouriteGifDataEntity fgde where fgde.userId.id = :userId and fgde.photoDataId.id = :gifId" )
     Optional< FavouriteGifDataEntity > findUserGif( @Param( "userId" ) Integer userId,

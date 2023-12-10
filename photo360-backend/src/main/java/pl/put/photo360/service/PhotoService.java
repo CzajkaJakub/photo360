@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.persistence.Tuple;
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.converter.GifCreator;
@@ -205,30 +206,34 @@ public class PhotoService
         }
     }
 
-    public List< PhotoDataDto > downloadPrivateGifs( String aAuthorizationToken )
+    public List< PhotoDataDto > downloadPrivateGifs( String aAuthorizationToken, boolean aPreviewMode )
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
-        var gifs = photoDataDao.findPrivateGifs( userId );
-        return getExternalFromInternal( gifs );
+        var gifIds = photoDataDao.findPrivateGifIds( userId );
+        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
+            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
     }
 
-    public List< PhotoDataDto > getFavourites( String aAuthorizationToken )
+    public List< PhotoDataDto > getFavourites( String aAuthorizationToken, boolean aPreviewMode )
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
-        var gifs = favouriteGifDataDao.findUserFavouriteGifs( userId );
-        return getExternalFromInternal( gifs );
+        var gifIds = favouriteGifDataDao.findUserFavouriteGifsIds( userId );
+        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
+            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
     }
 
-    public List< PhotoDataDto > downloadPublicGifs()
+    public List< PhotoDataDto > downloadPublicGifs( boolean aPreviewMode )
     {
-        var gifs = photoDataDao.findPublicGifs();
-        return getExternalFromInternal( gifs );
+        var gifIds = photoDataDao.findPublicGifIds();
+        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
+            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
     }
 
-    public List< PhotoDataDto > downloadAllGifs()
+    public List< PhotoDataDto > downloadAllGifs( boolean aPreviewMode )
     {
-        var gifs = photoDataDao.findAll();
-        return getExternalFromInternal( gifs );
+        var gifIds = photoDataDao.findAllGifIds();
+        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
+            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
     }
 
     public PhotoDataEntity findGifById( Long aGifId )
@@ -244,22 +249,36 @@ public class PhotoService
         }
     }
 
-    private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
-    {
-        return new PhotoDataDto( aPhotoDataEntity.getConvertedGif(), aPhotoDataEntity.getId(),
-            aPhotoDataEntity.isPublic(), aPhotoDataEntity.getUserId()
-                .getLogin(),
-            aPhotoDataEntity.getDescription(), aPhotoDataEntity.getUploadDateTime(),
-            aPhotoDataEntity.getPhotos()
-                .stream()
-                .map( PhotoEntity::getPhoto )
-                .collect( Collectors.toSet() ) );
-    }
-
     private List< PhotoDataDto > getExternalFromInternal( List< PhotoDataEntity > listOfPhotoDataEntities )
     {
         return listOfPhotoDataEntities.stream()
             .map( this::getExternalFromInternal )
             .collect( Collectors.toList() );
+    }
+
+    private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
+    {
+        return new PhotoDataDto( aPhotoDataEntity.getConvertedGif(), aPhotoDataEntity.getId(),
+            aPhotoDataEntity.isPublic(), aPhotoDataEntity.getUserId()
+                .getLogin(),
+            aPhotoDataEntity.getDescription(), aPhotoDataEntity.getTitle(),
+            aPhotoDataEntity.getUploadDateTime(), aPhotoDataEntity.getPhotos()
+                .stream()
+                .map( PhotoEntity::getPhoto )
+                .collect( Collectors.toSet() ) );
+    }
+
+    private List< PhotoDataDto > getExternalFromInternalPreview( List< Tuple > aGifsByIdInPreviewMode )
+    {
+        return aGifsByIdInPreviewMode.stream()
+            .map( this::getExternalFromInternalPreview )
+            .collect( Collectors.toList() );
+    }
+
+    private PhotoDataDto getExternalFromInternalPreview( Tuple aGifByIdInPreviewMode )
+    {
+        return new PhotoDataDto( aGifByIdInPreviewMode.get( 0, Long.class ),
+            aGifByIdInPreviewMode.get( 1, String.class ), aGifByIdInPreviewMode.get( 2, String.class ),
+            aGifByIdInPreviewMode.get( 3, byte[].class ) );
     }
 }

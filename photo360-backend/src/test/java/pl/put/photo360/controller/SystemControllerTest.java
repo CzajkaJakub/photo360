@@ -57,6 +57,7 @@ public class SystemControllerTest
     private final String testLoginAdmin = "LOGIN_ADMIN_ACCOUNT";
     private final String testEmailAdmin = "ADMIN_ACCOUNT@gmail.com";
     private final String testPasswordAdmin = "PASSWORD_ADMIN_ACCOUNT";
+    private final String previewModeFalseUrlSuffix = "?previewMode=false";
     @Autowired
     private AuthService authService;
     @Value( value = "${local.server.port}" )
@@ -87,14 +88,18 @@ public class SystemControllerTest
 
         String loginEndpointPath = "http://localhost:" + port + "/photo360/authorization/login";
         uploadPhotosEndpointPath = "http://localhost:" + port + "/photo360/uploadPhotos";
-        downloadPublicGifsEndpointPath = "http://localhost:" + port + "/photo360/downloadPublicGifs";
-        downloadPrivateGifsEndpointPath = "http://localhost:" + port + "/photo360/downloadPrivateGifs";
-        downloadAllGifsEndpointPath = "http://localhost:" + port + "/photo360/downloadAllGifs";
+        downloadPublicGifsEndpointPath =
+            "http://localhost:" + port + "/photo360/downloadPublicGifs" + previewModeFalseUrlSuffix;
+        downloadPrivateGifsEndpointPath =
+            "http://localhost:" + port + "/photo360/downloadPrivateGifs" + previewModeFalseUrlSuffix;
+        downloadAllGifsEndpointPath =
+            "http://localhost:" + port + "/photo360/downloadAllGifs" + previewModeFalseUrlSuffix;
         removeGifEndpointPath = "http://localhost:" + port + "/photo360/removeGif/";
         downloadGifEndpointPath = "http://localhost:" + port + "/photo360/downloadGif/";
         addGifToFavouriteEndpointPath = "http://localhost:" + port + "/photo360/addToFavourite/";
         removeGifFromFavouriteEndpointPath = "http://localhost:" + port + "/photo360/removeFromFavourite/";
-        downloadFavouriteGifsEndpointPath = "http://localhost:" + port + "/photo360/getFavourites";
+        downloadFavouriteGifsEndpointPath =
+            "http://localhost:" + port + "/photo360/getFavourites" + previewModeFalseUrlSuffix;
 
         var loginUserRequestDto = new LoginRequestDto( testLoginUser, testPasswordUser );
         var loginAdminLoginRequestDto = new LoginRequestDto( testLoginAdmin, testPasswordAdmin );
@@ -177,10 +182,9 @@ public class SystemControllerTest
             formData.add( "isPublic", true );
             formData.add( "description", "testDescription" );
             formData.add( "title", "testTitle" );
-            formData.add( "amountOfPhotosToSave", 1 );
             formData.add( "zipFile", fileResource );
-            formData.add( "savePhoto360", true );
-            formData.add( "savePhotos", true );
+            formData.add( "photosZipFile360", fileResource );
+            formData.add( "photosZipFile", fileResource );
 
             IntStream.range( 0, amountOfPublicGifsIteration )
                 .forEach( iteration -> restTemplate.exchange( uploadPhotosEndpointPath, HttpMethod.POST,
@@ -1424,16 +1428,18 @@ public class SystemControllerTest
             formData.add( "isPublic", true );
             formData.add( "description", "testDescription" );
             formData.add( "title", "testTitle" );
-            formData.add( "amountOfPhotosToSave", 1 );
-            formData.add( "savePhoto360", true );
-            formData.add( "savePhotos", true );
+            formData.add( "zipFile", fileResource );
 
             formDataWrongFormat.addAll( formData );
             formDataWrongInput.addAll( formData );
 
-            formData.add( "zipFile", fileResource );
-            formDataWrongInput.add( "zipFile", fileResourcePdfInZipFile );
-            formDataWrongFormat.add( "zipFile", fileResourceWrongFormat );
+            formData.add( "photosZipFile360", fileResource );
+            formData.add( "photosZipFile", fileResource );
+
+            formDataWrongInput.add( "photosZipFile360", fileResourcePdfInZipFile );
+            formDataWrongFormat.add( "photosZipFile360", fileResourceWrongFormat );
+            formDataWrongInput.add( "photosZipFile", fileResourceWrongFormat );
+            formDataWrongFormat.add( "photosZipFile", fileResourceWrongFormat );
         }
 
         @Test

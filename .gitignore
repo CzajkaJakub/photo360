@@ -25,3 +25,4 @@ build/
 
 ### VS Code ###
 .vscode/
+docker-sys-photo360-conf/photo360-backend-1.0.0-SNAPSHOT-deploy.jar

@@ -103,4 +103,16 @@
 
     </changeSet>
 
+    <changeSet id="2023-12-10T11:29:32" author="jczajka">
+
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="photo_data"/>
+        </preConditions>
+
+        <addColumn tableName="photo_data">
+            <column name="first_photo" type="BYTEA"/>
+        </addColumn>
+
+    </changeSet>
+
 </databaseChangeLog>

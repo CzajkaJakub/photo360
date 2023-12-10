@@ -26,7 +26,6 @@ import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.converter.GifCreator;
 import pl.put.photo360.dao.FavouriteGifDataDao;
-import pl.put.photo360.dao.PhotoDao;
 import pl.put.photo360.dao.PhotoDataDao;
 import pl.put.photo360.dto.PhotoDataDto;
 import pl.put.photo360.entity.FavouriteGifDataEntity;
@@ -43,21 +42,18 @@ public class PhotoService
     private final AuthService authService;
     private final JwtValidator jwtValidator;
     private final PhotoDataDao photoDataDao;
-    private final PhotoDao photoDao;
     private final Configuration configuration;
     private final FavouriteGifDataDao favouriteGifDataDao;
 
     @Autowired
     public PhotoService( PhotoDataDao aPhotoDataDao, AuthService aAuthService, Configuration aConfiguration,
-        JwtValidator aJwtValidator, GifCreator aGifCreator, PhotoDao aPhotoDao,
-        FavouriteGifDataDao aFavouriteGifDataDao )
+        JwtValidator aJwtValidator, GifCreator aGifCreator, FavouriteGifDataDao aFavouriteGifDataDao )
     {
         photoDataDao = aPhotoDataDao;
         authService = aAuthService;
         configuration = aConfiguration;
         jwtValidator = aJwtValidator;
         gifCreator = aGifCreator;
-        photoDao = aPhotoDao;
         favouriteGifDataDao = aFavouriteGifDataDao;
     }
 
@@ -86,12 +82,21 @@ public class PhotoService
             }
             photos.sort( new PhotoEntityComparator() );
 
-            if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos && aAmountOfPhotosToSave > 0 )
+            if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos )
             {
-                photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
-                    .filter( i -> i % photos.size() / aAmountOfPhotosToSave == 0 )
-                    .mapToObj( photos::get )
-                    .toList() );
+                photoDataEntity.setFirstPhoto( photos.get( 0 )
+                    .getPhoto() );
+                if( aAmountOfPhotosToSave == null )
+                {
+                    photoDataEntity.setPhotos( photos );
+                }
+                else if( aAmountOfPhotosToSave > 0 )
+                {
+                    photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
+                        .filter( i -> i % photos.size() / aAmountOfPhotosToSave == 0 )
+                        .mapToObj( photos::get )
+                        .toList() );
+                }
             }
 
             if( configuration.getSAVING_GIF_360() && aSavePhoto360 )
@@ -214,30 +219,37 @@ public class PhotoService
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
         var gifIds = photoDataDao.findPrivateGifIds( userId );
-        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
-            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
+
     }
 
     public List< PhotoDataDto > getFavourites( String aAuthorizationToken, boolean aPreviewMode )
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
         var gifIds = favouriteGifDataDao.findUserFavouriteGifsIds( userId );
-        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
-            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
+
     }
 
     public List< PhotoDataDto > downloadPublicGifs( boolean aPreviewMode )
     {
         var gifIds = photoDataDao.findPublicGifIds();
-        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
-            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
+
     }
 
     public List< PhotoDataDto > downloadAllGifs( boolean aPreviewMode )
     {
         var gifIds = photoDataDao.findAllGifIds();
-        return aPreviewMode ? getExternalFromInternal( photoDataDao.findGifsById( gifIds ) )
-            : getExternalFromInternalPreview( photoDataDao.findGifsByIdInPreviewMode( gifIds ) );
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
     }
 
     public PhotoDataEntity findGifById( Long aGifId )
@@ -257,7 +269,7 @@ public class PhotoService
     {
         return listOfPhotoDataEntities.stream()
             .map( this::getExternalFromInternal )
-            .collect( Collectors.toList() );
+            .toList();
     }
 
     private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
@@ -269,22 +281,21 @@ public class PhotoService
             aPhotoDataEntity.getUploadDateTime(), aPhotoDataEntity.getPhotos()
                 .stream()
                 .map( PhotoEntity::getPhoto )
-                .collect( Collectors.toSet() ) );
+                .collect( Collectors.toSet() ),
+            aPhotoDataEntity.getFirstPhoto() );
     }
 
-    private List< PhotoDataDto > getExternalFromInternalPreview( List< Tuple > aGifsByIdInPreviewMode )
+    private List< PhotoDataDto > getExternalFromInternalPreviewVersion( List< Tuple > aGifsByIdInPreviewMode )
     {
         return aGifsByIdInPreviewMode.stream()
-            .map( this::getExternalFromInternalPreview )
-            .collect( Collectors.toList() );
+            .map( this::getExternalFromInternalPreviewVersion )
+            .toList();
     }
 
-    private PhotoDataDto getExternalFromInternalPreview( Tuple aGifByIdInPreviewMode )
+    private PhotoDataDto getExternalFromInternalPreviewVersion( Tuple aGifsByIdInPreviewMode )
     {
-        var gifId = aGifByIdInPreviewMode.get( 0, Long.class );
-        var previewGifPhoto = photoDao.findSinglePhotoByGifId( gifId );
-
-        return new PhotoDataDto( gifId, aGifByIdInPreviewMode.get( 1, String.class ),
-            aGifByIdInPreviewMode.get( 2, String.class ), previewGifPhoto );
+        return new PhotoDataDto( aGifsByIdInPreviewMode.get( 0, Long.class ),
+            aGifsByIdInPreviewMode.get( 1, String.class ), aGifsByIdInPreviewMode.get( 2, String.class ),
+            aGifsByIdInPreviewMode.get( 3, byte[].class ) );
     }
 }

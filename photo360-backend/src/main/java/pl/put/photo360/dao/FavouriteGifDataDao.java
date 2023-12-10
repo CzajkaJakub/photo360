@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import pl.put.photo360.entity.FavouriteGifDataEntity;
-import pl.put.photo360.entity.PhotoDataEntity;
 
 @Repository
 public interface FavouriteGifDataDao extends JpaRepository< FavouriteGifDataEntity, Long >

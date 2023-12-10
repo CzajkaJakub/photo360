@@ -16,6 +16,8 @@ import javafx.scene.control.ToolBar;
 import javafx.stage.Stage;
 import pl.put.photo360.ApplicationContextHolder;
 import pl.put.photo360.Photo360client;
+import pl.put.photo360.camera.view.CameraWindow;
+import pl.put.photo360.config.ConfigURL;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dto.ResourcesConstants;
 import pl.put.photo360.handlers.AuthHandler;
@@ -26,6 +28,8 @@ public abstract class SwitchSceneController
     protected final RequestService requestService;
     protected final AuthHandler authHandler;
     protected final Configuration configuration;
+    protected final CameraWindow cameraWindow;
+    protected final ConfigURL configURL;
     private Stage stage;
     private Scene scene;
     private FXMLLoader fxmlLoader;
@@ -34,12 +38,14 @@ public abstract class SwitchSceneController
     private Label label;
     private ApplicationContext context = ApplicationContextHolder.getApplicationContext();
 
-    public SwitchSceneController( RequestService requestService, AuthHandler authHandler,
-        Configuration configuration )
+    public SwitchSceneController(RequestService requestService, AuthHandler authHandler,
+                                 Configuration configuration, ConfigURL configURL, CameraWindow cameraWindow)
     {
         this.requestService = requestService;
         this.authHandler = authHandler;
         this.configuration = configuration;
+        this.configURL = configURL;
+        this.cameraWindow = cameraWindow;
     }
 
     private void setToolbarTab( ToolBar toolBar, int index )

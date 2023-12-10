@@ -1,6 +1,7 @@
 import asyncio
 from bleak import BleakClient
 import camera
+import os
 import sys
 
 ADDRESS = "28:CD:C1:03:39:4F"
@@ -16,11 +17,11 @@ def notification_handler(sender, data):
     print(received_message)
 
 
-def make_photo():
-    camera.capture_photo()
+def make_photo(folder_path):
+    camera.capture_photo(folder_path)
 
 
-async def send_and_receive(client, message):
+async def send_and_receive(client, message, folder_path):
     global received_message
     received_message = None
 
@@ -32,17 +33,20 @@ async def send_and_receive(client, message):
 
         if received_message == "PHOTO":
             await asyncio.sleep(0.2)
-            make_photo()
+            make_photo(folder_path)
             await client.write_gatt_char(WRITE_CHARACTERISTIC_UUID, bytearray("next", 'utf-8'))
             received_message = None
         else:
             break
 
 
-async def main(commands):
+async def main(commands, folder_path):
     client = BleakClient(ADDRESS)
     print("Connecting...")
-    await client.connect()
+    try:
+        await client.connect()
+    except:
+        sys.exit(102)
 
     if not client.is_connected:
         raise ConnectionError(f"Failed to connect to {ADDRESS}")
@@ -50,21 +54,40 @@ async def main(commands):
     print("Connected to: " + client.address)
     print("Process has been started.")
 
+    if camera.find_usb_camera() is None:
+        sys.exit(103)
+
     for cmd in commands:
         await client.start_notify(READ_CHARACTERISTIC_UUID, notification_handler)
-        await send_and_receive(client, cmd)
+
+        # Dodanie docelowego folderu do zdjęcia
+        comm_mode = cmd.split(' ')[0]
+        if comm_mode == "single_move":
+            folder_path_final = folder_path + "/single"
+        elif comm_mode == "full_move":
+            folder_path_final = folder_path + "/full"
+
+        # Stworzenie docelowego katalogu jeżeli nie istnieje
+        if not os.path.exists(folder_path_final):
+            os.makedirs(folder_path_final)
+
+        await send_and_receive(client, cmd, folder_path_final)
         await client.stop_notify(READ_CHARACTERISTIC_UUID)
     await client.disconnect()
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: myscript.py <move type 1> <degree 1> <move type 2> <degree 2> ...")
-        sys.exit(1)
+    if len(sys.argv) < 4:
+        print("Usage: myscript.py <folder_path> <move type 1> <degree 1> <move type 2> <degree 2> ...")
+        sys.exit(101)
 
+    folder_path = sys.argv[1]
+    if os.path.exists(folder_path):
+        sys.exit(104)
+        
     arguments = []
-    for i in range(1, len(sys.argv), 2):
+    for i in range(2, len(sys.argv), 2):
         com_str = f"{sys.argv[i]} {sys.argv[i + 1]}"
         arguments.append(com_str)
 
-    asyncio.run(main(arguments))
+    asyncio.run(main(arguments, folder_path))

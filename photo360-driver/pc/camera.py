@@ -6,8 +6,11 @@ import re
 
 def find_usb_camera():
     # Aktualnie trzeba wyłączyć kamerę systemową przed uruchomieniem przechwytywanie, żeby przechwycić poprawną kamerę
-    for i in range(5):  # Assuming there are at most 2 potential cameras
-        cap = cv2.VideoCapture(i, cv2.CAP_DSHOW)
+    for i in range(2):  # Assuming there are at most 2 potential cameras
+        try:
+            cap = cv2.VideoCapture(i, cv2.CAP_DSHOW)
+        except:
+            continue
         if cap is None or not cap.isOpened():
             cap.release()
             continue
@@ -27,11 +30,11 @@ def is_image_cut_off(image_path, target_color=(129, 127, 130), threshold=2):
     return True
 
 
-def highest_number_in_folder():
+def highest_number_in_folder(photos_path):
     pattern = r"photo \((\d+)\)"  # pattern with capturing group for the number
     numbers = []
 
-    for file in os.listdir("photos"):
+    for file in os.listdir(photos_path):
         match = re.search(pattern, file)  # Use regex search instead of "in"
         if match:
             number = int(match.group(1))  # extract number using group
@@ -42,15 +45,15 @@ def highest_number_in_folder():
     return 0
 
 
-def next_filename():
-    number = highest_number_in_folder() + 1
+def next_filename(photos_path):
+    number = highest_number_in_folder(photos_path) + 1
     return f"photo ({number}).jpg"
 
 
-def delete_last_photo():
-    highest_number = highest_number_in_folder()
+def delete_last_photo(photos_path):
+    highest_number = highest_number_in_folder(photos_path)
     if highest_number:
-        file_to_delete = os.path.join("photos", f"photo ({highest_number}).jpg")
+        file_to_delete = os.path.join(photos_path, f"photo ({highest_number}).jpg")
         if os.path.exists(file_to_delete):
             os.remove(file_to_delete)
 
@@ -67,16 +70,14 @@ def set_props(camera_index):
     return
 
 
-def capture_photo():
-    if not os.path.exists("photos"):
-        os.makedirs("photos")
+def capture_photo(photos_path):
+    if not os.path.exists(photos_path):
+        os.makedirs(photos_path)
 
     camera_index = find_usb_camera()
     if camera_index is None:
-        print("No operational USB camera found.")
         return
 
-    # set_props(camera_index)
     cap = cv2.VideoCapture(camera_index, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
@@ -85,11 +86,11 @@ def capture_photo():
         ret, frame = cap.read()
 
         if ret:
-            path_to_save = os.path.join("photos", next_filename())
+            path_to_save = os.path.join(photos_path, next_filename(photos_path))
             cv2.imwrite(path_to_save, frame)
             if is_image_cut_off(path_to_save):
                 print("Detected a cut-off image. Retaking the photo.")
-                delete_last_photo()
+                delete_last_photo(photos_path)
             else:
                 print("Photo captured successfully.")
                 break

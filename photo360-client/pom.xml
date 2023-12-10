@@ -28,5 +28,15 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${org.onenjfx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>${org.openpnp.opencv.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${org.openjfx.swing.version}</version>
+        </dependency>
     </dependencies>
 </project>

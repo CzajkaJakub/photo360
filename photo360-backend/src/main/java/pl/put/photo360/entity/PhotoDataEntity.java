@@ -52,7 +52,7 @@ public class PhotoDataEntity implements Serializable
     @Column( name = "first_photo", nullable = false )
     private byte[] firstPhoto;
 
-    @Column( name = "converted_gif", nullable = false )
+    @Column( name = "converted_gif")
     private byte[] convertedGif;
 
     @OneToMany( cascade = CascadeType.ALL, fetch = FetchType.LAZY )

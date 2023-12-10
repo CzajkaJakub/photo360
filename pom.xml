@@ -18,9 +18,9 @@
 
     <properties>
         <!-- versions -->
-        <java.version>18</java.version>
-        <maven.compiler.source>18</maven.compiler.source>
-        <maven.compiler.target>18</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <liquibase.version>4.16.0</liquibase.version>
         <maven-resources-plugin-version>3.2.0</maven-resources-plugin-version>
         <javax.servelet.version>3.1.0</javax.servelet.version>

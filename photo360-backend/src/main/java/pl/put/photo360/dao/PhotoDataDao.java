@@ -20,7 +20,7 @@ public interface PhotoDataDao extends JpaRepository< PhotoDataEntity, Long >
     @Query( "select pde from PhotoDataEntity pde where pde.id = :gifId" )
     Optional< PhotoDataEntity > findGifById( @Param( "gifId" ) Long gifId );
 
-    @Query( "select pde.id, pde.title, pde.userId.login, pde.photos[0] from PhotoDataEntity pde where pde.id in :gifIds" )
+    @Query( "select pde.id, pde.title, pde.userId.login from PhotoDataEntity pde where pde.id in :gifIds" )
     List< Tuple > findGifsByIdInPreviewMode( @Param( "gifIds" ) List< Long > gifIds );
 
     @Query( "select pde.id from PhotoDataEntity pde where pde.userId.login = :userId" )

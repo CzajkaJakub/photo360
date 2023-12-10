@@ -26,6 +26,7 @@ import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.converter.GifCreator;
 import pl.put.photo360.dao.FavouriteGifDataDao;
+import pl.put.photo360.dao.PhotoDao;
 import pl.put.photo360.dao.PhotoDataDao;
 import pl.put.photo360.dto.PhotoDataDto;
 import pl.put.photo360.entity.FavouriteGifDataEntity;
@@ -42,18 +43,21 @@ public class PhotoService
     private final AuthService authService;
     private final JwtValidator jwtValidator;
     private final PhotoDataDao photoDataDao;
+    private final PhotoDao photoDao;
     private final Configuration configuration;
     private final FavouriteGifDataDao favouriteGifDataDao;
 
     @Autowired
     public PhotoService( PhotoDataDao aPhotoDataDao, AuthService aAuthService, Configuration aConfiguration,
-        JwtValidator aJwtValidator, GifCreator aGifCreator, FavouriteGifDataDao aFavouriteGifDataDao )
+        JwtValidator aJwtValidator, GifCreator aGifCreator, PhotoDao aPhotoDao,
+        FavouriteGifDataDao aFavouriteGifDataDao )
     {
         photoDataDao = aPhotoDataDao;
         authService = aAuthService;
         configuration = aConfiguration;
         jwtValidator = aJwtValidator;
         gifCreator = aGifCreator;
+        photoDao = aPhotoDao;
         favouriteGifDataDao = aFavouriteGifDataDao;
     }
 
@@ -277,8 +281,10 @@ public class PhotoService
 
     private PhotoDataDto getExternalFromInternalPreview( Tuple aGifByIdInPreviewMode )
     {
-        return new PhotoDataDto( aGifByIdInPreviewMode.get( 0, Long.class ),
-            aGifByIdInPreviewMode.get( 1, String.class ), aGifByIdInPreviewMode.get( 2, String.class ),
-            aGifByIdInPreviewMode.get( 3, byte[].class ) );
+        var gifId = aGifByIdInPreviewMode.get( 0, Long.class );
+        var previewGifPhoto = photoDao.findSinglePhotoByGifId( gifId );
+
+        return new PhotoDataDto( gifId, aGifByIdInPreviewMode.get( 1, String.class ),
+            aGifByIdInPreviewMode.get( 2, String.class ), previewGifPhoto );
     }
 }

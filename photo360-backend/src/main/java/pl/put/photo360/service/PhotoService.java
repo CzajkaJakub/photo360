@@ -1,15 +1,8 @@
 package pl.put.photo360.service;
 
-import static pl.put.photo360.dto.ServerResponseCode.STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED;
-import static pl.put.photo360.dto.ServerResponseCode.STATUS_DELETE_NOT_ALLOWED;
-import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE;
-import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS;
-import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_IS_NOT_PUBLIC;
-import static pl.put.photo360.dto.ServerResponseCode.STATUS_UNSUPPORTED_FILE;
-import static pl.put.photo360.dto.ServerResponseCode.STATUS_WRONG_FILE_FORMAT;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,6 +28,8 @@ import pl.put.photo360.exception.ServiceException;
 import pl.put.photo360.shared.utils.JwtValidator;
 import pl.put.photo360.shared.utils.PhotoEntityComparator;
 
+import static pl.put.photo360.dto.ServerResponseCode.*;
+
 @Service
 public class PhotoService
 {
@@ -57,59 +52,34 @@ public class PhotoService
         favouriteGifDataDao = aFavouriteGifDataDao;
     }
 
-    public void savePhotos( Boolean isPublic, String aTitle, String description, String aAuthorizationToken,
-        MultipartFile aFile, String backgroundColor, Boolean aSavePhotos, Boolean aSavePhoto360,
-        Integer aAmountOfPhotosToSave )
+    public void savePhotos( Boolean isPublic, MultipartFile singlePhotoFile, MultipartFile fullPhotoFile,
+                            String description, String title, String backgroundColor,
+                            String aAuthorizationToken )
     {
         var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
 
-        checkFileFormat( aFile.getOriginalFilename(), List.of( configuration.getSUPPORTED_FORMAT() ) );
-        try (ZipInputStream zipInputStream = new ZipInputStream( aFile.getInputStream() ))
-        {
-            PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, isPublic, description, aTitle );
-            List< PhotoEntity > photos = new ArrayList<>();
-            ZipEntry entry;
-            while( (entry = zipInputStream.getNextEntry()) != null )
-            {
-                if( !entry.isDirectory() )
-                {
-                    String fileName = entry.getName();
-                    checkFileFormat( fileName, configuration.getSUPPORTED_PHOTO_FORMATS() );
-                    byte[] data = IOUtils.toByteArray( zipInputStream );
-                    PhotoEntity photoEntity = new PhotoEntity( fileName, data );
-                    photos.add( photoEntity );
-                }
-            }
-            photos.sort( new PhotoEntityComparator() );
-
-            if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos )
-            {
-                photoDataEntity.setFirstPhoto( photos.get( 0 )
-                    .getPhoto() );
-                if( aAmountOfPhotosToSave == null )
-                {
-                    photoDataEntity.setPhotos( photos );
-                }
-                else if( aAmountOfPhotosToSave > 0 )
-                {
-                    photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
-                        .filter( i -> i % photos.size() / aAmountOfPhotosToSave == 0 )
-                        .mapToObj( photos::get )
-                        .toList() );
-                }
-            }
-
-            if( configuration.getSAVING_GIF_360() && aSavePhoto360 )
-            {
-                var gifByte = gifCreator.convertImagesIntoGif( photos, backgroundColor );
-                photoDataEntity.setConvertedGif( gifByte );
-            }
-
-            photoDataDao.save( photoDataEntity );
+        if (fullPhotoFile == null && singlePhotoFile == null) {
+            throw new ServiceException(STATUS_BOTH_ZIPS_EMPTY);
         }
-        catch( IOException aE )
-        {
-            throw new ServiceException( STATUS_WRONG_FILE_FORMAT );
+
+        PhotoDataEntity photoDataEntity = new PhotoDataEntity(user, isPublic, description, title);
+
+        try {
+            List<PhotoEntity> fullPhotos = processPhotoFile(fullPhotoFile);
+            if (!fullPhotos.isEmpty()) {
+                var gifByte = gifCreator.convertImagesIntoGif(fullPhotos, backgroundColor);
+                photoDataEntity.setConvertedGif(gifByte);
+            }
+
+            List<PhotoEntity> singlePhotos = processPhotoFile(singlePhotoFile);
+            if (!singlePhotos.isEmpty()) {
+                photoDataEntity.setFirstPhoto(singlePhotos.get(0).getPhoto());
+                photoDataEntity.setPhotos(singlePhotos);
+            }
+
+            photoDataDao.save(photoDataEntity);
+        } catch(IOException ioException) {
+            throw new ServiceException(STATUS_WRONG_FILE_FORMAT);
         }
     }
 
@@ -297,5 +267,29 @@ public class PhotoService
         return new PhotoDataDto( aGifsByIdInPreviewMode.get( 0, Long.class ),
             aGifsByIdInPreviewMode.get( 1, String.class ), aGifsByIdInPreviewMode.get( 2, String.class ),
             aGifsByIdInPreviewMode.get( 3, byte[].class ) );
+    }
+
+    private List<PhotoEntity> processPhotoFile(MultipartFile photoFile) throws IOException {
+        if (photoFile == null || photoFile.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        checkFileFormat(photoFile.getOriginalFilename(), List.of(configuration.getSUPPORTED_FORMAT()));
+
+        List<PhotoEntity> photos = new ArrayList<>();
+        try (ZipInputStream zipInputStream = new ZipInputStream(photoFile.getInputStream())) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                if (!entry.isDirectory()) {
+                    String fileName = entry.getName();
+                    checkFileFormat(fileName, configuration.getSUPPORTED_PHOTO_FORMATS());
+                    byte[] data = IOUtils.toByteArray(zipInputStream);
+                    PhotoEntity photoEntity = new PhotoEntity(fileName, data);
+                    photos.add(photoEntity);
+                }
+            }
+        }
+        photos.sort(new PhotoEntityComparator());
+        return photos;
     }
 }

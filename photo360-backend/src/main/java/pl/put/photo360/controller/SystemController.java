@@ -54,20 +54,18 @@ public class SystemController
         @ApiResponse( responseCode = "404", description = "User was not found by passed token." ),
         @ApiResponse( responseCode = "406", description = "Unsupported zip/file format." ) } )
     public ResponseEntity< RequestResponseDto > uploadPhoto(
-        @RequestParam( value = "zipFile" ) MultipartFile aFile,
-        @RequestParam( value = "isPublic" ) Boolean isPublic,
-        @RequestParam( value = "savePhotos" ) Boolean savePhotos,
-        @RequestParam( value = "amountOfPhotosToSave", required = false ) Integer amountOfPhotosToSave,
-        @RequestParam( value = "savePhoto360" ) Boolean savePhoto360,
-        @RequestParam( value = "description" ) String description,
-        @RequestParam( value = "title" ) String title,
-        @RequestParam( value = "backgroundColor", required = false ) String backgroundColor,
-        @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken )
+            @RequestParam( value = "isPublic" ) Boolean isPublic,
+            @RequestParam( value = "singlePhotosZip", required = false ) MultipartFile singlePhotoFile,
+            @RequestParam( value = "fullPhotosZip", required = false ) MultipartFile fullPhotoFile,
+            @RequestParam( value = "description" ) String description,
+            @RequestParam( value = "title" ) String title,
+            @RequestParam( value = "backgroundColor", required = false ) String backgroundColor,
+            @RequestHeader( name = HttpHeaders.AUTHORIZATION ) String authorizationToken )
     {
-        photoService.savePhotos( isPublic, title, description, authorizationToken, aFile, backgroundColor,
-            savePhotos, savePhoto360, amountOfPhotosToSave );
+        photoService.savePhotos( isPublic, singlePhotoFile, fullPhotoFile, description,
+                title, backgroundColor, authorizationToken);
         return new ResponseEntity<>( new RequestResponseDto( STATUS_PHOTO_UPLOADED ),
-            STATUS_PHOTO_UPLOADED.getStatus() );
+                STATUS_PHOTO_UPLOADED.getStatus() );
     }
 
     @GetMapping( "/downloadPublicGifs" )

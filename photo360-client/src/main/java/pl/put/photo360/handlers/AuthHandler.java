@@ -54,8 +54,7 @@ public class AuthHandler
 
     public String getToken()
     {
-        if( tokenExpirationDate == null || Instant.now()
-            .isAfter( tokenExpirationDate ) )
+        if( tokenExpirationDate == null )
         {
             return null;
         }

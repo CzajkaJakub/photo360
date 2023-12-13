@@ -55,7 +55,8 @@ public enum ServerResponseCode
     STATUS_GIF_REMOVED_FROM_FAVOURITE("GIF_REMOVED_FROM_FAVOURITE", HttpStatus.OK),
     STATUS_EMAIL_SEND_FAILED("EMAIL_SEND_FAILED", HttpStatus.CONFLICT),
     STATUS_EMAIL_SEND_SUCCESSFUL("EMAIL_SEND_SUCCESSFUL", HttpStatus.OK),
-    STATUS_GIF_REMOVED("GIF_REMOVED", HttpStatus.OK);
+    STATUS_GIF_REMOVED("GIF_REMOVED", HttpStatus.OK),
+    STATUS_BOTH_ZIPS_EMPTY("BOTH_ZIPS_EMPTY", HttpStatus.NOT_ACCEPTABLE);
     // @formatter:on;
 
     private static final Map< String, ServerResponseCode > CODE_MAP = new HashMap<>();

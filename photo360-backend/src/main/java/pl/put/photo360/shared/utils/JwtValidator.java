@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +91,7 @@ public class JwtValidator
         }
     }
 
-    public Boolean isAdminRoleToken( String token )
+    public boolean isAdminRoleToken( String token )
     {
         if( Objects.isNull( token ) || Objects.equals( token, StringUtils.EMPTY ) )
         {
@@ -111,7 +110,7 @@ public class JwtValidator
             .asList( Long.class );
         return userRolesIds.stream()
             .map( UserRoles::get )
-            .collect( Collectors.toList() );
+            .toList();
     }
 
     public String extractLoginFromToken( String token )

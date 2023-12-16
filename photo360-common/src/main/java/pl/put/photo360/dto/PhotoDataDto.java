@@ -19,6 +19,16 @@ public class PhotoDataDto
     private boolean isPublic;
     private String userLogin;
     private String description;
+    private String title;
     private Instant uploadDateTime;
     private Set< byte[] > listOfPhotos;
+    private byte[] headPhoto;
+
+    public PhotoDataDto( Long aGifId, String aUserLogin, String aTitle, byte[] aHeadPhoto )
+    {
+        gifId = aGifId;
+        userLogin = aUserLogin;
+        title = aTitle;
+        headPhoto = aHeadPhoto;
+    }
 }

@@ -1,6 +1,7 @@
 package pl.put.photo360.service;
 
 import static pl.put.photo360.dto.ServerResponseCode.STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED;
+import static pl.put.photo360.dto.ServerResponseCode.STATUS_BOTH_ZIPS_EMPTY;
 import static pl.put.photo360.dto.ServerResponseCode.STATUS_DELETE_NOT_ALLOWED;
 import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_ALREADY_ADDED_TO_FAVOURITE;
 import static pl.put.photo360.dto.ServerResponseCode.STATUS_GIF_BY_GIVEN_ID_NOT_EXISTS;
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.persistence.Tuple;
 import pl.put.photo360.auth.AuthService;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.converter.GifCreator;
@@ -56,17 +57,43 @@ public class PhotoService
         favouriteGifDataDao = aFavouriteGifDataDao;
     }
 
-    public void savePhotos( Boolean isPublic, String aTitle, String description, String aAuthorizationToken,
-        MultipartFile aFile, String backgroundColor, Boolean aSavePhotos, Boolean aSavePhoto360,
-        Integer aAmountOfPhotosToSave )
+    public void savePhotos( MultipartFile aPhotosZipFile360, MultipartFile aPhotosZipFile, Boolean aIsPublic,
+        String aTitle, String aDescription, String aAuthorizationToken, String aBackgroundColor )
     {
         var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
+        PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, aIsPublic, aDescription, aTitle );
 
-        checkFileFormat( aFile.getOriginalFilename(), List.of( configuration.getSUPPORTED_FORMAT() ) );
-        try (ZipInputStream zipInputStream = new ZipInputStream( aFile.getInputStream() ))
+        if( aPhotosZipFile360 == null && aPhotosZipFile == null )
         {
-            PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, isPublic, description, aTitle );
-            List< PhotoEntity > photos = new ArrayList<>();
+            throw new ServiceException( STATUS_BOTH_ZIPS_EMPTY );
+        }
+
+        if( aPhotosZipFile360 != null && configuration.getSAVING_GIF_360() )
+        {
+            var extractedPhotos360 = extractPhotosFromZipAndSort( aPhotosZipFile360 );
+            var gifByte = gifCreator.convertImagesIntoGif( extractedPhotos360, aBackgroundColor );
+            photoDataEntity.setConvertedGif( gifByte );
+            photoDataEntity.setFirstPhoto( extractedPhotos360.get( 0 )
+                .getPhoto() );
+        }
+        else if( aPhotosZipFile != null && configuration.getSAVING_GIF_PHOTOS() )
+        {
+            var extractedPhotos = extractPhotosFromZipAndSort( aPhotosZipFile );
+            photoDataEntity.setPhotos( extractedPhotos );
+            photoDataEntity.setFirstPhoto( extractedPhotos.get( 0 )
+                .getPhoto() );
+        }
+
+        photoDataDao.save( photoDataEntity );
+    }
+
+    private List< PhotoEntity > extractPhotosFromZipAndSort( MultipartFile aPhotosZipFile )
+    {
+        checkFileFormat( aPhotosZipFile.getOriginalFilename(),
+            List.of( configuration.getSUPPORTED_FORMAT() ) );
+        List< PhotoEntity > photos = new ArrayList<>();
+        try (ZipInputStream zipInputStream = new ZipInputStream( aPhotosZipFile.getInputStream() ))
+        {
             ZipEntry entry;
             while( (entry = zipInputStream.getNextEntry()) != null )
             {
@@ -80,22 +107,7 @@ public class PhotoService
                 }
             }
             photos.sort( new PhotoEntityComparator() );
-
-            if( configuration.getSAVING_GIF_PHOTOS() && aSavePhotos && aAmountOfPhotosToSave > 0 )
-            {
-                photoDataEntity.setPhotos( IntStream.range( 0, photos.size() )
-                    .filter( i -> i % photos.size() / aAmountOfPhotosToSave == 0 )
-                    .mapToObj( photos::get )
-                    .toList() );
-            }
-
-            if( configuration.getSAVING_GIF_360() && aSavePhoto360 )
-            {
-                var gifByte = gifCreator.convertImagesIntoGif( photos, backgroundColor );
-                photoDataEntity.setConvertedGif( gifByte );
-            }
-
-            photoDataDao.save( photoDataEntity );
+            return photos;
         }
         catch( IOException aE )
         {
@@ -205,30 +217,41 @@ public class PhotoService
         }
     }
 
-    public List< PhotoDataDto > downloadPrivateGifs( String aAuthorizationToken )
+    public List< PhotoDataDto > downloadPrivateGifs( String aAuthorizationToken, boolean aPreviewMode )
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
-        var gifs = photoDataDao.findPrivateGifs( userId );
-        return getExternalFromInternal( gifs );
+        var gifIds = photoDataDao.findPrivateGifIds( userId );
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
+
     }
 
-    public List< PhotoDataDto > getFavourites( String aAuthorizationToken )
+    public List< PhotoDataDto > getFavourites( String aAuthorizationToken, boolean aPreviewMode )
     {
         var userId = jwtValidator.extractLoginFromToken( aAuthorizationToken );
-        var gifs = favouriteGifDataDao.findUserFavouriteGifs( userId );
-        return getExternalFromInternal( gifs );
+        var gifIds = favouriteGifDataDao.findUserFavouriteGifsIds( userId );
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
+
     }
 
-    public List< PhotoDataDto > downloadPublicGifs()
+    public List< PhotoDataDto > downloadPublicGifs( boolean aPreviewMode )
     {
-        var gifs = photoDataDao.findPublicGifs();
-        return getExternalFromInternal( gifs );
+        var gifIds = photoDataDao.findPublicGifIds();
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
+
     }
 
-    public List< PhotoDataDto > downloadAllGifs()
+    public List< PhotoDataDto > downloadAllGifs( boolean aPreviewMode )
     {
-        var gifs = photoDataDao.findAll();
-        return getExternalFromInternal( gifs );
+        var gifIds = photoDataDao.findAllGifIds();
+        return aPreviewMode
+            ? getExternalFromInternalPreviewVersion( photoDataDao.findGifsByIdInPreviewMode( gifIds ) )
+            : getExternalFromInternal( photoDataDao.findGifsById( gifIds ) );
     }
 
     public PhotoDataEntity findGifById( Long aGifId )
@@ -244,22 +267,39 @@ public class PhotoService
         }
     }
 
-    private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
-    {
-        return new PhotoDataDto( aPhotoDataEntity.getConvertedGif(), aPhotoDataEntity.getId(),
-            aPhotoDataEntity.isPublic(), aPhotoDataEntity.getUserId()
-                .getLogin(),
-            aPhotoDataEntity.getDescription(), aPhotoDataEntity.getUploadDateTime(),
-            aPhotoDataEntity.getPhotos()
-                .stream()
-                .map( PhotoEntity::getPhoto )
-                .collect( Collectors.toSet() ) );
-    }
-
     private List< PhotoDataDto > getExternalFromInternal( List< PhotoDataEntity > listOfPhotoDataEntities )
     {
         return listOfPhotoDataEntities.stream()
             .map( this::getExternalFromInternal )
-            .collect( Collectors.toList() );
+            .toList();
+    }
+
+    private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
+    {
+        aPhotoDataEntity.getPhotos()
+            .sort( new PhotoEntityComparator() );
+        return new PhotoDataDto( aPhotoDataEntity.getConvertedGif(), aPhotoDataEntity.getId(),
+            aPhotoDataEntity.isPublic(), aPhotoDataEntity.getUserId()
+                .getLogin(),
+            aPhotoDataEntity.getDescription(), aPhotoDataEntity.getTitle(),
+            aPhotoDataEntity.getUploadDateTime(), aPhotoDataEntity.getPhotos()
+                .stream()
+                .map( PhotoEntity::getPhoto )
+                .collect( Collectors.toSet() ),
+            aPhotoDataEntity.getFirstPhoto() );
+    }
+
+    private List< PhotoDataDto > getExternalFromInternalPreviewVersion( List< Tuple > aGifsByIdInPreviewMode )
+    {
+        return aGifsByIdInPreviewMode.stream()
+            .map( this::getExternalFromInternalPreviewVersion )
+            .toList();
+    }
+
+    private PhotoDataDto getExternalFromInternalPreviewVersion( Tuple aGifsByIdInPreviewMode )
+    {
+        return new PhotoDataDto( aGifsByIdInPreviewMode.get( 0, Long.class ),
+            aGifsByIdInPreviewMode.get( 1, String.class ), aGifsByIdInPreviewMode.get( 2, String.class ),
+            aGifsByIdInPreviewMode.get( 3, byte[].class ) );
     }
 }

@@ -49,6 +49,9 @@ public class PhotoDataEntity implements Serializable
     @Column( name = "title" )
     private String title;
 
+    @Column( name = "first_photo", nullable = false )
+    private byte[] firstPhoto;
+
     @Column( name = "converted_gif", nullable = false )
     private byte[] convertedGif;
 

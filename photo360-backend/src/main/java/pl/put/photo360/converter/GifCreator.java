@@ -33,7 +33,6 @@ public class GifCreator
     }
 
     public byte[] convertImagesIntoGif( List< PhotoEntity > aImages, String backgroundColorHex )
-        throws IOException
     {
         try
         {

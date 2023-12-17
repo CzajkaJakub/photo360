@@ -10,6 +10,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import pl.put.photo360.camera.view.CameraWindow;
+import pl.put.photo360.config.ConfigURL;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dto.RegisterRequestDto;
 import pl.put.photo360.dto.RequestResponseDto;
@@ -32,9 +34,9 @@ public class RegisterSceneController extends SwitchSceneController
 
     @Autowired
     public RegisterSceneController( RequestService requestService, AuthHandler authHandler,
-        Configuration configuration )
+        Configuration configuration, ConfigURL configURL, CameraWindow cameraWindow )
     {
-        super( requestService, authHandler, configuration );
+        super( requestService, authHandler, configuration, configURL, cameraWindow );
     }
 
     public void register( ActionEvent event )
@@ -43,7 +45,7 @@ public class RegisterSceneController extends SwitchSceneController
         if( !password1Field.getText()
             .equals( password2Field.getText() ) )
         {
-            Toast.showToast( event, ToastsConstants.NOT_THE_SAME_PASSWORDS.getPath() );
+            Toast.showToast( event, ToastsConstants.NOT_THE_SAME_PASSWORDS.getMessage() );
             return;
         }
 
@@ -51,7 +53,7 @@ public class RegisterSceneController extends SwitchSceneController
             requestService.createRequest( RegisterRequestDto.class, loginField, emailField, password1Field );
 
         RequestResponseDto requestResponseDto = requestService.executeRequest( event, registerRequestDto,
-            configuration.getREGISTER_ENDPOINT_URL(), RequestResponseDto.class );
+                configURL.getREGISTER_ENDPOINT_URL(), RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )

@@ -32,40 +32,40 @@ public class CustomResponseErrorHandler implements ResponseErrorHandler
 
         throw new IOException( switch( responseMessage )
         {
-            case "USER_NOT_FOUND_BY_LOGIN" -> ToastsConstants.USER_NOT_FOUND_BY_LOGIN.getPath();
-            case "WRONG_FIELDS_SIZE" -> ToastsConstants.WRONG_FIELDS_SIZE.getPath();
-            case "WRONG_CREDENTIALS" -> ToastsConstants.WRONG_CREDENTIALS.getPath();
-            case "AUTH_TOKEN_EXPIRED" -> ToastsConstants.AUTH_TOKEN_EXPIRED.getPath();
-            case "RESET_TOKEN_EXPIRED" -> ToastsConstants.RESET_TOKEN_EXPIRED.getPath();
-            case "AUTH_TOKEN_NOT_VALID" -> ToastsConstants.AUTH_TOKEN_NOT_VALID.getPath();
-            case "WRONG_PUBLIC_API_KEY" -> ToastsConstants.WRONG_PUBLIC_API_KEY.getPath();
-            case "UNAUTHORIZED_ROLE" -> ToastsConstants.UNAUTHORIZED_ROLE.getPath();
-            case "DELETE_NOT_ALLOWED" -> ToastsConstants.DELETE_NOT_ALLOWED.getPath();
-            case "ADD_TO_FAVOURITE_NOT_ALLOWED" -> ToastsConstants.ADD_TO_FAVOURITE_NOT_ALLOWED.getPath();
-            case "PASSWORD_CAN_NOT_BE_THE_SAME" -> ToastsConstants.PASSWORD_CAN_NOT_BE_THE_SAME.getPath();
-            case "VALIDATION_NOT_PASSED" -> ToastsConstants.VALIDATION_NOT_PASSED.getPath();
-            case "EMAIL_ALREADY_VERIFIED" -> ToastsConstants.EMAIL_ALREADY_VERIFIED.getPath();
+            case "USER_NOT_FOUND_BY_LOGIN" -> ToastsConstants.USER_NOT_FOUND_BY_LOGIN.getMessage();
+            case "WRONG_FIELDS_SIZE" -> ToastsConstants.WRONG_FIELDS_SIZE.getMessage();
+            case "WRONG_CREDENTIALS" -> ToastsConstants.WRONG_CREDENTIALS.getMessage();
+            case "AUTH_TOKEN_EXPIRED" -> ToastsConstants.AUTH_TOKEN_EXPIRED.getMessage();
+            case "RESET_TOKEN_EXPIRED" -> ToastsConstants.RESET_TOKEN_EXPIRED.getMessage();
+            case "AUTH_TOKEN_NOT_VALID" -> ToastsConstants.AUTH_TOKEN_NOT_VALID.getMessage();
+            case "WRONG_PUBLIC_API_KEY" -> ToastsConstants.WRONG_PUBLIC_API_KEY.getMessage();
+            case "UNAUTHORIZED_ROLE" -> ToastsConstants.UNAUTHORIZED_ROLE.getMessage();
+            case "DELETE_NOT_ALLOWED" -> ToastsConstants.DELETE_NOT_ALLOWED.getMessage();
+            case "ADD_TO_FAVOURITE_NOT_ALLOWED" -> ToastsConstants.ADD_TO_FAVOURITE_NOT_ALLOWED.getMessage();
+            case "PASSWORD_CAN_NOT_BE_THE_SAME" -> ToastsConstants.PASSWORD_CAN_NOT_BE_THE_SAME.getMessage();
+            case "VALIDATION_NOT_PASSED" -> ToastsConstants.VALIDATION_NOT_PASSED.getMessage();
+            case "EMAIL_ALREADY_VERIFIED" -> ToastsConstants.EMAIL_ALREADY_VERIFIED.getMessage();
             case "EMAIL_VERIFICATION_TOKEN_NOT_VALID" ->
-                ToastsConstants.EMAIL_VERIFICATION_TOKEN_NOT_VALID.getPath();
+                ToastsConstants.EMAIL_VERIFICATION_TOKEN_NOT_VALID.getMessage();
             case "EMAIL_VERIFICATION_TOKEN_EXPIRED" ->
-                ToastsConstants.EMAIL_VERIFICATION_TOKEN_EXPIRED.getPath();
-            case "GIF_IS_NOT_PUBLIC" -> ToastsConstants.GIF_IS_NOT_PUBLIC.getPath();
-            case "FIELD_CONTAINS_WHITESPACES" -> ToastsConstants.FIELD_CONTAINS_WHITESPACES.getPath();
-            case "STATUS_MISSING_REQUIRED_FIELD" -> ToastsConstants.STATUS_MISSING_REQUIRED_FIELD.getPath();
-            case "EMAIL_WRONG_FORMAT" -> ToastsConstants.EMAIL_WRONG_FORMAT.getPath();
-            case "UNSUPPORTED" -> ToastsConstants.UNSUPPORTED.getPath();
-            case "WRONG_FILE_FORMAT" -> ToastsConstants.WRONG_FILE_FORMAT.getPath();
-            case "CONNECTION_REFUSED" -> ToastsConstants.CONNECTION_REFUSED.getPath();
-            case "USER_NOT_FOUND_BY_EMAIL" -> ToastsConstants.USER_NOT_FOUND_BY_EMAIL.getPath();
-            case "USER_NOT_FOUND_FROM_TOKEN" -> ToastsConstants.USER_NOT_FOUND_FROM_TOKEN.getPath();
-            case "GIF_BY_GIVEN_ID_NOT_EXISTS" -> ToastsConstants.GIF_BY_GIVEN_ID_NOT_EXISTS.getPath();
-            case "GIVEN_EMAIL_EXISTS" -> ToastsConstants.GIVEN_EMAIL_EXISTS.getPath();
-            case "GIVEN_LOGIN_EXISTS" -> ToastsConstants.GIVEN_LOGIN_EXISTS.getPath();
-            case "ACCOUNT_LOCKED" -> ToastsConstants.ACCOUNT_LOCKED.getPath();
-            case "EMAIL_NOT_CONFIRMED" -> ToastsConstants.EMAIL_NOT_CONFIRMED.getPath();
-            case "EMAIL_SEND_FAILED" -> ToastsConstants.EMAIL_SEND_FAILED.getPath();
-            case "GIF_ALREADY_ADDED_TO_FAVOURITE" -> ToastsConstants.GIF_ALREADY_ADDED_TO_FAVOURITE.getPath();
-            default -> ToastsConstants.DEFAULT_ERROR.getPath();
+                ToastsConstants.EMAIL_VERIFICATION_TOKEN_EXPIRED.getMessage();
+            case "GIF_IS_NOT_PUBLIC" -> ToastsConstants.GIF_IS_NOT_PUBLIC.getMessage();
+            case "FIELD_CONTAINS_WHITESPACES" -> ToastsConstants.FIELD_CONTAINS_WHITESPACES.getMessage();
+            case "STATUS_MISSING_REQUIRED_FIELD" -> ToastsConstants.STATUS_MISSING_REQUIRED_FIELD.getMessage();
+            case "EMAIL_WRONG_FORMAT" -> ToastsConstants.EMAIL_WRONG_FORMAT.getMessage();
+            case "UNSUPPORTED" -> ToastsConstants.UNSUPPORTED.getMessage();
+            case "WRONG_FILE_FORMAT" -> ToastsConstants.WRONG_FILE_FORMAT.getMessage();
+            case "CONNECTION_REFUSED" -> ToastsConstants.CONNECTION_REFUSED.getMessage();
+            case "USER_NOT_FOUND_BY_EMAIL" -> ToastsConstants.USER_NOT_FOUND_BY_EMAIL.getMessage();
+            case "USER_NOT_FOUND_FROM_TOKEN" -> ToastsConstants.USER_NOT_FOUND_FROM_TOKEN.getMessage();
+            case "GIF_BY_GIVEN_ID_NOT_EXISTS" -> ToastsConstants.GIF_BY_GIVEN_ID_NOT_EXISTS.getMessage();
+            case "GIVEN_EMAIL_EXISTS" -> ToastsConstants.GIVEN_EMAIL_EXISTS.getMessage();
+            case "GIVEN_LOGIN_EXISTS" -> ToastsConstants.GIVEN_LOGIN_EXISTS.getMessage();
+            case "ACCOUNT_LOCKED" -> ToastsConstants.ACCOUNT_LOCKED.getMessage();
+            case "EMAIL_NOT_CONFIRMED" -> ToastsConstants.EMAIL_NOT_CONFIRMED.getMessage();
+            case "EMAIL_SEND_FAILED" -> ToastsConstants.EMAIL_SEND_FAILED.getMessage();
+            case "GIF_ALREADY_ADDED_TO_FAVOURITE" -> ToastsConstants.GIF_ALREADY_ADDED_TO_FAVOURITE.getMessage();
+            default -> ToastsConstants.DEFAULT_ERROR.getMessage();
         } );
     }
 }

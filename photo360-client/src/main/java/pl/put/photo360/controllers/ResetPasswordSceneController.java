@@ -17,6 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
+import pl.put.photo360.camera.view.CameraWindow;
+import pl.put.photo360.config.ConfigURL;
 import pl.put.photo360.config.Configuration;
 import pl.put.photo360.dto.LabelsConstants;
 import pl.put.photo360.dto.RequestResponseDto;
@@ -58,9 +60,9 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
 
     @Autowired
     public ResetPasswordSceneController( RequestService requestService, AuthHandler authHandler,
-        Configuration configuration )
+        Configuration configuration, ConfigURL configURL, CameraWindow cameraWindow )
     {
-        super( requestService, authHandler, configuration );
+        super( requestService, authHandler, configuration, configURL, cameraWindow );
     }
 
     private void changeVisibleOfElements( boolean visible )
@@ -113,14 +115,14 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
             requestService.createRequest( ResetPasswordRequestDto.class, emailTextField );
 
         RequestResponseDto requestResponseDto = requestService.executeRequest( event, resetPasswordRequestDto,
-            configuration.getREQUEST_RESET_PASSWORD(), RequestResponseDto.class );
+                configURL.getREQUEST_RESET_PASSWORD(), RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )
             {
                 emailForConfirm = emailTextField.getText();
                 changeVisibleOfElements( true );
-                sendEmailButton.setText( LabelsConstants.SEND_AGAIN.getPath() );
+                sendEmailButton.setText( LabelsConstants.SEND_AGAIN.getLabel() );
             }
         } );
     }
@@ -132,7 +134,7 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
         if( !pass1PasswordField.getText()
             .equals( pass2PasswordField.getText() ) )
         {
-            Toast.showToast( event, ToastsConstants.NOT_THE_SAME_PASSWORDS.getPath() );
+            Toast.showToast( event, ToastsConstants.NOT_THE_SAME_PASSWORDS.getMessage() );
             return;
         }
 
@@ -141,12 +143,12 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
 
         RequestResponseDto requestResponseDto =
             requestService.executeRequest( event, resetPasswordConfirmationDto,
-                configuration.getCONFIRMATION_RESET_PASSWORD(), RequestResponseDto.class );
+                    configURL.getCONFIRMATION_RESET_PASSWORD(), RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )
             {
-                Toast.showToast( event, ToastsConstants.PASSWORD_CHANGED.getPath() );
+                Toast.showToast( event, ToastsConstants.PASSWORD_CHANGED.getMessage() );
                 try
                 {
                     switchToLoginScene( event );

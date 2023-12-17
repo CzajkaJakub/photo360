@@ -76,7 +76,8 @@ public class PhotoService
             photoDataEntity.setFirstPhoto( extractedPhotos360.get( 0 )
                 .getPhoto() );
         }
-        else if( aPhotosZipFile != null && configuration.getSAVING_GIF_PHOTOS() )
+
+        if( aPhotosZipFile != null && configuration.getSAVING_GIF_PHOTOS() )
         {
             var extractedPhotos = extractPhotosFromZipAndSort( aPhotosZipFile );
             photoDataEntity.setPhotos( extractedPhotos );

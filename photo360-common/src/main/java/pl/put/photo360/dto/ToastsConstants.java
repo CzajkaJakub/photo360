@@ -35,7 +35,17 @@ public enum ToastsConstants {
     EMAIL_NOT_CONFIRMED("Akcja niedostępna z powodu niepotwierdzonego adresu email"), // TODO
     EMAIL_SEND_FAILED("Wysłanie wiadomości email nie powiodło się"), // TODO
     GIF_ALREADY_ADDED_TO_FAVOURITE("GIF został już dodany do ulubionych"),
-    DEFAULT_ERROR("Nieznany błąd"); // TODO
+    DEFAULT_ERROR("Nieznany błąd"), // TODO
+    EMPTY_LIST_ITEMS("Lista komend nie może być pusta"),
+    CONNECTION_ERROR("Nie można nawiązać połączenia Bluetooth.\n- Sprawdź czy masz funkcja Bluetooth na komputerze jest włączona.\n- Sprawdź czy zestaw jest dobrze podłączony."),
+    CAMERA_NOT_FOUND("Nie znaleziono kamery USB"),
+    FOLDER_ALREADY_EXISTS("Folder już istnieje"),
+    PLEASE_VERIFY_EMAIL("Proszę zweryfikować adres e-mail"),
+    EMAIL_VERIFIED("Email został pomyślnie zweryfikowany"),
+    ONLY_ONE_PHOTO_360("W ramach scenariusza można wykonać maksymalnie jedno zdjęcie 360 stopni"),
+    EMPTY_CONFIRMATION_CODE("Proszę wpisać kod weryfikacyjny"),
+    WRONG_CATALOG_WAS_CHOOSEN("Wybrano nieprawidłowy katalog"),
+    FAILED_ZIP_CREATION("Tworzenie plików zip nie powiodło się.\n Sprawdź zawartość katalogów");
 
     private final String string;
 
@@ -43,7 +53,7 @@ public enum ToastsConstants {
         this.string = string;
     }
 
-    public String getPath() {
+    public String getMessage() {
         return string;
     }
 }

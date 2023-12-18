@@ -23,4 +23,6 @@ public class ConfigURL {
     private String REQUEST_RESET_PASSWORD;
     private String CONFIRMATION_RESET_PASSWORD;
     private String UPLOAD_PHOTOS_URL;
+    private String DOWNLOAD_PRIVATE_GIFS_URL;
+    private String DOWNLOAD_GIF_URL;
 }

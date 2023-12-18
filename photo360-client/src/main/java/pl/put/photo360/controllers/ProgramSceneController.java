@@ -571,6 +571,7 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
         body.add("photosZipFile360", resourceFullMove); // Dodajemy zdjęcia do 360 jako resource [NOT REQUIRED]
         body.add("description", description); // [REQUIRED]
         body.add("title", title); // [REQUIRED]
+//        body.add("backgroundColor", "#FF0000");
 
         // Wykonanie zapytania
         requestService.executeRequest(event, body, configURL.getUPLOAD_PHOTOS_URL(), RequestResponseDto.class);

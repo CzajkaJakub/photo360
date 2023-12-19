@@ -24,11 +24,11 @@ public class PhotoDataDto
     private Set< byte[] > listOfPhotos;
     private byte[] headPhoto;
 
-    public PhotoDataDto( Long aGifId, String aUserLogin, String aTitle, byte[] aHeadPhoto )
+    public PhotoDataDto( Long aGifId, String aTitle, String aUserLogin, byte[] aHeadPhoto )
     {
         gifId = aGifId;
-        userLogin = aUserLogin;
         title = aTitle;
         headPhoto = aHeadPhoto;
+        userLogin = aUserLogin;
     }
 }

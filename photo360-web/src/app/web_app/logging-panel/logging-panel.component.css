@@ -1,23 +1,110 @@
+/*.panel-title {*/
+/*  display: flex;*/
+/*  flex-direction: row;*/
+/*  justify-content: space-between;*/
+/*}*/
+
+/*.col {*/
+/*  display: flex;*/
+/*  justify-content: space-around;*/
+/*}*/
+
+
+
 input.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
   border: 1px solid red;
-}
-
-.input-group {
-  margin: 20px;
-}
-
-.panel-title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.col {
-  display: flex;
-  justify-content: space-around;
 }
 
 /* Switching off MS Edge show/hide button in password form */
 ::-ms-reveal {
   display: none;
 }
+
+.container {
+  margin-top: 1%;
+  display: flex;
+  border-radius: 20px;
+  border: 4px solid lightgrey;
+  flex-direction: column;
+  align-items: center;
+  min-width: 650px;
+  min-height: 750px;
+}
+
+.logo {
+  margin-top: 2%;
+  margin-bottom: 2%;
+  width: auto;
+  height: auto;
+}
+
+.logInText{
+  font-size: 40px;
+  font-weight: bold;
+  color: black;
+}
+
+.form-group {
+  margin-top: 20px;
+}
+
+.form-control {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  background-color: #e8e4e4;
+}
+
+.form-control::placeholder{
+  color: #737373;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.form-control, .input-group-addon.right-icon{
+  border-bottom-right-radius: 30px;
+  border-top-right-radius: 30px;
+  background-color: #e8e4e4;
+}
+
+.input-group-addon.left-icon {
+  border-bottom-left-radius: 30px;
+  border-top-left-radius: 30px;
+  background-color: #e8e4e4;
+}
+
+.form-group.row button {
+  margin-top: 20px;
+  width: 400px;
+  height: 50px;
+  background-color: #40b4fc;
+  border: #40b4fc;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 30px;
+}
+
+.forgot-password-link{
+  color: black;
+  font-size: 18px;
+  text-decoration: none;
+  align-items: center;
+}
+
+.register-line{
+  margin-top: 7%;
+  color: black;
+  font-size: 22px;
+  text-decoration: none;
+  align-items: center;
+}
+
+.register-button {
+  margin-left: 20px;
+  border-radius: 30px;
+  border: 4px solid #40b4fc;
+  padding: 10px 18px;
+  background-color: transparent;
+  color: #40b4fc;
+}
+

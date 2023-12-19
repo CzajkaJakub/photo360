@@ -76,7 +76,7 @@ export class NetworkService {
         let httpParams = new HttpParams();
         if (params != null) {
             params.forEach((value, key) => {
-                httpParams.set(key, value)
+                httpParams = httpParams.set(key.toString(), value.toString());
             });
         }
         return httpParams

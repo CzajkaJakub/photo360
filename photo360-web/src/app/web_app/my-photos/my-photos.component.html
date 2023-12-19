@@ -10,24 +10,19 @@
 
     <mat-sidenav-content>
       <div class="header-text">
-        <h1>{{ 'general.mainPage' | translate }}</h1>
-        <p>{{ 'general.moreInfo' | translate }}</p>
-        <div class="image-container">
-          <div *ngFor="let gif of gifs; let i = index" class="image-frame" [routerLink]="['/single-gif', gif.gifId]">
-            <img [src]="'data:image/png;base64,' + gif.headPhoto" alt="GIF" width="100%" height="auto">
-            <div class="image-details">
-              <div class="title">{{ gif.title }}</div>
-              <div class="author">{{ gif.userLogin }}</div>
-            </div>
+        <h1>{{'my-photos.pageTitle' | translate}}</h1>
+        <p>{{'my-photos.pageDesc' | translate}}</p>
+      </div>
+      <div class="image-container">
+        <div *ngFor="let gif of gifs; let i = index" class="image-frame" [routerLink]="['/single-gif', gif.gifId]">
+          <img [src]="'data:image/png;base64,' + gif.headPhoto" alt="GIF" width="100%" height="auto">
+<!--          <img [src]="gif.imageUrl" alt="GIF" width="100%" height="auto">-->
+          <div class="image-details">
+            <div class="title"><strong>{{ gif.title }}</strong></div>
+            <div class="author">{{ gif.userLogin }}</div>
           </div>
         </div>
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
-</div>
-
-<div class="container-fluid" *ngIf="!isAuthenticated">
-  <div class="centered-text">
-    <h2><b>{{ 'general.mainPage' | translate }}</b></h2>
-  </div>
 </div>

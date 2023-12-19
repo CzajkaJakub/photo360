@@ -34,6 +34,12 @@ import {NetworkService} from "./general/network/network-server.service";
 import {LoadingPanelComponent} from "./general/common-panels/loading-panel/loading-panel.component";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {GifService} from "./general/data/gif.service";
+import {ForgetPasswordPanel} from "./web_app/forgot-password-panel/forget-password-panel.component";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatListModule} from "@angular/material/list";
+import {MyPhotosComponent} from "./web_app/my-photos/my-photos.component";
+import {SingleGifComponent} from "./web_app/single-gif/single-gif";
+import {FavoritesPhotosComponent} from "./web_app/favorites-photos/favorites-photos.component";
 
 
 @NgModule({
@@ -42,7 +48,6 @@ import {GifService} from "./general/data/gif.service";
     DropdownDirective,
     ToastComponent,
     InstantDatePipe,
-
     HeaderComponent,
     PageNotFoundComponent,
     DataVisualizerComponent,
@@ -51,7 +56,11 @@ import {GifService} from "./general/data/gif.service";
     LoggingPanelSpinnerComponent,
     RegisterPanelComponent,
     ChangePasswordPanelComponent,
-    LoadingPanelComponent
+    LoadingPanelComponent,
+    ForgetPasswordPanel,
+    MyPhotosComponent,
+    SingleGifComponent,
+    FavoritesPhotosComponent
   ],
   imports: [
     BrowserModule,
@@ -66,6 +75,8 @@ import {GifService} from "./general/data/gif.service";
     MatDialogModule,
     PasswordStrengthMeterModule.forRoot(),
     MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatListModule,
   ],
   providers: [NetworkService, MatSnackBar, GifService, ToastComponent, AuthService, AuthGuard, NotLoggedInGuard, ImageUploaderService, MatDialog,
     {

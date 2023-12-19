@@ -35,6 +35,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     zipFile: null!,
     isPublic: false,
     description: null!,
+    title: null!
   };
 
   constructor(public authService: AuthService,
@@ -116,7 +117,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(dialogConfig => {
       if (dialogConfig !== null) {
-        if (this.uploadedImagesConfig.zipFile != null && this.uploadedImagesConfig.description != null) {
+        if (this.uploadedImagesConfig.zipFile != null && this.uploadedImagesConfig.description != null && this.uploadedImagesConfig.title != null) {
           this.imageUploaderService.uploadFilesWithImages(this.uploadedImagesConfig);
         }
       }

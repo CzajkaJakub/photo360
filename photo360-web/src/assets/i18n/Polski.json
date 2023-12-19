@@ -2,9 +2,19 @@
   "general": {
     "language": {
       "flag": "flag-icon flag-icon-pl"
-    }
+    },
+    "mainPage": "Strona Główna",
+    "moreInfo": "Odnajdziesz tutaj publiczne projekty wszystkich użytkówników systemu"
   },
   "toast": {
+    "notLogged": "Nie zalogowany",
+    "languageSwitch": "Język został zmieniony",
+    "loggedOut": "Wylogowano",
+    "loggedIn": "Zalogowano",
+    "close": "Zamknij",
+    "logOutConfirm": "Czy na pewno chcesz się wylogować ?",
+    "mailSent": "Mail został wysłany na podany adres mailowy",
+    "mailSentFailed": "Wysłanie maila nie powiodło się"
   },
   "header": {
     "mainPage": "Strona główna",
@@ -13,7 +23,12 @@
     "changePassword": "Zmień hasło",
     "languagePicker": "Wybierz język",
     "loggedAs": "Zalogowany jako: ",
-    "documentation": "Dokumentacja"
+    "documentation": "Dokumentacja",
+    "photo360": "photo 360°",
+    "uploadPhotos": "Załaduj zdjęcia",
+    "lastLoggedLabel": "Ostatnia data logowania",
+    "myAccount": "Moje konto",
+    "findImage": "Wyszukaj zdjęcie"
   },
   "logPanel": {
     "usernameField": "Nazwa użytkownika",
@@ -82,5 +97,61 @@
     "UNAUTHORIZED_ROLE": "Nie masz uprawnień do wykonania tej operacji!",
     "SERVER_UNREACHABLE": "Serwer jest niedostępny!",
     "WRONG_CREDENTIALS": "Nieprawidłowe dane uwierzytelniające!"
+  },
+  "loggingPanel": {
+    "logIn": "Logowanie",
+    "logInButton": "Zaloguj się",
+    "emailField": "Email",
+    "usernameField": "Login",
+    "passwordField": "Hasło",
+    "repeatpasswordField": "Powtórz hasło",
+    "ForgotPassword": "Nie pamiętasz hasła ?",
+    "Question": "Nie masz konta ?",
+    "Register": "Zarejestruj się"
+  },
+  "registerPanel":{
+    "newAccount": "Nowe konto",
+    "welcomeText": "Zarejestruj się aby zapisywać i dzielić się\nswoimi zdjęciami",
+    "AccountQuestion": "Masz już konto ?",
+    "Login": "Login"
+  },
+  "forgotPasswordPanel": {
+    "question": "Problem z logowaniem ?",
+    "welcomeText": "Wprowadź swój adres e-mail, a my\nwyślemy ci link, który umożliwi odzyskanie\ndostępu do konta.",
+    "giveLink": "Wyślij link do logowania",
+    "returnLogin": "Powrót do logowania"
+  },
+  "my-photos": {
+    "pageTitle": "Moje zdjęcia",
+    "pageDesc": "Odnajdziesz tutaj wykonane przez siebie projekty"
+  },
+  "favorites-photos": {
+    "pageTitle": "Ulubione zdjęcia",
+    "pageDesc": "Odnajdziesz tutaj polubione projekty"
+  },
+  "single-gif": {
+    "author": "Autor zdjęcia:",
+    "date": "Data wykonania",
+    "favorite": "Ulubione",
+    "download": "Pobierz",
+    "delete": "Usuń",
+    "return": "Powrót",
+    "description": "Opis",
+    "downloadSuccess": "Projekt pobrany",
+    "deleteSuccess": "Projekt został usunięty",
+    "deleteError": "Usuwanie projektu nie powiodło się",
+    "addFavouritesSuccess": "Projekt został dodany do polubionych",
+    "addFavouritesError": "Dodawanie projektu do ulubionych nie powiodło się",
+    "alreadyInFavourites": "Projekt znajduje się już w polubionych"
+  },
+  "uploadImages": {
+    "pageTitle": "Załaduj zdjęcia",
+    "title": "Tytuł projektu",
+    "description": "Opis projektu",
+    "CzyMaBycPubliczne": "Czy projekt ma być widoczny dla wszystkich ?",
+    "isPublic": "Projekt publiczny",
+    "upload": "Załaduj",
+    "closeConfigDialog": "Zamknij",
+    "uploadFile": "Załaduj zdjęcie"
   }
 }

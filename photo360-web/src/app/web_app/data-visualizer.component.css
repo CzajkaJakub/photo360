@@ -1,0 +1,12 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Ustawienie wysokości na 100% widoku */
+  overflow: hidden; /* Dodaj tę linię */
+}

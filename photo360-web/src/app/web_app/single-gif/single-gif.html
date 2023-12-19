@@ -1,0 +1,55 @@
+<div class="container-fluid" *ngIf="isAuthenticated">
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" opened>
+      <mat-nav-list>
+        <a mat-list-item routerLink="/home" routerLinkActive="active"><i class="fas fa-home"></i>Strona Główna</a>
+        <a mat-list-item routerLink="/my-photos" routerLinkActive="active"><i class="fas fa-camera"></i>Moje Zdjęcia</a>
+        <a mat-list-item routerLink="/favorites-photos" routerLinkActive="active"><i class="fas fa-heart"></i>Ulubione</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="spinner" *ngIf="isLoading" style="text-align: center">
+        <app-logging-panel-spinner></app-logging-panel-spinner>
+      </div>
+
+      <div class="image-frame" *ngIf="!isLoading">
+          <div class="image">
+            <div class="top-panel">
+              <div class="title">{{ gif.title }}</div>
+              <button class="return" (click)="goBack()"><i class="fas fa-arrow-left"></i></button>
+            </div>
+            <div class="image-details">
+              <div class="frame">
+                <img *ngIf="isGifVisible()" [src]="'data:image/gif;base64,' + gif.gif" class="centered-image" alt="GIF">
+                <img *ngIf="!isGifVisible()" [src]="getCurrentPhoto()" class="centered-image" alt="Image">
+              </div>
+              <div class="image-info">
+                <div class="author-label">{{'single-gif.author' | translate}}</div>
+                <div class="author">{{ gif.userLogin }}</div>
+                <div class="description-label">{{'single-gif.description' | translate}}</div>
+                <div class="description">{{ gif.description }}</div>
+                <div class="date-label">{{'single-gif.date' | translate}}</div>
+                <div class="date">{{ formatDateTime(gif.uploadDateTime) }}</div>
+                <div class="arrow-button-container">
+                  <div class="nav-arrow left" (click)="navigate(-1)">
+                    <i class="fas fa-arrow-left"></i>
+                  </div>
+                  <div class="nav-arrow right" (click)="navigate(1)">
+                    <i class="fas fa-arrow-right"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="button-container" *ngIf="!isLoading">
+        <button class="favorite" (click)="addToFavourites(gif)"><span class="favorite-text">{{'single-gif.favorite' | translate}}</span>   <i class="fas fa-heart custom-heart"></i></button>
+        <button class="download" (click)="downloadProject(gif)"><span class="download-text">{{'single-gif.download' | translate}}</span>   <i class="fas fa-download"></i></button>
+        <button class="delete" (click)="deleteProject(gif)"><span class="delete-text">{{'single-gif.delete' | translate}}</span>   <i class="fas fa-trash-alt"></i></button>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

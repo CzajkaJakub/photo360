@@ -1,9 +1,20 @@
 <div class="container-fluid">
 
-  <mat-label class="h4" style="text-align: center">{{'general.uploadImages' | translate}}</mat-label>
+  <mat-label class="h4" style="text-align: center">{{'uploadImages.pageTitle' | translate}}</mat-label>
 
   <mat-form-field>
-    <mat-label>{{'general.description' | translate}}</mat-label>
+    <mat-label>{{'uploadImages.title' | translate}}</mat-label>
+    <input [(ngModel)]="data.title"
+           [formControl]="inputConfig"
+           aria-label="Number"
+           matInput
+           placeholder="Pick one"
+           required
+           type="text">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>{{'uploadImages.description' | translate}}</mat-label>
     <input [(ngModel)]="data.description"
            [formControl]="inputConfig"
            aria-label="Number"
@@ -13,26 +24,27 @@
            type="text">
   </mat-form-field>
 
-  <mat-label class="h4" style="text-align: center">{{'header.CzyMaBycPubliczne' | translate}}</mat-label>
+  <mat-label class="h4" style="text-align: center">{{'uploadImages.CzyMaBycPubliczne' | translate}}</mat-label>
 
   <section class="checkbox-section">
 
-    <button (click)="fileUpload.click()" class="btn btn-primary"
-            title="{{'general.uploadFile' | translate}}" type="button"><i class="fa fa-upload"></i>
+    <button (click)="fileUpload.click()" class="btn btn-primary" type="button">
+      <i class="fa fa-upload"></i>
+      <div>{{ 'uploadImages.uploadFile' | translate }}</div>
     </button>
 
     <input #fileUpload (change)="uploadFilesWithImages($event)" accept=".zip" class="file-input" type="file">
 
-    <mat-checkbox [(ngModel)]="data.isPublic" class="margin">{{'header.isPublic' | translate}}</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.isPublic" class="margin">{{'uploadImages.isPublic' | translate}}</mat-checkbox>
 
   </section>
 
   <div mat-dialog-actions style="justify-content: center">
-    <button [disabled]="data.description == null || data.zipFile == null" [mat-dialog-close]=data class="navbarButton"
+    <button [disabled]="data.description == null || data.title == null || data.zipFile == null" [mat-dialog-close]=data class="navbarButton"
             color="primary"
-            mat-flat-button>{{'general.upload' | translate}}</button>
+            mat-flat-button>{{'uploadImages.upload' | translate}}</button>
 
     <button [mat-dialog-close]=null class="navbarButton" color="primary"
-            mat-flat-button>{{'general.closeConfigDialog' | translate}}</button>
+            mat-flat-button>{{'uploadImages.closeConfigDialog' | translate}}</button>
   </div>
 </div>

@@ -3,9 +3,12 @@ package pl.put.photo360.service;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -32,7 +35,7 @@ public class RequestService
         try {
             return restTemplate.exchange(endpointUrl, HttpMethod.GET, entity, responseType).getBody();
         } catch (Exception e) {
-            Toast.showToast(event, (IOException)e.getCause());
+            Toast.showToast(event, (IOException) e.getCause());
             return null;
         }
     }
@@ -63,6 +66,21 @@ public class RequestService
             return response.getBody();
         } catch (Exception e) {
             Toast.showToast(event, (IOException)e.getCause());
+            return null;
+        }
+    }
+
+    public <T, R> R executeRequest(ActionEvent event, T requestDto, URI endpointUrl,
+                                   ParameterizedTypeReference<R> responseTypeRef, HttpMethod httpMethod) {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<T> request = new HttpEntity<>(requestDto, headers);
+        try {
+            ResponseEntity<R> response = restTemplate.exchange(endpointUrl, httpMethod, request, responseTypeRef);
+            return response.getBody();
+        } catch (Exception e) {
+            if (event != null) {
+                Toast.showToast(event, (IOException) e.getCause());
+            }
             return null;
         }
     }

@@ -5,7 +5,7 @@ import re
 
 
 def find_usb_camera():
-    # Aktualnie trzeba wyłączyć kamerę systemową przed uruchomieniem przechwytywanie, żeby przechwycić poprawną kamerę
+    # For now it is highly recommended to close system camera before run the video capture
     for i in range(2):  # Assuming there are at most 2 potential cameras
         try:
             cap = cv2.VideoCapture(i, cv2.CAP_DSHOW)
@@ -58,26 +58,7 @@ def delete_last_photo(photos_path):
             os.remove(file_to_delete)
 
 
-def set_props(camera_index):
-    cap = cv2.VideoCapture(camera_index, cv2.CAP_DSHOW)
-    cap.set(cv2.CAP_PROP_BRIGHTNESS, 50.0)
-    cap.set(cv2.CAP_PROP_CONTRAST, 50.0)
-
-    print("brightness:", cap.get(cv2.CAP_PROP_BRIGHTNESS))
-    print("contrast:", cap.get(cv2.CAP_PROP_CONTRAST))
-
-    cap.release()
-    return
-
-
-def capture_photo(photos_path):
-    if not os.path.exists(photos_path):
-        os.makedirs(photos_path)
-
-    camera_index = find_usb_camera()
-    if camera_index is None:
-        return
-
+def capture_photo(photos_path, camera_index):
     cap = cv2.VideoCapture(camera_index, cv2.CAP_DSHOW)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
@@ -89,14 +70,8 @@ def capture_photo(photos_path):
             path_to_save = os.path.join(photos_path, next_filename(photos_path))
             cv2.imwrite(path_to_save, frame)
             if is_image_cut_off(path_to_save):
-                print("Detected a cut-off image. Retaking the photo.")
                 delete_last_photo(photos_path)
             else:
-                print("Photo captured successfully.")
                 break
 
     cap.release()
-
-
-if __name__ == "__main__":
-    capture_photo()

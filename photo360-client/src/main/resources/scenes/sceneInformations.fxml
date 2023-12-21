@@ -18,8 +18,6 @@
                 <items>
                     <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene"
                             prefHeight="25.0" prefWidth="63.0" text="Program"/>
-                    <Button fx:id="buttonScenerio" mnemonicParsing="false" onAction="#switchToScenerioScene"
-                            prefHeight="25.0" prefWidth="79.0" text="Scenariusze"/>
                     <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene"
                             prefHeight="25.0" prefWidth="62.0" text="Zdjęcia"/>
                     <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene"

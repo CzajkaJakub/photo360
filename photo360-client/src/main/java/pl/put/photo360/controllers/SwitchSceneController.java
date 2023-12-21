@@ -90,7 +90,7 @@ public abstract class SwitchSceneController
 
     public void switchToOptionScene( ActionEvent event ) throws IOException
     {
-        switchScene( event, ResourcesConstants.SCENE_OPTIONS.getPath(), 4 );
+        switchScene( event, ResourcesConstants.SCENE_OPTIONS.getPath(), 3 );
     }
 
     public void switchToProgramScene( ActionEvent event ) throws IOException
@@ -108,19 +108,14 @@ public abstract class SwitchSceneController
         switchScene( event, ResourcesConstants.SCENE_REGISTER.getPath() );
     }
 
-    public void switchToScenerioScene( ActionEvent event ) throws IOException
-    {
-        switchScene( event, ResourcesConstants.SCENE_SCENERIOS.getPath(), 1 );
-    }
-
     public void switchToPhotosScene( ActionEvent event ) throws IOException
     {
-        switchScene( event, ResourcesConstants.SCENE_PHOTOS.getPath(), 2 );
+        switchScene( event, ResourcesConstants.SCENE_PHOTOS.getPath(), 1 );
     }
 
     public void switchToInformationScene( ActionEvent event ) throws IOException
     {
-        switchScene( event, ResourcesConstants.SCENE_INFORMATIONS.getPath(), 3 );
+        switchScene( event, ResourcesConstants.SCENE_INFORMATIONS.getPath(), 2 );
     }
 
     public void logout( ActionEvent event ) throws IOException

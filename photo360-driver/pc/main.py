@@ -14,14 +14,13 @@ received_message = None
 def notification_handler(sender, data):
     global received_message
     received_message = data.decode('utf-8')
-    print(received_message)
 
 
-def make_photo(folder_path):
-    camera.capture_photo(folder_path)
+def make_photo(folder_path, cam):
+    camera.capture_photo(folder_path, cam)
 
 
-async def send_and_receive(client, message, folder_path):
+async def send_and_receive(client, message, folder_path, cam):
     global received_message
     received_message = None
 
@@ -33,7 +32,7 @@ async def send_and_receive(client, message, folder_path):
 
         if received_message == "PHOTO":
             await asyncio.sleep(0.2)
-            make_photo(folder_path)
+            make_photo(folder_path, cam)
             await client.write_gatt_char(WRITE_CHARACTERISTIC_UUID, bytearray("next", 'utf-8'))
             received_message = None
         else:
@@ -42,49 +41,46 @@ async def send_and_receive(client, message, folder_path):
 
 async def main(commands, folder_path):
     client = BleakClient(ADDRESS)
-    print("Connecting...")
+
     try:
         await client.connect()
     except:
         sys.exit(102)
 
-    if not client.is_connected:
-        raise ConnectionError(f"Failed to connect to {ADDRESS}")
-
-    print("Connected to: " + client.address)
-    print("Process has been started.")
-
-    if camera.find_usb_camera() is None:
+    usb_webcam = camera.find_usb_camera()
+    if usb_webcam is None:
         sys.exit(103)
 
     for cmd in commands:
         await client.start_notify(READ_CHARACTERISTIC_UUID, notification_handler)
 
-        # Dodanie docelowego folderu do zdjęcia
+        # Add target catalog of a photo to save path
         comm_mode = cmd.split(' ')[0]
         if comm_mode == "single_move":
             folder_path_final = folder_path + "/single"
         elif comm_mode == "full_move":
             folder_path_final = folder_path + "/full"
+        else:
+            sys.exit(105)
 
-        # Stworzenie docelowego katalogu jeżeli nie istnieje
+        # Create target catalog if not exists
         if not os.path.exists(folder_path_final):
             os.makedirs(folder_path_final)
 
-        await send_and_receive(client, cmd, folder_path_final)
+        await send_and_receive(client, cmd, folder_path_final, usb_webcam)
         await client.stop_notify(READ_CHARACTERISTIC_UUID)
     await client.disconnect()
 
 
+# Usage: myscript.py <folder_path> <move type 1> <degree 1> <move type 2> <degree 2> ...
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print("Usage: myscript.py <folder_path> <move type 1> <degree 1> <move type 2> <degree 2> ...")
         sys.exit(101)
 
     folder_path = sys.argv[1]
     if os.path.exists(folder_path):
         sys.exit(104)
-        
+
     arguments = []
     for i in range(2, len(sys.argv), 2):
         com_str = f"{sys.argv[i]} {sys.argv[i + 1]}"

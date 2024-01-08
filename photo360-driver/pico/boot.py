@@ -26,7 +26,8 @@ def wait_for_photo():
                 return
 
 
-def make_move(start_deg, stop_deg, delay_ms=25):
+def make_move(start_deg, stop_deg):
+    global delay_ms
     move_array = list(range(start_deg, stop_deg + 1)) if start_deg <= stop_deg else list(
         reversed(range(stop_deg, start_deg + 1)))
     for position in move_array:
@@ -42,7 +43,7 @@ def calibration():
 
 
 def single_move(target_deg):
-    if target_deg < 1:
+    if target_deg < 0 or target_deg > 360:
         return "Move with this step isn't possible!"
 
     make_move(0, target_deg)
@@ -53,7 +54,7 @@ def single_move(target_deg):
 
 
 def full_move_every_few_degree(step_deg):
-    if 360 % step_deg or step_deg < 1:
+    if 360 % step_deg or step_deg < 0 or step_deg > 360:
         return "Move with this step isn't possible!"
 
     steps = [step_deg * i for i in range(360 // step_deg + 1)]
@@ -77,32 +78,22 @@ def write_command(data):
 
 def command_logic(command):
     params = command.strip().split(" ")
+    if len(params) != 2:
+        sp.send("Command: " + command + " - Excpected two arguments!")
+        return
+
     if params[0] == "single_move":
-        target_deg = 90
-        if len(params) == 2:
-            try:
-                target_deg = int(params[1])
-            except ValueError:
-                sp.send("Command: " + command + " - Invalid argument provided!")
-                return
-        elif len(params) > 2:
-            sp.send("Command: " + command + " - Too many arguments provided!")
-            return
-        response = single_move(target_deg)
-        sp.send("Command: " + command + " - " + response)
+        try:
+            response = single_move(int(params[1]))
+            sp.send("Command: " + command + " - " + response)
+        except ValueError:
+            sp.send("Command: " + command + " - Invalid argument provided!")
     elif params[0] == 'full_move':
-        step_deg = 90
-        if len(params) == 2:
-            try:
-                step_deg = int(params[1])
-            except ValueError:
-                sp.send("Command: " + command + " - Invalid argument provided!")
-                return
-        elif len(params) > 2:
-            sp.send("Command: " + command + " - Too many arguments provided!")
-            return
-        response = full_move_every_few_degree(step_deg)
-        sp.send("Command: " + command + " - " + response)
+        try:
+            response = full_move_every_few_degree(int(params[1]))
+            sp.send("Command: " + command + " - " + response)
+        except ValueError:
+            sp.send("Command: " + command + " - Invalid argument provided!")
     else:
         sp.send("Command: " + command + " - hasn't been recognized")
 

@@ -41,6 +41,8 @@ public class GifCreator
             animatedGifEncoder.setDelay( configuration.getGIF_TIME_BETWEEN_FRAME() );
             animatedGifEncoder.setDispose( 2 );
             animatedGifEncoder.setRepeat( 0 );
+            animatedGifEncoder.setQuality( 10 );
+            animatedGifEncoder.setTransparent( Color.BLACK );
 
             for( PhotoEntity photoEntity : aImages )
             {

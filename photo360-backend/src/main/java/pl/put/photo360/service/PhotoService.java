@@ -1,5 +1,6 @@
 package pl.put.photo360.service;
 
+import static pl.put.photo360.converter.GifCreator.changeBackgroundColor;
 import static pl.put.photo360.dto.ServerResponseCode.STATUS_ADD_TO_FAVOURITE_NOT_ALLOWED;
 import static pl.put.photo360.dto.ServerResponseCode.STATUS_BOTH_ZIPS_EMPTY;
 import static pl.put.photo360.dto.ServerResponseCode.STATUS_DELETE_NOT_ALLOWED;
@@ -71,7 +72,8 @@ public class PhotoService
         if( aPhotosZipFile360 != null && configuration.getSAVING_GIF_360() )
         {
             var extractedPhotos360 = extractPhotosFromZipAndSort( aPhotosZipFile360 );
-            var gifByte = gifCreator.convertImagesIntoGif( extractedPhotos360, aBackgroundColor );
+            changeBackgroundColor( extractedPhotos360, aBackgroundColor );
+            var gifByte = gifCreator.convertImagesIntoGif( extractedPhotos360 );
             photoDataEntity.setConvertedGif( gifByte );
             photoDataEntity.setFirstPhoto( extractedPhotos360.get( 0 )
                 .getPhoto() );
@@ -80,6 +82,7 @@ public class PhotoService
         if( aPhotosZipFile != null && configuration.getSAVING_GIF_PHOTOS() )
         {
             var extractedPhotos = extractPhotosFromZipAndSort( aPhotosZipFile );
+            changeBackgroundColor( extractedPhotos, aBackgroundColor );
             photoDataEntity.setPhotos( extractedPhotos );
             photoDataEntity.setFirstPhoto( extractedPhotos.get( 0 )
                 .getPhoto() );
@@ -150,7 +153,7 @@ public class PhotoService
 
         if( gif.isPublic() || gif.getUserId()
             .getLogin()
-            .equals( userId ) || jwtValidator.isAdminRoleToken(aAuthorizationToken) )
+            .equals( userId ) || jwtValidator.isAdminRoleToken( aAuthorizationToken ) )
         {
             return getExternalFromInternal( gif );
         }

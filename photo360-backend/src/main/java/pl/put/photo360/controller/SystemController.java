@@ -133,7 +133,7 @@ public class SystemController
         @ApiResponse( responseCode = "401", description = "Passed jwt token not valid/expired/unauthorized role." ),
         @ApiResponse( responseCode = "404", description = "User was not found by passed token/gif with passed id not exists." ),
         @ApiResponse( responseCode = "406", description = "Gif is not public." ) } )
-    public ResponseEntity< PhotoDataDto > downloadGif(
+    public ResponseEntity< Object > downloadGif(
         @RequestHeader( name = HttpHeaders.AUTHORIZATION, required = false ) String authorizationToken,
         @PathVariable Long gifId )
     {

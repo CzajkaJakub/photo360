@@ -32,7 +32,7 @@ public class GifCreator
         this.animatedGifEncoder = aAnimatedGifEncoder;
     }
 
-    public byte[] convertImagesIntoGif( List< PhotoEntity > aImages, String backgroundColorHex )
+    public byte[] convertImagesIntoGif( List< PhotoEntity > aImages )
     {
         try
         {
@@ -47,17 +47,7 @@ public class GifCreator
             for( PhotoEntity photoEntity : aImages )
             {
                 InputStream inputByteStream = new ByteArrayInputStream( photoEntity.getPhoto() );
-                BufferedImage bufferedImage;
-                if( backgroundColorHex == null )
-                {
-                    animatedGifEncoder.addFrame( ImageIO.read( inputByteStream ) );
-                }
-                else
-                {
-                    Color backgroundColor = Color.decode( backgroundColorHex );
-                    bufferedImage = changeBackgroundColor( ImageIO.read( inputByteStream ), backgroundColor );
-                    animatedGifEncoder.addFrame( bufferedImage );
-                }
+                animatedGifEncoder.addFrame( ImageIO.read( inputByteStream ) );
             }
 
             animatedGifEncoder.finish();
@@ -69,28 +59,59 @@ public class GifCreator
         }
     }
 
-    private BufferedImage changeBackgroundColor( BufferedImage inputImage, Color backgroundColor )
+    public static void changeBackgroundColor( List< PhotoEntity > images, String aBackgroundColor )
     {
-        BufferedImage tmpImg =
-            new BufferedImage( inputImage.getWidth(), inputImage.getHeight(), BufferedImage.TYPE_4BYTE_ABGR );
-
-        for( int w = 0; w < inputImage.getWidth(); w++ )
+        Color backgroundColor;
+        if( aBackgroundColor != null )
         {
-            for( int h = 0; h < inputImage.getHeight(); h++ )
-            {
-                Color pixelColor = new Color( inputImage.getRGB( w, h ), true );
+            backgroundColor = Color.decode( aBackgroundColor );
+            images.forEach( photo -> {
 
-                if( pixelColor.getAlpha() == 0 )
+                try
                 {
-                    tmpImg.setRGB( w, h, backgroundColor.getRGB() );
+                    BufferedImage bufferedImage = byteArrayToBufferedImage( photo.getPhoto() );
+
+                    BufferedImage tmpImg = new BufferedImage( bufferedImage.getWidth(),
+                        bufferedImage.getHeight(), BufferedImage.TYPE_4BYTE_ABGR );
+
+                    for( int w = 0; w < bufferedImage.getWidth(); w++ )
+                    {
+                        for( int h = 0; h < bufferedImage.getHeight(); h++ )
+                        {
+                            Color pixelColor = new Color( bufferedImage.getRGB( w, h ), true );
+
+                            if( pixelColor.getAlpha() == 0 )
+                            {
+                                tmpImg.setRGB( w, h, backgroundColor.getRGB() );
+                            }
+                            else
+                            {
+                                tmpImg.setRGB( w, h, bufferedImage.getRGB( w, h ) );
+                            }
+                        }
+                    }
+
+                    photo.setPhoto( bufferedImageToByteArray( tmpImg ) );
+
                 }
-                else
+                catch( IOException aE )
                 {
-                    tmpImg.setRGB( w, h, inputImage.getRGB( w, h ) );
+                    throw new RuntimeException( aE );
                 }
-            }
+            } );
         }
+    }
 
-        return tmpImg;
+    private static BufferedImage byteArrayToBufferedImage( byte[] imageBytes ) throws IOException
+    {
+        ByteArrayInputStream bais = new ByteArrayInputStream( imageBytes );
+        return ImageIO.read( bais );
+    }
+
+    private static byte[] bufferedImageToByteArray( BufferedImage image ) throws IOException
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write( image, "png", baos );
+        return baos.toByteArray();
     }
 }

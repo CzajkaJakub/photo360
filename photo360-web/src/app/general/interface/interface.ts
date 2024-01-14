@@ -43,13 +43,12 @@ export interface AuthResponseDataDto {
 }
 
 export interface UploadImagesConfig {
-  zipFile: File,
+  photosZipFile360: File,
+  photosZipFile: File,
   isPublic: Boolean,
   description: String,
   title: String,
-  // savePhotos: Boolean,
-  // savePhoto360: Boolean,
-  // backgroundColor: String
+  backgroundColor: String
 }
 
 export interface GitDataDto {

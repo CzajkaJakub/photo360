@@ -218,6 +218,7 @@ public class AnimatedGifEncoder
         colorTab = null;
         closeStream = false;
         firstFrame = true;
+        sizeSet = false;
 
         return ok;
     }

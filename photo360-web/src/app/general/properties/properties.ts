@@ -9,7 +9,7 @@ export const ConnectionConstants = {
   resetPasswordRequestUrl: "photo360/authorization/resetPasswordRequest",
   emailConfirmationRequestUrl: "photo360/authorization/emailConfirmationRequest",
   resetPasswordConfirmationUrl: "photo360/authorization/resetPasswordConfirmation",
-  confirmEmailWithCodeRequestUrl: "photo360/authorization/confirmEmailWithCodeRequest",
+  confirmEmailWithCodeRequestUrl: "photo360/authorization/confirmEmail",
 
   //system controller
   removeGifUrl: "photo360/removeGif",

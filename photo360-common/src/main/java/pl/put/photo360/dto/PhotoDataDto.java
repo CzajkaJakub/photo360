@@ -1,6 +1,7 @@
 package pl.put.photo360.dto;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class PhotoDataDto
     private String description;
     private String title;
     private Instant uploadDateTime;
-    private Set< byte[] > listOfPhotos;
+    private List< byte[] > listOfPhotos;
     private byte[] headPhoto;
 
     public PhotoDataDto( Long aGifId, String aTitle, String aUserLogin, byte[] aHeadPhoto )

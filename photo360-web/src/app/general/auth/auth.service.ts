@@ -78,7 +78,7 @@ export class AuthService {
   changePassword(userData: ChangePasswordRequestDto) {
     userData.oldPassword.normalize("NFKC");
     userData.newPassword.normalize("NFKC");
-    return this.networkService.sendPutRequest<RequestResponse>(ConnectionConstants.createNewUserUrl, userData,null, null, null);
+    return this.networkService.sendPutRequest<RequestResponse>(ConnectionConstants.changePasswordUrl, userData,null, null, null);
   }
 
   /**

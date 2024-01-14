@@ -76,7 +76,7 @@ export class SingleGifComponent implements OnInit, OnDestroy{
   }
 
   isGifVisible(): boolean {
-    return this.currentIndex === 0;
+    return this.gif.gif != null && this.currentIndex === 0;
   }
 
   getCurrentPhoto(): string {
@@ -88,9 +88,11 @@ export class SingleGifComponent implements OnInit, OnDestroy{
   }
 
   navigate(offset: number): void {
-    const newIndex = (this.currentIndex + offset + this.gif.listOfPhotos.length) % this.gif.listOfPhotos.length;
-    this.currentIndex = (newIndex + this.gif.listOfPhotos.length) % this.gif.listOfPhotos.length;
-    console.log(this.currentIndex);
+    if (this.gif.listOfPhotos && this.gif.listOfPhotos.length > 0) {
+      const newIndex = (this.currentIndex + offset + this.gif.listOfPhotos.length) % this.gif.listOfPhotos.length;
+      this.currentIndex = (newIndex + this.gif.listOfPhotos.length) % this.gif.listOfPhotos.length;
+      console.log(this.currentIndex);
+    }
   }
 
   addToFavourites(gifData: GitDataDto): void {

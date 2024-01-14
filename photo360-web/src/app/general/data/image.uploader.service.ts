@@ -13,14 +13,17 @@ export class ImageUploaderService {
 
     const formData = new FormData();
     formData.append('isPublic', uploadImagesConfig.isPublic.toString());
-    formData.append('savePhoto360', 'true');
-    formData.append('savePhotos', 'true');
     formData.append('description', uploadImagesConfig.description.toString());
-    formData.append('zipFile', uploadImagesConfig.zipFile, uploadImagesConfig.zipFile.name);
+    if (uploadImagesConfig.photosZipFile360 != null) {
+      formData.append('photosZipFile360', uploadImagesConfig.photosZipFile360, uploadImagesConfig.photosZipFile360.name);
+    }
+    if (uploadImagesConfig.photosZipFile != null) {
+      formData.append('photosZipFile', uploadImagesConfig.photosZipFile, uploadImagesConfig.photosZipFile.name);
+    }
     formData.append('title', uploadImagesConfig.title.toString());
-    // formData.append('savePhotos', uploadImagesConfig.savePhotos.toString());
-    // formData.append('savePhoto360', uploadImagesConfig.savePhoto360.toString());
-    // formData.append('backgroundColor', uploadImagesConfig.backgroundColor.toString());
+    if (uploadImagesConfig.backgroundColor != null) {
+      formData.append('backgroundColor', uploadImagesConfig.backgroundColor.toString());
+    }
 
     this.networkService.sendPostRequest<RequestResponse>(ConnectionConstants.uploadPhotosUrl, formData, Constants.headersWithFormData, null, null).subscribe(cokolwiek => console.log(cokolwiek));
   }

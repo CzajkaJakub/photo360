@@ -32,6 +32,13 @@ input.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched, .invalid_password {
   margin-top: -15px;
 }
 
+.emailForget-format {
+  color: red;
+  font-size: 12px;
+  margin-left: 22px;
+  margin-top: -15px;
+}
+
 /* Switching off MS Edge show/hide button in password form */
 ::-ms-reveal {
   display: none;

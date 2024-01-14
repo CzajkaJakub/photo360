@@ -24,27 +24,51 @@
            type="text">
   </mat-form-field>
 
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <mat-checkbox [(ngModel)]="changeBackgroundColor" name="changeBackgroundColor">
+      {{ 'uploadImages.changeBackgroundColor' | translate }}
+    </mat-checkbox>
+
+    <div *ngIf="changeBackgroundColor">
+      <mat-form-field style="margin-top: 10px;">
+        <mat-label>{{'uploadImages.backgroundColor' | translate}}</mat-label>
+        <input [(ngModel)]="data.backgroundColor"
+               matInput
+               type="color">
+      </mat-form-field>
+    </div>
+  </div>
+
   <mat-label class="h4" style="text-align: center">{{'uploadImages.CzyMaBycPubliczne' | translate}}</mat-label>
 
   <section class="checkbox-section">
+
+    <mat-checkbox [(ngModel)]="data.isPublic" class="margin">{{'uploadImages.isPublic' | translate}}</mat-checkbox>
 
     <button (click)="fileUpload.click()" class="btn btn-primary" type="button">
       <i class="fa fa-upload"></i>
       <div>{{ 'uploadImages.uploadFile' | translate }}</div>
     </button>
 
-    <input #fileUpload (change)="uploadFilesWithImages($event)" accept=".zip" class="file-input" type="file">
+    <button (click)="fileUpload360.click()" class="btn btn-primary" type="button">
+      <i class="fa fa-upload"></i>
+      <div>{{ 'uploadImages.uploadFile360' | translate }}</div>
+    </button>
 
-    <mat-checkbox [(ngModel)]="data.isPublic" class="margin">{{'uploadImages.isPublic' | translate}}</mat-checkbox>
+    <input #fileUpload (change)="uploadFilesWithImages($event)" accept=".zip" class="file-input" type="file">
+    <input #fileUpload360 (change)="uploadFilesWithImages360($event)" accept=".zip" class="file-input" type="file">
 
   </section>
 
-  <div mat-dialog-actions style="justify-content: center">
-    <button [disabled]="data.description == null || data.title == null || data.zipFile == null" [mat-dialog-close]=data class="navbarButton"
-            color="primary"
-            mat-flat-button>{{'uploadImages.upload' | translate}}</button>
+  <div class="last-div-container">
+    <div mat-dialog-actions style="justify-content: center">
+      <button [disabled]="data.description == null || data.title == null || (data.photosZipFile360 == null && data.photosZipFile == null)" [mat-dialog-close]=data class="navbarButton"
+              (click)="onButtonSend()"
+              color="primary"
+              mat-flat-button>{{'uploadImages.upload' | translate}}</button>
 
-    <button [mat-dialog-close]=null class="navbarButton" color="primary"
-            mat-flat-button>{{'uploadImages.closeConfigDialog' | translate}}</button>
+      <button [mat-dialog-close]=null class="navbarButton" color="primary"
+              mat-flat-button>{{'uploadImages.closeConfigDialog' | translate}}</button>
+    </div>
   </div>
 </div>

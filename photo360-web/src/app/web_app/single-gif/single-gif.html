@@ -22,7 +22,7 @@
             </div>
             <div class="image-details">
               <div class="frame">
-                <img *ngIf="isGifVisible()" [src]="'data:image/gif;base64,' + gif.gif" class="centered-image" alt="GIF">
+                <img *ngIf="isGifVisible() && gif.gif" [src]="'data:image/gif;base64,' + gif.gif" class="centered-image" alt="GIF">
                 <img *ngIf="!isGifVisible()" [src]="getCurrentPhoto()" class="centered-image" alt="Image">
               </div>
               <div class="image-info">

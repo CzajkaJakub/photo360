@@ -3,6 +3,7 @@ from bleak import BleakClient
 import camera
 import os
 import sys
+from background_remover import remove_background
 
 ADDRESS = "28:CD:C1:03:39:4F"
 WRITE_CHARACTERISTIC_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -70,6 +71,7 @@ async def main(commands, folder_path):
         await send_and_receive(client, cmd, folder_path_final, usb_webcam)
         await client.stop_notify(READ_CHARACTERISTIC_UUID)
     await client.disconnect()
+    remove_background(folder_path)
 
 
 # Usage: myscript.py <folder_path> <move type 1> <degree 1> <move type 2> <degree 2> ...

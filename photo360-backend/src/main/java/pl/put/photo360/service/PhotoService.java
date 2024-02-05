@@ -62,7 +62,7 @@ public class PhotoService
         String aTitle, String aDescription, String aAuthorizationToken, String aBackgroundColor )
     {
         var user = authService.findUserByAuthorizationToken( aAuthorizationToken );
-        PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, aIsPublic, aDescription, aTitle );
+        PhotoDataEntity photoDataEntity = new PhotoDataEntity( user, aIsPublic, aDescription, aTitle);
 
         if( aPhotosZipFile360 == null && aPhotosZipFile == null )
         {
@@ -280,8 +280,6 @@ public class PhotoService
 
     private PhotoDataDto getExternalFromInternal( PhotoDataEntity aPhotoDataEntity )
     {
-        aPhotoDataEntity.getPhotos()
-            .sort( new PhotoEntityComparator() );
         return new PhotoDataDto( aPhotoDataEntity.getConvertedGif(), aPhotoDataEntity.getId(),
             aPhotoDataEntity.isPublic(), aPhotoDataEntity.getUserId()
                 .getLogin(),
@@ -289,7 +287,7 @@ public class PhotoService
             aPhotoDataEntity.getUploadDateTime(), aPhotoDataEntity.getPhotos()
                 .stream()
                 .map( PhotoEntity::getPhoto )
-                .collect( Collectors.toSet() ),
+                .collect( Collectors.toList() ),
             aPhotoDataEntity.getFirstPhoto() );
     }
 

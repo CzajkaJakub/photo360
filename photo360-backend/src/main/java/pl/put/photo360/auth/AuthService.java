@@ -209,7 +209,7 @@ public class AuthService
                 throw new WrongPasswordException( STATUS_PASSWORD_CAN_NOT_BE_THE_SAME );
             fieldValidator.validatePassword( request.getNewPassword() );
             userEntity
-                .setResetPasswordToken( BCrypt.hashpw( request.getNewPassword(), BCrypt.gensalt( 10 ) ) );
+                .setPassword( BCrypt.hashpw( request.getNewPassword(), BCrypt.gensalt( 10 ) ) );
             userEntity.setResetPasswordToken( null );
             userEntity.setResetPasswordTokenExpirationDate( null );
             userDataDao.save( userEntity );

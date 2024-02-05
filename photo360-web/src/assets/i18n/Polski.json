@@ -118,8 +118,13 @@
   "forgotPasswordPanel": {
     "question": "Problem z logowaniem ?",
     "welcomeText": "Wprowadź swój adres e-mail, a my\nwyślemy ci link, który umożliwi odzyskanie\ndostępu do konta.",
-    "giveLink": "Wyślij link do logowania",
-    "returnLogin": "Powrót do logowania"
+    "giveLink": "Wyślij link do zmiany hasła",
+    "returnLogin": "Powrót do logowania",
+    "passwordField": "Nowe haslo",
+    "codeField": "Kod aktywacyjny",
+    "changePassword": "Zmień hasło",
+    "changePasswordSuccess": "Zmiana hasła zakończona pomyślnie",
+    "changePasswordError": "Zmiana hasła nie powiodła się"
   },
   "my-photos": {
     "pageTitle": "Moje zdjęcia",
@@ -141,7 +146,7 @@
     "deleteSuccess": "Projekt został usunięty",
     "deleteError": "Usuwanie projektu nie powiodło się",
     "addFavouritesSuccess": "Projekt został dodany do polubionych",
-    "addFavouritesError": "Dodawanie projektu do ulubionych nie powiodło się",
+    "addFavouritesError": "Projekt znajduje się już w polubionych",
     "alreadyInFavourites": "Projekt znajduje się już w polubionych"
   },
   "uploadImages": {
@@ -152,6 +157,21 @@
     "isPublic": "Projekt publiczny",
     "upload": "Załaduj",
     "closeConfigDialog": "Zamknij",
-    "uploadFile": "Załaduj zdjęcie"
+    "uploadFile": "Załaduj plik ze zdjęciami",
+    "uploadFile360": "Załaduj plik do stworzenia zdjęcia 360°",
+    "changeBackgroundColor": "Czy zmienić kolor tła ?",
+    "backgroundColor": "Wybierz kolor:"
+  },
+  "changePassword": {
+    "Change": "Zmień hasło",
+    "Verify": "Zweryfikuj konto",
+    "activateCode": "Kod aktywacyjny",
+    "pageText": "Moje konto",
+    "codeText": "Podaj kod aktywacyjny otrzymany na maila w celu weryfikacji",
+    "passwordText": "Podaj nowe hasło",
+    "passwordField": "Stare hasło",
+    "newpasswordField": "Nowe hasło",
+    "changeSuccess": "Hasło zmienione",
+    "keySuccess": "Email został zweryfikowany"
   }
 }

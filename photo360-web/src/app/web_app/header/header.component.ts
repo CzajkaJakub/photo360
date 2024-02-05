@@ -14,7 +14,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatOptionModule} from "@angular/material/core";
 import {MatSelectModule} from "@angular/material/select";
-import {AsyncPipe, NgForOf, SlicePipe} from "@angular/common";
+import {AsyncPipe, CommonModule, NgForOf, SlicePipe} from "@angular/common";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatIconModule} from "@angular/material/icon";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -32,10 +32,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private translationSubscription!: Subscription;
 
   private uploadedImagesConfig: UploadImagesConfig = {
-    zipFile: null!,
+    photosZipFile360: null!,
+    photosZipFile: null!,
     isPublic: false,
     description: null!,
-    title: null!
+    title: null!,
+    backgroundColor: null!
   };
 
   constructor(public authService: AuthService,
@@ -117,7 +119,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(dialogConfig => {
       if (dialogConfig !== null) {
-        if (this.uploadedImagesConfig.zipFile != null && this.uploadedImagesConfig.description != null && this.uploadedImagesConfig.title != null) {
+        if ((this.uploadedImagesConfig.photosZipFile360 != null || this.uploadedImagesConfig.photosZipFile != null) && this.uploadedImagesConfig.description != null && this.uploadedImagesConfig.title != null) {
           this.imageUploaderService.uploadFilesWithImages(this.uploadedImagesConfig);
         }
       }
@@ -131,20 +133,36 @@ export class HeaderComponent implements OnInit, OnDestroy {
   templateUrl: 'upload-images-config-dialog-content.html',
   styles:
     [`
+      .container-fluid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .mat-form-field {
+        width: 100%;
+      }
+
       .checkbox-section {
         display: flex;
-        align-content: center;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        height: 60px;
+      }
+
+      .checkbox-section button {
+        margin-bottom: 10px;
       }
 
       .margin {
-        margin: 20px; /* Specify the actual margin value */
+        margin: 10px;
       }
 
       .file-input {
         display: none;
+      }
+
+      .last-div-container {
+        text-align: center;
       }
     `],
   imports: [
@@ -162,6 +180,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     MatAutocompleteModule,
     SlicePipe,
     MatIconModule,
+    CommonModule,
     MatCheckboxModule
   ],
   standalone: true
@@ -169,15 +188,38 @@ export class HeaderComponent implements OnInit, OnDestroy {
 export class UploadImagesDialogConfig {
 
   inputConfig = new FormControl('');
+  changeBackgroundColor: string | boolean = true;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    this.inputConfig.valueChanges.subscribe(value => {
+      this.changeBackgroundColor = value ?? false;
+    });
+  }
+
+  ngOnInit(): void {
+    this.data.description = null;
+    this.data.title = null;
+    this.data.photosZipFile360 = null!;
+    this.data.photosZipFile = null!;
   }
 
   uploadFilesWithImages(e: Event) {
     let uploadedFile = (e.target as HTMLInputElement).files?.item(0)
-    if (uploadedFile != null) this.data.zipFile = uploadedFile;
+    if (uploadedFile != null) this.data.photosZipFile = uploadedFile;
     (e.target as HTMLInputElement).value = ''
+  }
+
+  uploadFilesWithImages360(e: Event) {
+    let uploadedFile = (e.target as HTMLInputElement).files?.item(0)
+    if (uploadedFile != null) this.data.photosZipFile360 = uploadedFile;
+    (e.target as HTMLInputElement).value = ''
+  }
+
+  onButtonSend(){
+    if (!this.changeBackgroundColor) {
+      this.changeBackgroundColor = true;
+    }
+    console.log(this.changeBackgroundColor);
   }
 }
 

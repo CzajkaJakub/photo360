@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  REST_APP_HOST: "http://localhost:8095/",
+  REST_APP_HOST: "http://localhost:8096/",
 };
 
 /*

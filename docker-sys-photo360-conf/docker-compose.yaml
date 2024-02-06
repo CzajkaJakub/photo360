@@ -24,15 +24,19 @@ services:
     image: photo360-backend-server
     depends_on:
       - photo-360-db-container
+    ports:
+      - ${SERVER_EXTERNAL_PORT}:${SERVER_INTERNAL_PORT}
     networks:
       - photo_360-network
 
-  angular-app:
+  photo360-webapp:
     build:
-      context: .
-      dockerfile: ../photo360-web/DockerfileWeb
+      context: ../
+      dockerfile: docker-sys-photo360-conf/DockerfileWebApp
     image: photo360-web
     container_name: photo360-web
+    depends_on:
+      - photo-360-db-container
     ports:
       - ${WEB_EXTERNAL_PORT}:${WEB_INTERNAL_PORT}
     networks:

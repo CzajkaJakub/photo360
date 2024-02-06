@@ -24,3 +24,4 @@ build/
 !**/src/test/**/build/
 
 .vscode/
+docker-sys-photo360-conf/*.jar

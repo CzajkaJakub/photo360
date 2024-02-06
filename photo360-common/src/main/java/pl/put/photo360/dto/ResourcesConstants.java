@@ -8,7 +8,6 @@ public enum ResourcesConstants {
         "/scenes/sceneMain.fxml"),
     SCENE_OPTIONS("/scenes/sceneOptions.fxml"),
     SCENE_PHOTOS("/scenes/scenePhotos.fxml"),
-    OPENCV_DLL_LIB("/lib/opencv_java480.dll"),
     SCENE_RESET_PASSWORD("/scenes/sceneResetPassword.fxml"),
     SCENE_SCENERIOS("/scenes/sceneScenerios.fxml"),
     IMAGE_APP_ICON("/images/icon.jpg"),

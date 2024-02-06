@@ -26,9 +26,9 @@ public class CameraWindow
 
     public CameraWindow()
     {
-        this.cameraController = new CameraController();
-        this.imageView = new ImageView();
-        this.timer = new Timer();
+//        this.cameraController = new CameraController();
+//        this.imageView = new ImageView();
+//        this.timer = new Timer();
     }
 
     public void startCamera( Stage primaryStage )

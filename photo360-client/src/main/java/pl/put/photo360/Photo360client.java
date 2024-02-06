@@ -33,9 +33,6 @@ public class Photo360client extends Application
     @Override
     public void init()
     {
-        String libraryPath = getClass().getResource( ResourcesConstants.OPENCV_DLL_LIB.getPath() )
-            .getPath();
-        System.load( libraryPath );
         ApplicationContextInitializer< GenericApplicationContext > initializer = ac -> {
             ac.registerBean( Application.class, () -> Photo360client.this );
             ac.registerBean( Parameters.class, this::getParameters );

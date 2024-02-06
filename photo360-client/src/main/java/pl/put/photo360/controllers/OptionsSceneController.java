@@ -1,5 +1,13 @@
 package pl.put.photo360.controllers;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,21 +18,16 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
-
 import pl.put.photo360.camera.view.CameraWindow;
 import pl.put.photo360.config.ConfigURL;
 import pl.put.photo360.config.Configuration;
-import pl.put.photo360.dto.*;
+import pl.put.photo360.dto.LabelsConstants;
+import pl.put.photo360.dto.PasswordChangeRequestDto;
+import pl.put.photo360.dto.RequestResponseDto;
+import pl.put.photo360.dto.ToastsConstants;
 import pl.put.photo360.handlers.AuthHandler;
 import pl.put.photo360.service.RequestService;
 import pl.put.photo360.toast.Toast;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 @Component
 public class OptionsSceneController extends SwitchSceneController implements Initializable
@@ -63,89 +66,99 @@ public class OptionsSceneController extends SwitchSceneController implements Ini
         super( requestService, authHandler, configuration, configURL, cameraWindow );
     }
 
-    private void changeEmailVerifyVisibility() {
-        verifyButton.setVisible(false);
-        verifyButton.setDisable(true);
-        verifyButton.setPrefHeight(0.0);
-        verifyButton.setPrefWidth(0.0);
+    private void changeEmailVerifyVisibility()
+    {
+        verifyButton.setVisible( false );
+        verifyButton.setDisable( true );
+        verifyButton.setPrefHeight( 0.0 );
+        verifyButton.setPrefWidth( 0.0 );
 
-        verifyLabel.setText(LabelsConstants.VERIFIED_LABEL.getLabel());
+        verifyLabel.setText( LabelsConstants.VERIFIED_LABEL.getLabel() );
     }
 
-    private void changeConfirmCodeVisibility(boolean isVisible) {
-        confirmHBox.setVisible(isVisible);
-        confirmHBox.setDisable(!isVisible);
+    private void changeConfirmCodeVisibility( boolean isVisible )
+    {
+        confirmHBox.setVisible( isVisible );
+        confirmHBox.setDisable( !isVisible );
 
-        if (isVisible)
+        if( isVisible )
         {
-            confirmHBox.setPrefHeight(Region.USE_COMPUTED_SIZE);
+            confirmHBox.setPrefHeight( Region.USE_COMPUTED_SIZE );
         }
         else
         {
-            confirmHBox.setPrefHeight(0.0);
+            confirmHBox.setPrefHeight( 0.0 );
         }
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        changeConfirmCodeVisibility(false);
-        if (authHandler.getEmailVerified())
+    public void initialize( URL url, ResourceBundle resourceBundle )
+    {
+        changeConfirmCodeVisibility( false );
+        if( authHandler.getEmailVerified() )
         {
             changeEmailVerifyVisibility();
         }
     }
 
-    public void requestConfirmation(ActionEvent event) {
-        RequestResponseDto requestResponseDto = requestService.executeGetRequest(
-                event, configURL.getREQUEST_VERIFY_EMAIL_URL(), RequestResponseDto.class );
+    public void requestConfirmation( ActionEvent event )
+    {
+        RequestResponseDto requestResponseDto = requestService.executeGetRequest( event,
+            configURL.getREQUEST_VERIFY_EMAIL_URL(), RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )
             {
-                changeConfirmCodeVisibility(true);
-                verifyButton.setText(LabelsConstants.SEND_AGAIN.getLabel());
+                changeConfirmCodeVisibility( true );
+                verifyButton.setText( LabelsConstants.SEND_AGAIN.getLabel() );
             }
         } );
     }
 
-    public void confirmVerifyEmail(ActionEvent event) {
-        if (confirmTextField.getText().isBlank())
+    public void confirmVerifyEmail( ActionEvent event )
+    {
+        if( confirmTextField.getText()
+            .isBlank() )
         {
-            Toast.showToast(event, ToastsConstants.EMPTY_CONFIRMATION_CODE.getMessage());
+            Toast.showToast( event, ToastsConstants.EMPTY_CONFIRMATION_CODE.getMessage() );
             return;
         }
         String url = configURL.getCONFIRM_VERIFY_EMAIL_URL() + "/" + confirmTextField.getText();
-        RequestResponseDto requestResponseDto = requestService.executeGetRequest(event, url, RequestResponseDto.class );
+        RequestResponseDto requestResponseDto =
+            requestService.executeGetRequest( event, url, RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )
             {
-                try {
-                    Toast.showToast(event, ToastsConstants.EMAIL_VERIFIED.getMessage());
-                    logout(event);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                try
+                {
+                    Toast.showToast( event, ToastsConstants.EMAIL_VERIFIED.getMessage() );
+                    logout( event );
+                }
+                catch( IOException e )
+                {
+                    throw new RuntimeException( e );
                 }
             }
         } );
     }
 
-    public void changePassword(ActionEvent event) {
+    public void changePassword( ActionEvent event )
+    {
         // Sprawdzanie czy hasła są identyczne
         if( !newPasswordField.getText()
-                .equals( repeatNewPasswordField.getText() ) )
+            .equals( repeatNewPasswordField.getText() ) )
         {
             Toast.showToast( event, ToastsConstants.NOT_THE_SAME_PASSWORDS.getMessage() );
             return;
         }
 
-        PasswordChangeRequestDto passwordChangeRequestDto = requestService.createRequest(
-                PasswordChangeRequestDto.class, oldPasswordField, newPasswordField);
+        PasswordChangeRequestDto passwordChangeRequestDto = requestService
+            .createRequest( PasswordChangeRequestDto.class, oldPasswordField, newPasswordField );
 
         RequestResponseDto requestResponseDto =
-                requestService.executeRequest(event, passwordChangeRequestDto, configURL.getCHANGE_PASSWORD_URL(),
-                        RequestResponseDto.class, HttpMethod.PUT);
-
+            requestService.executeRequest( event, passwordChangeRequestDto,
+                configURL.getCHANGE_PASSWORD_URL(), RequestResponseDto.class, HttpMethod.PUT );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )

@@ -12,113 +12,124 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.OptionsSceneController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pl.put.photo360.controllers.OptionsSceneController">
     <children>
         <HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
             <ToolBar fx:id="toolbarMenu" centerShape="false" prefHeight="35.0" snapToPixel="false">
                 <items>
-                    <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene" prefHeight="25.0" prefWidth="63.0" text="Program" />
-                    <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene" prefHeight="25.0" prefWidth="62.0" text="Zdjęcia" />
-                    <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene" prefHeight="25.0" prefWidth="78.0" text="Informacje" />
-                    <Button fx:id="buttonOption" mnemonicParsing="false" onAction="#switchToOptionScene" prefHeight="25.0" prefWidth="62.0" text="Opcje" />
+                    <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene"
+                            prefHeight="25.0" prefWidth="63.0" text="Program"/>
+                    <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene"
+                            prefHeight="25.0" prefWidth="62.0" text="Zdjęcia"/>
+                    <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene"
+                            prefHeight="25.0" prefWidth="78.0" text="Informacje"/>
+                    <Button fx:id="buttonOption" mnemonicParsing="false" onAction="#switchToOptionScene"
+                            prefHeight="25.0" prefWidth="62.0" text="Opcje"/>
                 </items>
             </ToolBar>
 
             <!-- Elastyczny separator -->
-            <Region HBox.hgrow="ALWAYS" />
+            <Region HBox.hgrow="ALWAYS"/>
 
-            <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
+            <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity"
+                   maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
                 <font>
-                    <Font size="14.0" />
+                    <Font size="14.0"/>
                 </font>
                 <HBox.margin>
-                    <Insets right="10.0" top="7.0" />
+                    <Insets right="10.0" top="7.0"/>
                 </HBox.margin>
             </Label>
 
             <!-- Przycisk "Wyloguj" -->
             <ToolBar centerShape="false" prefHeight="35.0" snapToPixel="false">
                 <items>
-                    <Button mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="62.0" text="Wyloguj" />
+                    <Button mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="62.0"
+                            text="Wyloguj"/>
                 </items>
             </ToolBar>
         </HBox>
 
-        <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0" />
-      <VBox layoutY="36.0" prefHeight="360.0" prefWidth="600.0" spacing="15.0">
-         <children>
-            <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Adres e-mail:">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin></Label>
-                  <Label fx:id="verifyLabel" text="niezweryfikowany" textAlignment="CENTER" />
-                  <Button fx:id="verifyButton" minHeight="0.0" minWidth="0.0" mnemonicParsing="false" onAction="#requestConfirmation" text="Wyślij kod" />
-               </children>
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox fx:id="confirmHBox" alignment="CENTER" minHeight="0.0" minWidth="0.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Proszę wpisać kod:" />
-                  <TextField fx:id="confirmTextField" minWidth="250.0" />
-                  <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmVerifyEmail" text="Potwierdź" />
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-            <Line endX="550.0" opacity="0.4">
-               <VBox.margin>
-                  <Insets left="25.0" />
-               </VBox.margin>
-            </Line>
-            <HBox alignment="CENTER" prefWidth="200.0">
-               <children>
-                  <Label text="Zmiana hasła" textAlignment="CENTER">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Stare hasło:" />
-                  <PasswordField fx:id="oldPasswordField" />
-               </children>
-               <padding>
-                  <Insets left="45.0" />
-               </padding>
-            </HBox>
-            <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Nowe hasło:" />
-                  <PasswordField fx:id="newPasswordField" />
-               </children>
-               <padding>
-                  <Insets left="42.0" />
-               </padding>
-            </HBox>
-            <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label text="Powtórz nowe hasło:" />
-                  <PasswordField fx:id="repeatNewPasswordField" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefWidth="200.0">
-               <children>
-                  <Button fx:id="changeButton" mnemonicParsing="false" onAction="#changePassword" text="Zmień hasło" textAlignment="CENTER">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
+        <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0"/>
+        <VBox layoutY="36.0" prefHeight="360.0" prefWidth="600.0" spacing="15.0">
+            <children>
+                <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label text="Adres e-mail:">
+                            <HBox.margin>
+                                <Insets/>
+                            </HBox.margin>
+                        </Label>
+                        <Label fx:id="verifyLabel" text="niezweryfikowany" textAlignment="CENTER"/>
+                        <Button fx:id="verifyButton" minHeight="0.0" minWidth="0.0" mnemonicParsing="false"
+                                onAction="#requestConfirmation" text="Wyślij kod"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="20.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox fx:id="confirmHBox" alignment="CENTER" minHeight="0.0" minWidth="0.0" prefWidth="200.0"
+                      spacing="10.0">
+                    <children>
+                        <Label text="Proszę wpisać kod:"/>
+                        <TextField fx:id="confirmTextField" minWidth="250.0"/>
+                        <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#confirmVerifyEmail"
+                                text="Potwierdź"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </HBox>
+                <Line endX="550.0" opacity="0.4">
+                    <VBox.margin>
+                        <Insets left="25.0"/>
+                    </VBox.margin>
+                </Line>
+                <HBox alignment="CENTER" prefWidth="200.0">
+                    <children>
+                        <Label text="Zmiana hasła" textAlignment="CENTER">
+                            <font>
+                                <Font name="System Bold" size="16.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label text="Stare hasło:"/>
+                        <PasswordField fx:id="oldPasswordField"/>
+                    </children>
+                    <padding>
+                        <Insets left="45.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label text="Nowe hasło:"/>
+                        <PasswordField fx:id="newPasswordField"/>
+                    </children>
+                    <padding>
+                        <Insets left="42.0"/>
+                    </padding>
+                </HBox>
+                <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label text="Powtórz nowe hasło:"/>
+                        <PasswordField fx:id="repeatNewPasswordField"/>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefWidth="200.0">
+                    <children>
+                        <Button fx:id="changeButton" mnemonicParsing="false" onAction="#changePassword"
+                                text="Zmień hasło" textAlignment="CENTER">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
     </children>
 </AnchorPane>

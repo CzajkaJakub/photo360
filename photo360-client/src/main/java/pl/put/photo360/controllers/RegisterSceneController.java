@@ -53,7 +53,7 @@ public class RegisterSceneController extends SwitchSceneController
             requestService.createRequest( RegisterRequestDto.class, loginField, emailField, password1Field );
 
         RequestResponseDto requestResponseDto = requestService.executeRequest( event, registerRequestDto,
-                configURL.getREGISTER_ENDPOINT_URL(), RequestResponseDto.class );
+            configURL.getREGISTER_ENDPOINT_URL(), RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )

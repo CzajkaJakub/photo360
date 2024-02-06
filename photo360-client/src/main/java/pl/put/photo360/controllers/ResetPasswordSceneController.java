@@ -115,7 +115,7 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
             requestService.createRequest( ResetPasswordRequestDto.class, emailTextField );
 
         RequestResponseDto requestResponseDto = requestService.executeRequest( event, resetPasswordRequestDto,
-                configURL.getREQUEST_RESET_PASSWORD(), RequestResponseDto.class );
+            configURL.getREQUEST_RESET_PASSWORD(), RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )
@@ -143,7 +143,7 @@ public class ResetPasswordSceneController extends SwitchSceneController implemen
 
         RequestResponseDto requestResponseDto =
             requestService.executeRequest( event, resetPasswordConfirmationDto,
-                    configURL.getCONFIRMATION_RESET_PASSWORD(), RequestResponseDto.class );
+                configURL.getCONFIRMATION_RESET_PASSWORD(), RequestResponseDto.class );
 
         Platform.runLater( () -> {
             if( requestResponseDto != null )

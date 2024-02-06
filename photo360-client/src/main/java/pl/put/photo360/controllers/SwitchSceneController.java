@@ -38,8 +38,8 @@ public abstract class SwitchSceneController
     private Label label;
     private ApplicationContext context = ApplicationContextHolder.getApplicationContext();
 
-    public SwitchSceneController(RequestService requestService, AuthHandler authHandler,
-                                 Configuration configuration, ConfigURL configURL, CameraWindow cameraWindow)
+    public SwitchSceneController( RequestService requestService, AuthHandler authHandler,
+        Configuration configuration, ConfigURL configURL, CameraWindow cameraWindow )
     {
         this.requestService = requestService;
         this.authHandler = authHandler;

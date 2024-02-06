@@ -27,6 +27,17 @@ services:
     networks:
       - photo_360-network
 
+  angular-app:
+    build:
+      context: .
+      dockerfile: ../photo360-web/DockerfileWeb
+    image: photo360-web
+    container_name: photo360-web
+    ports:
+      - ${WEB_EXTERNAL_PORT}:${WEB_INTERNAL_PORT}
+    networks:
+      - photo_360-network
+
 volumes:
   photo-360-db-container:
 

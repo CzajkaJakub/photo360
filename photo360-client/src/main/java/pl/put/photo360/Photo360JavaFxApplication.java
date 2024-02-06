@@ -29,9 +29,8 @@ public class Photo360JavaFxApplication
     }
 
     @Bean
-    public RestTemplate restTemplate(
-            Configuration configuration, CustomResponseErrorHandler errorHandler,
-            AuthHandler authHandler, ConfigURL configURL)
+    public RestTemplate restTemplate( Configuration configuration, CustomResponseErrorHandler errorHandler,
+        AuthHandler authHandler, ConfigURL configURL )
     {
         final RestTemplate restTemplate =
             new RestTemplate( new BufferingClientHttpRequestFactory( new SimpleClientHttpRequestFactory() ) );
@@ -43,7 +42,8 @@ public class Photo360JavaFxApplication
     }
 
     @Bean
-    public CameraWindow cameraWindow() {
+    public CameraWindow cameraWindow()
+    {
         return new CameraWindow();
     }
 }

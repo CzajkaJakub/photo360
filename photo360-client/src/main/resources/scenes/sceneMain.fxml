@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -15,96 +14,117 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
-
-<AnchorPane fx:id="mainPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.ProgramSceneController">
+<?import java.lang.String?>
+<AnchorPane fx:id="mainPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.ProgramSceneController">
     <children>
         <HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
             <ToolBar fx:id="toolbarMenu" centerShape="false" prefHeight="35.0" snapToPixel="false">
                 <items>
-                    <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene" prefHeight="25.0" prefWidth="63.0" text="Program" />
-                    <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene" prefHeight="25.0" prefWidth="62.0" text="Zdjęcia" />
-                    <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene" prefHeight="25.0" prefWidth="78.0" text="Informacje" />
-                    <Button fx:id="buttonOption" mnemonicParsing="false" onAction="#switchToOptionScene" prefHeight="25.0" prefWidth="62.0" text="Opcje" />
+                    <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene"
+                            prefHeight="25.0" prefWidth="63.0" text="Program"/>
+                    <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene"
+                            prefHeight="25.0" prefWidth="62.0" text="Zdjęcia"/>
+                    <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene"
+                            prefHeight="25.0" prefWidth="78.0" text="Informacje"/>
+                    <Button fx:id="buttonOption" mnemonicParsing="false" onAction="#switchToOptionScene"
+                            prefHeight="25.0" prefWidth="62.0" text="Opcje"/>
                 </items>
             </ToolBar>
 
             <!-- Elastyczny separator -->
-            <Region HBox.hgrow="ALWAYS" />
+            <Region HBox.hgrow="ALWAYS"/>
 
-            <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
+            <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity"
+                   maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
                 <font>
-                    <Font size="14.0" />
+                    <Font size="14.0"/>
                 </font>
                 <HBox.margin>
-                    <Insets right="10.0" top="7.0" />
+                    <Insets right="10.0" top="7.0"/>
                 </HBox.margin>
             </Label>
 
             <!-- Przycisk "Wyloguj" -->
             <ToolBar centerShape="false" prefHeight="35.0" snapToPixel="false">
                 <items>
-                    <Button mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="62.0" text="Wyloguj" />
+                    <Button mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="62.0"
+                            text="Wyloguj"/>
                 </items>
             </ToolBar>
         </HBox>
 
-        <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0" />
-        <AnchorPane layoutX="325.0" layoutY="60.0" prefHeight="242.0" prefWidth="254.0" style="-fx-border-color: black;">
+        <Line endX="587.0" endY="-5.7220458984375E-6" layoutX="14.0" layoutY="35.0" startX="-100.0"/>
+        <AnchorPane layoutX="325.0" layoutY="60.0" prefHeight="242.0" prefWidth="254.0"
+                    style="-fx-border-color: black;">
             <children>
-                <Button fx:id="deleteButton" disable="true" layoutX="19.0" layoutY="188.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeActiveElement" prefWidth="50.0" text="Usuń" />
-                <Button layoutX="188.0" layoutY="188.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#addElementToList" prefWidth="50.0" text="Dodaj" />
-                <Label layoutX="13.0" layoutY="84.0" text="Typ zdjęcia:" />
+                <Button fx:id="deleteButton" disable="true" layoutX="19.0" layoutY="188.0" maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        onAction="#removeActiveElement" prefWidth="50.0" text="Usuń"/>
+                <Button layoutX="188.0" layoutY="188.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                        minWidth="-Infinity" mnemonicParsing="false" onAction="#addElementToList" prefWidth="50.0"
+                        text="Dodaj"/>
+                <Label layoutX="13.0" layoutY="84.0" text="Typ zdjęcia:"/>
 
                 <ComboBox fx:id="comboList" layoutX="94.0" layoutY="80.0" onAction="#changeComboListElements">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Zdjęcie 360" />
-                            <String fx:value="Pojedyncze zdjęcie" />
+                            <String fx:value="Zdjęcie 360"/>
+                            <String fx:value="Pojedyncze zdjęcie"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
                 <Label layoutX="45.0" layoutY="14.0" text="Kreator komendy" textAlignment="CENTER">
                     <font>
-                        <Font size="24.0" />
+                        <Font size="24.0"/>
                     </font>
                 </Label>
-                <Label fx:id="labelDegree" layoutX="15.0" layoutY="137.0" text="Kąt zdjęcia:" />
-                <Slider fx:id="sliderDegree" blockIncrement="1.0" layoutX="94.0" layoutY="139.0" max="360.0" prefHeight="14.0" prefWidth="101.0" />
-                <TextField fx:id="textFieldDegree" alignment="CENTER" layoutX="202.0" layoutY="133.0" prefHeight="26.0" prefWidth="36.0" text="360" />
-                <Button fx:id="editButton" disable="true" layoutX="102.0" layoutY="188.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#editActiveElement" prefWidth="50.0" text="Edytuj" />
+                <Label fx:id="labelDegree" layoutX="15.0" layoutY="137.0" text="Kąt zdjęcia:"/>
+                <Slider fx:id="sliderDegree" blockIncrement="1.0" layoutX="94.0" layoutY="139.0" max="360.0"
+                        prefHeight="14.0" prefWidth="101.0"/>
+                <TextField fx:id="textFieldDegree" alignment="CENTER" layoutX="202.0" layoutY="133.0" prefHeight="26.0"
+                           prefWidth="36.0" text="360"/>
+                <Button fx:id="editButton" disable="true" layoutX="102.0" layoutY="188.0" maxHeight="-Infinity"
+                        maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                        onAction="#editActiveElement" prefWidth="50.0" text="Edytuj"/>
                 <!--            <ComboBox fx:id="comboList" layoutX="107.0" layoutY="22.0" onAction="#changeComboListElements" prefHeight="25.0" prefWidth="125.0" promptText="Zdjęcie 360" visibleRowCount="2" />-->
             </children>
         </AnchorPane>
-        <Button fx:id="runButton" layoutX="135.0" layoutY="323.0" minWidth="175.0" mnemonicParsing="false" onAction="#runPython" text="Uruchom" AnchorPane.rightAnchor="291.89289245605465">
+        <Button fx:id="runButton" layoutX="135.0" layoutY="323.0" minWidth="175.0" mnemonicParsing="false"
+                onAction="#runPython" text="Uruchom" AnchorPane.rightAnchor="291.89289245605465">
             <font>
-                <Font size="18.0" />
+                <Font size="18.0"/>
             </font>
         </Button>
         <AnchorPane layoutX="24.0" layoutY="60.0" prefHeight="242.0" prefWidth="274.0" style="-fx-border-color: black;">
             <children>
                 <Label layoutX="66.0" layoutY="14.0" text="Lista komend" textAlignment="CENTER">
                     <font>
-                        <Font size="24.0" />
+                        <Font size="24.0"/>
                     </font>
                 </Label>
-                <ListView fx:id="listViewCommands" layoutX="14.0" layoutY="57.0" prefHeight="164.0" prefWidth="210.0" />
-                <Button fx:id="arrowPushUp" disable="true" layoutX="233.0" layoutY="99.0" mnemonicParsing="false" onAction="#handleMoveUp" prefHeight="30.0" prefWidth="15.0" text="↑" textAlignment="CENTER">
+                <ListView fx:id="listViewCommands" layoutX="14.0" layoutY="57.0" prefHeight="164.0" prefWidth="210.0"/>
+                <Button fx:id="arrowPushUp" disable="true" layoutX="233.0" layoutY="99.0" mnemonicParsing="false"
+                        onAction="#handleMoveUp" prefHeight="30.0" prefWidth="15.0" text="↑" textAlignment="CENTER">
                     <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="14.0"/>
                     </font>
                 </Button>
-                <Button fx:id="arrowPushDown" disable="true" layoutX="233.0" layoutY="145.0" mnemonicParsing="false" onAction="#handleMoveDown" text="↓" textAlignment="CENTER">
+                <Button fx:id="arrowPushDown" disable="true" layoutX="233.0" layoutY="145.0" mnemonicParsing="false"
+                        onAction="#handleMoveDown" text="↓" textAlignment="CENTER">
                     <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="14.0"/>
                     </font>
                 </Button>
             </children>
         </AnchorPane>
-      <Button fx:id="cameraButton" layoutX="44.0" layoutY="323.0" mnemonicParsing="false" onAction="#startWindowCamera" prefHeight="40.0" prefWidth="40.0" />
-      <Button fx:id="sendButton" layoutX="364.0" layoutY="323.0" minWidth="175.0" mnemonicParsing="false" onAction="#sendPhotos" text="Prześlij zdjęcia">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
+        <Button fx:id="cameraButton" layoutX="44.0" layoutY="323.0" mnemonicParsing="false"
+                onAction="#startWindowCamera" prefHeight="40.0" prefWidth="40.0"/>
+        <Button fx:id="sendButton" layoutX="364.0" layoutY="323.0" minWidth="175.0" mnemonicParsing="false"
+                onAction="#sendPhotos" text="Prześlij zdjęcia">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
     </children>
 </AnchorPane>

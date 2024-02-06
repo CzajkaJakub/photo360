@@ -36,14 +36,17 @@ public class RestTemplateFilter implements ClientHttpRequestInterceptor
         request.getHeaders()
             .set( "publicApiKey", configuration.getPUBLIC_API_KEY() );
 
-        if ( authHandler.getToken() != null )
+        if( authHandler.getToken() != null )
         {
             request.getHeaders()
-                    .set("Authorization", authHandler.getToken());
+                .set( "Authorization", authHandler.getToken() );
         }
 
-        if (request.getURI().equals(configURL.getUPLOAD_PHOTOS_URL())) {
-            request.getHeaders().setContentType(MediaType.MULTIPART_FORM_DATA);
+        if( request.getURI()
+            .equals( configURL.getUPLOAD_PHOTOS_URL() ) )
+        {
+            request.getHeaders()
+                .setContentType( MediaType.MULTIPART_FORM_DATA );
         }
         return execution.execute( request, body );
     }

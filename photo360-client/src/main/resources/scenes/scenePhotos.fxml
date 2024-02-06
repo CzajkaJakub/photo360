@@ -13,68 +13,81 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.put.photo360.controllers.PhotosSceneController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pl.put.photo360.controllers.PhotosSceneController">
     <children>
         <HBox prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
             <ToolBar fx:id="toolbarMenu" centerShape="false" prefHeight="35.0" snapToPixel="false">
                 <items>
-                    <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene" prefHeight="25.0" prefWidth="63.0" text="Program" />
-                    <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene" prefHeight="25.0" prefWidth="62.0" text="Zdjęcia" />
-                    <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene" prefHeight="25.0" prefWidth="78.0" text="Informacje" />
-                    <Button fx:id="buttonOption" mnemonicParsing="false" onAction="#switchToOptionScene" prefHeight="25.0" prefWidth="62.0" text="Opcje" />
+                    <Button fx:id="buttonProgram" mnemonicParsing="false" onAction="#switchToProgramScene"
+                            prefHeight="25.0" prefWidth="63.0" text="Program"/>
+                    <Button fx:id="buttonPhoto" mnemonicParsing="false" onAction="#switchToPhotosScene"
+                            prefHeight="25.0" prefWidth="62.0" text="Zdjęcia"/>
+                    <Button fx:id="buttonInformation" mnemonicParsing="false" onAction="#switchToInformationScene"
+                            prefHeight="25.0" prefWidth="78.0" text="Informacje"/>
+                    <Button fx:id="buttonOption" mnemonicParsing="false" onAction="#switchToOptionScene"
+                            prefHeight="25.0" prefWidth="62.0" text="Opcje"/>
                 </items>
             </ToolBar>
 
             <!-- Elastyczny separator -->
-            <Region HBox.hgrow="ALWAYS" />
+            <Region HBox.hgrow="ALWAYS"/>
 
-            <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
+            <Label fx:id="userLabel" alignment="CENTER_RIGHT" layoutX="127.0" layoutY="43.0" maxHeight="-Infinity"
+                   maxWidth="-Infinity" prefWidth="120.0" textAlignment="RIGHT">
                 <font>
-                    <Font size="14.0" />
+                    <Font size="14.0"/>
                 </font>
                 <HBox.margin>
-                    <Insets right="10.0" top="7.0" />
+                    <Insets right="10.0" top="7.0"/>
                 </HBox.margin>
             </Label>
 
             <!-- Przycisk "Wyloguj" -->
             <ToolBar centerShape="false" prefHeight="35.0" snapToPixel="false">
                 <items>
-                    <Button mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="62.0" text="Wyloguj" />
+                    <Button mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="62.0"
+                            text="Wyloguj"/>
                 </items>
             </ToolBar>
         </HBox>
 
-        <ScrollPane hbarPolicy="NEVER" layoutX="357.0" layoutY="60.0" prefHeight="316.0" prefWidth="197.0" style="-fx-border-color: black; -fx-border-width: 1;">
-         <content>
-            <GridPane fx:id="previewGrid" hgap="5.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="185.0" vgap="5.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="90.0" prefWidth="90.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="90.0" prefWidth="90.0" />
-              </columnConstraints>
-              <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-              </rowConstraints>
-            </GridPane>
-         </content>
+        <ScrollPane hbarPolicy="NEVER" layoutX="357.0" layoutY="60.0" prefHeight="316.0" prefWidth="197.0"
+                    style="-fx-border-color: black; -fx-border-width: 1;">
+            <content>
+                <GridPane fx:id="previewGrid" hgap="5.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="185.0"
+                          vgap="5.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="90.0" prefWidth="90.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="90.0" prefWidth="90.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
+                </GridPane>
+            </content>
         </ScrollPane>
 
-        <AnchorPane layoutX="52.0" layoutY="60.0" prefHeight="316.0" prefWidth="235.0" style="-fx-border-color: black; -fx-border-width: 1;">
+        <AnchorPane layoutX="52.0" layoutY="60.0" prefHeight="316.0" prefWidth="235.0"
+                    style="-fx-border-color: black; -fx-border-width: 1;">
             <children>
-                <Label fx:id="setTitleLabel" alignment="CENTER" layoutY="21.0" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="18.0" prefWidth="235.0" />
-                <ImageView fx:id="mainImageView" fitHeight="126.0" fitWidth="212.0" layoutX="12.0" layoutY="64.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-color: black;" />
-                <ScrollPane fx:id="miniScrollPane" layoutX="18.0" layoutY="222.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="200.0" vbarPolicy="NEVER">
-               <content>
-                  <HBox fx:id="miniHBox" prefHeight="65.0" prefWidth="200.0" spacing="5.0">
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                     <children>
-                     </children>
-                  </HBox>
-               </content>
+                <Label fx:id="setTitleLabel" alignment="CENTER" layoutY="21.0" maxWidth="-Infinity" minWidth="-Infinity"
+                       prefHeight="18.0" prefWidth="235.0"/>
+                <ImageView fx:id="mainImageView" fitHeight="126.0" fitWidth="212.0" layoutX="12.0" layoutY="64.0"
+                           pickOnBounds="true" preserveRatio="true" style="-fx-border-color: black;"/>
+                <ScrollPane fx:id="miniScrollPane" layoutX="18.0" layoutY="222.0" maxHeight="-Infinity"
+                            maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0"
+                            prefWidth="200.0" vbarPolicy="NEVER">
+                    <content>
+                        <HBox fx:id="miniHBox" prefHeight="65.0" prefWidth="200.0" spacing="5.0">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                            <children>
+                            </children>
+                        </HBox>
+                    </content>
                 </ScrollPane>
             </children>
         </AnchorPane>

@@ -13,8 +13,8 @@ import pl.put.photo360.service.RequestService;
 public class InformationsSceneController extends SwitchSceneController
 {
     @Autowired
-    public InformationsSceneController(RequestService requestService, AuthHandler authHandler,
-                                       Configuration configuration, ConfigURL configURL, CameraWindow cameraWindow)
+    public InformationsSceneController( RequestService requestService, AuthHandler authHandler,
+        Configuration configuration, ConfigURL configURL, CameraWindow cameraWindow )
     {
         super( requestService, authHandler, configuration, configURL, cameraWindow );
     }

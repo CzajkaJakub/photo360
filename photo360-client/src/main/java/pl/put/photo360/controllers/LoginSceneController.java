@@ -49,9 +49,9 @@ public class LoginSceneController extends SwitchSceneController
                 try
                 {
                     authHandler.fillWithUserData( loginResponseDto, loginRequestDto.getLogin() );
-                    if (!loginResponseDto.getEmailVerified())
+                    if( !loginResponseDto.getEmailVerified() )
                     {
-                        Toast.showToast(event, ToastsConstants.PLEASE_VERIFY_EMAIL.getMessage());
+                        Toast.showToast( event, ToastsConstants.PLEASE_VERIFY_EMAIL.getMessage() );
                     }
                     switchToProgramScene( event );
                 }

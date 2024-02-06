@@ -51,7 +51,8 @@ public class CustomResponseErrorHandler implements ResponseErrorHandler
                 ToastsConstants.EMAIL_VERIFICATION_TOKEN_EXPIRED.getMessage();
             case "GIF_IS_NOT_PUBLIC" -> ToastsConstants.GIF_IS_NOT_PUBLIC.getMessage();
             case "FIELD_CONTAINS_WHITESPACES" -> ToastsConstants.FIELD_CONTAINS_WHITESPACES.getMessage();
-            case "STATUS_MISSING_REQUIRED_FIELD" -> ToastsConstants.STATUS_MISSING_REQUIRED_FIELD.getMessage();
+            case "STATUS_MISSING_REQUIRED_FIELD" ->
+                ToastsConstants.STATUS_MISSING_REQUIRED_FIELD.getMessage();
             case "EMAIL_WRONG_FORMAT" -> ToastsConstants.EMAIL_WRONG_FORMAT.getMessage();
             case "UNSUPPORTED" -> ToastsConstants.UNSUPPORTED.getMessage();
             case "WRONG_FILE_FORMAT" -> ToastsConstants.WRONG_FILE_FORMAT.getMessage();
@@ -64,7 +65,8 @@ public class CustomResponseErrorHandler implements ResponseErrorHandler
             case "ACCOUNT_LOCKED" -> ToastsConstants.ACCOUNT_LOCKED.getMessage();
             case "EMAIL_NOT_CONFIRMED" -> ToastsConstants.EMAIL_NOT_CONFIRMED.getMessage();
             case "EMAIL_SEND_FAILED" -> ToastsConstants.EMAIL_SEND_FAILED.getMessage();
-            case "GIF_ALREADY_ADDED_TO_FAVOURITE" -> ToastsConstants.GIF_ALREADY_ADDED_TO_FAVOURITE.getMessage();
+            case "GIF_ALREADY_ADDED_TO_FAVOURITE" ->
+                ToastsConstants.GIF_ALREADY_ADDED_TO_FAVOURITE.getMessage();
             default -> ToastsConstants.DEFAULT_ERROR.getMessage();
         } );
     }

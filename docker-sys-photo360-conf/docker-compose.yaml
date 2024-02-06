@@ -1,4 +1,13 @@
 version: "3.4"
+
+volumes:
+  photo-360-db-container:
+    external: false
+    name: photo-360-db-container
+
+networks:
+  photo_360-network:
+
 services:
   photo-360-db-container:
     environment:
@@ -41,9 +50,3 @@ services:
       - ${WEB_EXTERNAL_PORT}:${WEB_INTERNAL_PORT}
     networks:
       - photo_360-network
-
-volumes:
-  photo-360-db-container:
-
-networks:
-  photo_360-network:

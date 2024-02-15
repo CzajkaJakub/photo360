@@ -1,0 +1,18 @@
+biblioteki do zainstalowania:
+* numpy - pip install numpy
+* cv2 - pip install opencv-python
+* bleak - pip install bleak
+
+Do usuwania tła
+* backgroundremover - pip install backgroundremover
+
+Wszystkie biblioteki używane w programie:
+* asyncio
+* bleak
+* camera
+* os
+* sys
+* cv2 (opencv-python)
+* re
+* numpy
+* subprocess

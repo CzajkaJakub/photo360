@@ -46,10 +46,12 @@ async def main(commands, folder_path):
     try:
         await client.connect()
     except:
+        sys.stderr.write("102\n")
         sys.exit(102)
 
     usb_webcam = camera.find_usb_camera()
     if usb_webcam is None:
+        sys.stderr.write("103\n")
         sys.exit(103)
 
     for cmd in commands:
@@ -62,6 +64,7 @@ async def main(commands, folder_path):
         elif comm_mode == "full_move":
             folder_path_final = folder_path + "/full"
         else:
+            sys.stderr.write("105\n")
             sys.exit(105)
 
         # Create target catalog if not exists
@@ -77,10 +80,12 @@ async def main(commands, folder_path):
 # Usage: myscript.py <folder_path> <move type 1> <degree 1> <move type 2> <degree 2> ...
 if __name__ == "__main__":
     if len(sys.argv) < 4:
+        sys.stderr.write("101\n")
         sys.exit(101)
 
     folder_path = sys.argv[1]
     if os.path.exists(folder_path):
+        sys.stderr.write("104\n")
         sys.exit(104)
 
     arguments = []

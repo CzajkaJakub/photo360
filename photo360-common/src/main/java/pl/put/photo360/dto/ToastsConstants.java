@@ -45,7 +45,8 @@ public enum ToastsConstants {
     ONLY_ONE_PHOTO_360("W ramach scenariusza można wykonać maksymalnie jedno zdjęcie 360 stopni"),
     EMPTY_CONFIRMATION_CODE("Proszę wpisać kod weryfikacyjny"),
     WRONG_CATALOG_WAS_CHOOSEN("Wybrano nieprawidłowy katalog"),
-    FAILED_ZIP_CREATION("Tworzenie plików zip nie powiodło się.\n Sprawdź zawartość katalogów");
+    FAILED_ZIP_CREATION("Tworzenie plików zip nie powiodło się.\n Sprawdź zawartość katalogów"),
+    TEMP_UNAVAILABLE("Funkcjonalność tymczasowo nieaktywna. Proszę skorzystać z zewnętrznych narzędzi.");
 
     private final String string;
 

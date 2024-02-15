@@ -1,8 +1,6 @@
 package pl.put.photo360.controllers;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -511,17 +509,35 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
 
             mainPane.setDisable( true );
             ProcessBuilder pb = new ProcessBuilder( commands );
+            pb.redirectErrorStream(true);
             Process p = pb.start();
 
-            int exitCode = p.waitFor();
+//            int exitCode = p.waitFor();
+//
+//            switch( exitCode )
+//            {
+//                case 101 -> Toast.showToast( event, ToastsConstants.EMPTY_LIST_ITEMS.getMessage() );
+//                case 102 -> Toast.showToast( event, ToastsConstants.CONNECTION_ERROR.getMessage() );
+//                case 103 -> Toast.showToast( event, ToastsConstants.CAMERA_NOT_FOUND.getMessage() );
+//                case 104 -> Toast.showToast( event, ToastsConstants.FOLDER_ALREADY_EXISTS.getMessage() );
+//            }
+//            mainPane.setDisable( false );
 
-            switch( exitCode )
-            {
-                case 101 -> Toast.showToast( event, ToastsConstants.EMPTY_LIST_ITEMS.getMessage() );
-                case 102 -> Toast.showToast( event, ToastsConstants.CONNECTION_ERROR.getMessage() );
-                case 103 -> Toast.showToast( event, ToastsConstants.CAMERA_NOT_FOUND.getMessage() );
-                case 104 -> Toast.showToast( event, ToastsConstants.FOLDER_ALREADY_EXISTS.getMessage() );
+            // Odczytanie wyjścia procesu
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                switch( Integer.parseInt(line.substring(0, 3)) )
+                {
+                    case 101 -> Toast.showToast( event, ToastsConstants.EMPTY_LIST_ITEMS.getMessage() );
+                    case 102 -> Toast.showToast( event, ToastsConstants.CONNECTION_ERROR.getMessage() );
+                    case 103 -> Toast.showToast( event, ToastsConstants.CAMERA_NOT_FOUND.getMessage() );
+                    case 104 -> Toast.showToast( event, ToastsConstants.FOLDER_ALREADY_EXISTS.getMessage() );
+                }
             }
+
+            p.waitFor();
             mainPane.setDisable( false );
         }
         catch( Exception e )
@@ -620,10 +636,11 @@ public class ProgramSceneController extends SwitchSceneController implements Ini
 
     public void startWindowCamera( ActionEvent event )
     {
-        Node source = (Node)event.getSource();
-        Stage stage = (Stage)source.getScene()
-            .getWindow();
-        cameraWindow.startCamera( stage );
+//        Node source = (Node)event.getSource();
+//        Stage stage = (Stage)source.getScene()
+//            .getWindow();
+//        cameraWindow.startCamera( stage );
+        Toast.showToast(event, ToastsConstants.TEMP_UNAVAILABLE.getMessage());
     }
 
     private Dialog< DialogData > createDialog()
